@@ -1,0 +1,137 @@
+- sun:
+    dni: 1
+
+- material: &specular
+      mirror: { reflectivity: 1, slope_error: 0 }
+
+- material: &black
+      matte: { reflectivity: 0 }
+
+- geometry: &facet
+    - material: *specular
+      plane:
+        clip:
+        - operation: AND
+          vertices:
+          - [-0.0935,-0.07] # [x,y] if not rotated
+          - [-0.0935,0.07]
+          - [ 0.0935,0.07]
+          - [ 0.0935,-0.07]
+
+- geometry: &receiver
+    - material: *black
+      plane:
+        clip:
+          - operation: AND
+            vertices:
+            - [-0.02, -0.02]
+            - [-0.02, 0.02]
+            - [ 0.02, 0.02]
+            - [ 0.02,-0.02]              
+
+- entity:
+    name: absorber
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [0, 1.5, 0] }
+    anchors:
+      - name: "anchor0"
+        position: [0, 0, 0] #in the referential of the receiver        
+    geometry: *receiver
+
+
+- template: &self_oriented_facet
+    name: so_facet
+    transform: { rotation: [0, 0, 90] ,translation: [0, 0, 0]}
+    zx_pivot:
+      ref_point: [0, 0, 0]
+      target: { anchor: absorber.anchor0 }
+    children:
+      - name: "facet"
+        transform: { rotation: [90, 0, 0], translation: [0, 0, 0] }
+        primary: 1
+        geometry: *facet
+
+- entity:
+    name: reflector1
+    transform: { rotation: [0, 0, 0], translation: [0.09425,0,0] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector2
+    transform: { rotation: [0, 0, 0], translation: [0.28275,0, 0] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector3
+    transform: { rotation: [0, 0, 0], translation: [0.47125,0, 0] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector4
+    transform: { rotation: [0, 0, 0], translation: [0.65975,0, 0 ] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector5
+    transform: { rotation: [0, 0, 0], translation: [-0.09425,0,0] }
+    children: [ *self_oriented_facet ]
+    
+- entity:
+    name: reflector6
+    transform: { rotation: [0, 0, 0], translation: [-0.28275,0, 0] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector7
+    transform: { rotation: [0, 0, 0], translation: [-0.47125,0, 0] }
+    children: [ *self_oriented_facet ]
+
+- entity:
+    name: reflector8
+    transform: { rotation: [0, 0, 0], translation: [-0.65975,0, 0] }
+    children: [ *self_oriented_facet ]
+
+# - entity:
+#     name: reflector1
+#     primary: 1
+#     transform:
+#       rotation: [0, 90, 0]
+#       translation: [0, 0, 0.09425]
+#     geometry:
+#     - material:
+#         mirror:
+#           reflectivity: 1
+#           slope_error: 0
+#       plane:
+#         clip:
+#         - operation: AND
+#           vertices:
+#           - [-0.0935,-0.07] # [x,y] if not rotated
+#           - [-0.0935,0.07]
+#           - [ 0.0935,0.07]
+#           - [ 0.0935,-0.07]
+
+
+
+
+# - entity:
+#     name: target
+#     primary: 0
+#     transform:
+#       rotation: [0, 90, 0]
+#       translation: [-1.5, 0, 0]
+#     geometry:
+#     - material:
+#         back:
+#           matte: {reflectivity: 0}
+#         front:
+#           matte: {reflectivity: 0}
+#       plane:
+#         slices: 20
+#         clip:
+#         - operation: AND
+#           vertices:
+#           - [-0.02, -0.02]
+#           - [-0.02, 0.02]
+#           - [ 0.02, 0.02]
+#           - [ 0.02,-0.02]

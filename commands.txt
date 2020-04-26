@@ -1,0 +1,16 @@
+# create object
+solstice -n 1 -g format=obj -t1 -D 0,0 -R geometry/receiver.yaml geometry/geometry_my_stl.yaml > export-shapes/sco1_aux.obj
+
+# create vtk for azimuth=180 (remove first line from .vtk before inserting in paraview)
+solstice -n 100 -p default -t1 -D 180,0 -R geometry/receiver.yaml geometry/geometry_my_stl_aux.yaml > export-shapes/0_0.vtk
+
+# create vtk for azimuth=135
+solstice -n 100 -p default -t1 -D 135,0 -R geometry/receiver.yaml geometry/geometry_my_stl_aux.yaml > export-shapes/transversal_135.vtk
+
+
+# trace for azimuth=135
+solstice -D 135,0 -n 10000 -v -R geometry/receiver.yaml geometry/geometry_my_stl_aux.yaml > raw/transversal_135_aux.txt
+
+
+# create rays and delete first line (make sure solpaths file is in your PATH variable)
+solstice -n 100 -p default -t1 -D 180,0 -R geometry/receiver.yaml geometry/geometry.yaml | solpaths
