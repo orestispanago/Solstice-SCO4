@@ -1,8 +1,16 @@
 import pandas as pd
-from traces import Transversal
+from traces import Transversal, Longitudinal
 
-transversal = Transversal(135,225,1,10000)
+transversal = Transversal(45,135,1,10000)
 transversal.run()
+transversal.export_obj()
+transversal.export_vtk()
+
+
+longitudinal = Longitudinal(0, 25, 1,10000)
+longitudinal.run()
+longitudinal.export_obj()
+longitudinal.export_vtk()
 
 df = pd.read_csv("raw/transversal.txt",sep='\s+',names=range(47))
 

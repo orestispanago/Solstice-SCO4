@@ -34,7 +34,8 @@ class Trace():
     
     def export_vtk(self,nrays=100):
         for pair in [self.angle_pairs[0],self.angle_pairs[-1]]:
-            fname = f"{self.name}_{pair[:3]}.vtk"
+            pair_str = pair.replace(',','_')
+            fname = f"{self.name}_{pair_str}.vtk"
             vtkpath = os.path.join(exp_shapes_dir,fname)
             cmd = f'solstice  -n {nrays} -p default -t1 -D {pair} -R {receiver} {geometry}'.split()
             with open(vtkpath, 'w') as f:
@@ -43,7 +44,8 @@ class Trace():
             
     def export_obj(self):
         for pair in [self.angle_pairs[0],self.angle_pairs[-1]]:
-            fname = f"{self.name}_{pair[:3]}.obj"
+            pair_str = pair.replace(',','_')
+            fname = f"{self.name}_{pair_str}.obj"
             objpath = os.path.join(exp_shapes_dir,fname)
             cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver} {geometry}'.split()
             with open(objpath, 'w') as f:
@@ -59,7 +61,7 @@ class Longitudinal(Trace):
     def __init__(self, min_angle, max_angle, step, rays):
         super().__init__(min_angle, max_angle, step, rays)
         self.name = "longitudinal"
-        self.angle_pairs = [f"180,{a:.1f}" for a in self.angles]
+        self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
         
         
 def del_first_line(fname):
