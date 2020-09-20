@@ -6,7 +6,7 @@ import subprocess
 
 exp_dir = os.path.join(os.getcwd(),'raw')
 geom_dir = os.path.join(os.getcwd(),"geometry")
-geometry = os.path.join(geom_dir,"geometry_my_stl_aux.yaml") # Path needs to be set in file
+geometry = os.path.join(geom_dir,"geometry.yaml") # Path needs to be set in file
 receiver = os.path.join(geom_dir,"receiver.yaml") 
 exp_shapes_dir = os.path.join(os.getcwd(),"export-shapes")
 
@@ -41,12 +41,13 @@ class Trace():
                 subprocess.run(cmd,stdout=f)
             del_first_line(vtkpath)
             
-    @staticmethod
-    def export_obj():
-        objpath = os.path.join(exp_shapes_dir,'geom.obj')
-        cmd = f'solstice -n 100 -g format=obj -t1 -D 0,0 -R {receiver} {geometry}'.split()
-        with open(objpath, 'w') as f:
-            subprocess.run(cmd,stdout=f)
+    def export_obj(self):
+        for pair in [self.angle_pairs[0],self.angle_pairs[-1]]:
+            fname = f"{self.name}_{pair[:3]}.obj"
+            objpath = os.path.join(exp_shapes_dir,fname)
+            cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver} {geometry}'.split()
+            with open(objpath, 'w') as f:
+                subprocess.run(cmd,stdout=f)
 
 class Transversal(Trace):
     def __init__(self, min_angle, max_angle, step, rays):
