@@ -6,7 +6,7 @@ import subprocess
 
 exp_dir = os.path.join(os.getcwd(),'raw')
 geom_dir = os.path.join(os.getcwd(),"geometry")
-geometry = os.path.join(geom_dir,"geometry.yaml") # Path needs to be set in file
+geometry = os.path.join(geom_dir,"geometry2.yaml") # Path needs to be set in file
 receiver = os.path.join(geom_dir,"receiver.yaml") 
 exp_shapes_dir = os.path.join(os.getcwd(),"export-shapes")
 
