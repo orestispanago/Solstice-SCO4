@@ -2,12 +2,11 @@
 
 Python scripts to run Solstice simulations on SCO4
 
-geometry folder:
+```geometry``` folder:
 
 * receiver.yaml : name and active sides of receiver
-* geometry_my_stl.yaml : position and optical properties of shapes
-* SCO1_CPC_thinm.stl : concentrator shape (made with Freecad)
+* geometry2.yaml : position and optical properties of shapes, generated using ```mirror_coordinates.py```
 
-raw folder:
+```raw``` folder: trace results, open with ```analysis.py```
 
-Trace results
+```export-shapes``` folder: 3D object ```.obj```, and ray paths ```.vtk``` files. Open with Paraview
