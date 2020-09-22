@@ -56,12 +56,14 @@ class Transversal(Trace):
         super().__init__(min_angle, max_angle, step, rays)
         self.name = "transversal"
         self.angle_pairs = [f"{a:.1f},0" for a in self.angles]
+        # self.sun_col=3 # sun direction column in txt output file
     
 class Longitudinal(Trace):
     def __init__(self, min_angle, max_angle, step, rays):
         super().__init__(min_angle, max_angle, step, rays)
         self.name = "longitudinal"
         self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
+        # self.sun_col=4 # sun direction column in txt output file
         
         
 def del_first_line(fname):
