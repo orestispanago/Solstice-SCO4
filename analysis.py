@@ -43,5 +43,3 @@ transv = read_angle_eff(transversal)
 
 plot_angle_efficiency(long)
 plot_angle_efficiency(transv)
-
-# TODO add seoarate yaml file for heatmap or solve nan issue

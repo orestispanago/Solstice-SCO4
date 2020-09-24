@@ -1,5 +1,5 @@
 - sun:
-    dni: .001
+    dni: 1000
 
 - material: &specular
     back:
@@ -27,7 +27,7 @@
 - geometry: &receiver
     - material: *black
       plane:
-        slices: 64
+        slices: 128
         clip:
           - operation: AND
             vertices:
