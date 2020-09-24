@@ -7,10 +7,10 @@ def del_first_line(fpath):
 
 def del_until(fpath, occcurence="# vtk DataFile Version 2.0\n"):
     # Deletes lines from file until occurence of line
-    with open(fpath, "r") as heat_in:
-        lines_in = heat_in.readlines()
-    with open(fpath, "w") as heat_out:
+    with open(fpath, "r") as fin:
+        lines_in = fin.readlines()
+    with open(fpath, "w") as fout:
         for count,line in enumerate(lines_in):
             if line == occcurence:
                 break
-        heat_out.writelines(lines_in[count:])
+        fout.writelines(lines_in[count:])

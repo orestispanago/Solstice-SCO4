@@ -5,7 +5,7 @@ import numpy as np
 
 
 def read_angle_eff(trace):
-    df = pd.read_csv(trace.outfile, sep='\s+',names=range(47))
+    df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
     angles = df.loc[df[1] == 'Sun'][trace.sun_col]  # set 4 for longitudinal
     eff = df.loc[df[0] == 'absorber'][23]
     angle_eff = pd.Series(eff.values, index=angles.values, name=trace.name)
@@ -14,7 +14,7 @@ def read_angle_eff(trace):
 
 def plot_angle_efficiency(series):
     plt.plot(series)
-    plt.title(series.name.capitalize())
+    plt.title(series.name)
     plt.ylabel("Optical efficiency")
     if series.name == "transversal":
         plt.xticks(np.arange(30,145,10))
