@@ -14,3 +14,7 @@ solstice -D 135,0 -n 10000 -v -R geometry/receiver.yaml geometry/geometry_my_stl
 
 # create rays and delete first line (make sure solpaths file is in your PATH variable)
 solstice -n 100 -p default -t1 -D 180,0 -R geometry/receiver.yaml geometry/geometry.yaml | solpaths
+
+
+# command to export heatmap vtk
+# solstice -n 1000000 -v -t16 -D 45.0,0 -R heatmap/receiver.yaml heatmap/geometry1.yaml > heatmap.vtk
