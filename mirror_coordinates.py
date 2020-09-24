@@ -32,14 +32,14 @@ def get_coords_from_mesh():
 
 def set_coords_to_yaml():
     coords = get_coords_from_mesh()
-    with open('geometry/geometry1.yaml', 'r') as f:
+    with open('geometry/geometry.yaml', 'r') as f:
         lines = f.readlines()
     reflector = 0
     for count, line in enumerate(lines):
         if "reflector" in line:
             lines[count+1] = f'    transform: {{ rotation: [0 ,0, 0], translation: {coords[reflector]} }}\n'
             reflector += 1
-    with open('geometry/geometry1.yaml', 'w') as file:
+    with open('geometry/geometry1.yam', 'w') as file:
         file.writelines(lines)
 
 

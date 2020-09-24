@@ -4,7 +4,10 @@ import subprocess
 
 exp_dir = os.path.join(os.getcwd(), 'raw')
 geom_dir = os.path.join(os.getcwd(), "geometry")
-geometry = os.path.join(geom_dir, "geometry1.yaml")  # Path needs to be set in file
+geometry = os.path.join(geom_dir, "geometry.yaml")  # Path needs to be set in file
+heatmap_dir = os.path.join(os.getcwd(), "heatmap")
+receiver_heat = os.path.join(heatmap_dir, "receiver.yaml")
+geometry_heat = os.path.join(heatmap_dir, "geometry.yaml")  # Path needs to be set in file
 receiver = os.path.join(geom_dir, "receiver.yaml")
 exp_shapes_dir = os.path.join(os.getcwd(), "export-shapes")
 
@@ -45,8 +48,16 @@ class Trace():
             cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver} {geometry}'.split()
             with open(objpath, 'w') as f:
                 subprocess.run(cmd, stdout=f)
-
-
+                
+    def export_heat(self):
+        for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
+            pair_str = pair.replace(',', '_')
+            fname = f"{heatmap_dir}/{self.name}_{pair_str}.obj"
+            objpath = os.path.join(exp_shapes_dir, fname)
+            cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver_heat} {geometry_heat}'.split()
+            with open(objpath, 'w') as f:
+                subprocess.run(cmd, stdout=f)
+                
 class Transversal(Trace):
     def __init__(self, min_angle, max_angle, step, rays):
         super().__init__(min_angle, max_angle, step, rays)
