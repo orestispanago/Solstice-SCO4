@@ -41,7 +41,7 @@ def coords_to_yamls(geometry='geometry/geometry.yaml'):
         if "reflector" in line:
             lines[count+1] = f'    transform: {{ rotation: [0 ,0, 0], translation: {coords[reflector]} }}\n'
             reflector += 1
-    with open(geometry, 'w') as geom, open('heatmap/geometry.yaml', 'w') as geom_heat:
+    with open(geometry, 'w') as geom, open('geometry/heatmap/geometry.yaml', 'w') as geom_heat:
         geom.writelines(lines)
         geom_heat.writelines(lines)
 
