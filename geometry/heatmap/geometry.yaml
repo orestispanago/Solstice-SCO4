@@ -27,6 +27,7 @@
 - geometry: &receiver
     - material: *black
       plane:
+        slices: 128
         clip:
           - operation: AND
             vertices:
