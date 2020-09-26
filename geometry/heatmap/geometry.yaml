@@ -1,5 +1,5 @@
 - sun:
-    dni: 1
+    dni: 1000
 
 - material: &specular
     back:
