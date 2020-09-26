@@ -5,12 +5,22 @@ def del_first_line(fpath):
     with open(fpath, 'w') as fout:
         fout.writelines(data[1:])
 
-def del_until(fpath, occcurence="# vtk DataFile Version 2.0\n"):
+def del_until(fpath, occurence="# vtk DataFile Version 2.0\n"):
     # Deletes lines from file until occurence of line
     with open(fpath, "r") as fin:
         lines_in = fin.readlines()
     with open(fpath, "w") as fout:
         for count,line in enumerate(lines_in):
-            if line == occcurence:
+            if line == occurence:
                 break
         fout.writelines(lines_in[count:])
+        
+def keep_until(fpath, occurence='reflector', lines_before=0):
+    """ Keeps lines until occurence of string """
+    with open(fpath, "r") as fin:
+        lines_in = fin.readlines()
+    with open(fpath, "w") as fout:
+        for count,line in enumerate(lines_in):
+            if occurence in line:
+                break
+        fout.writelines(lines_in[:count-lines_before])

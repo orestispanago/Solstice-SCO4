@@ -8,8 +8,8 @@ import numpy as np
 
 txtfiles = glob.glob('export/raw/*.txt')
 
-df = pd.read_csv(txtfiles[1], sep='\s+',names=range(47))
-fname = os.path.basename(txtfiles[1]).split(".")[0]
+df = pd.read_csv(txtfiles[0], sep='\s+',names=range(47))
+fname = os.path.basename(txtfiles[0]).split(".")[0]
 angles = df.loc[df[1] == 'Sun'][3]  # set 4 for longitudinal
 shadow = df[0].iloc[angles.index+5].astype('float')
 absorbed_flux = df[0].iloc[angles.index+3].astype('float')
