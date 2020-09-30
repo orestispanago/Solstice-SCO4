@@ -4,36 +4,32 @@ import glob
 import matplotlib.pyplot as plt
 import numpy as np
 
-
+columns = {"potential_flux": 2,
+           "absorbed_flux": 3,
+           "cos_factor": 4,
+           "shadow_losses": 5,
+           }
 
 txtfiles = glob.glob('export/raw/*.txt')
 
 df = pd.read_csv(txtfiles[0], sep='\s+',names=range(47))
 fname = os.path.basename(txtfiles[0]).split(".")[0]
 angles = df.loc[df[1] == 'Sun'][3]  # set 4 for longitudinal
-shadow = df[0].iloc[angles.index+5].astype('float')
-absorbed_flux = df[0].iloc[angles.index+3].astype('float')
-eff = df.loc[df[0] == 'absorber',[23]] # Add [23,24] for error
-eff['shadow'] = shadow.values
-eff['absorbed'] = absorbed_flux.values
-angle_df = pd.DataFrame(eff.values, index=angles.values, columns=["efficiency", "shadow","absorbed"])
-angle_df.name = fname
+eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
+
+for i in columns.keys():
+    eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
+colnames = ["efficiency"] + [*columns.keys()]
+eff = eff.set_index(angles.values)
+eff.columns = colnames
+
+for i in columns.keys():
+    plt.plot(eff[i])
+    plt.title(fname)
+    plt.ylabel(i.replace("_"," ").title())
+    plt.show()
 
 
-plt.plot(angle_df["shadow"])
-plt.title(angle_df.name)
-plt.ylabel("Shadow losses (W)")
-plt.show()
-
-plt.plot(angle_df["absorbed"])
-plt.title(angle_df.name)
-plt.ylabel("Absorbed flux by receiver (W)")
-plt.show()
-
-plt.plot(angle_df["efficiency"])
-plt.title(angle_df.name)
-plt.ylabel("Optical efficieicy")
-plt.show()
 # plt.plot(angle_eff_err["efficiency"])
 # plt.plot(angle_eff_err["min"])
 # plt.plot(angle_eff_err["max"])
