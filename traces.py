@@ -7,7 +7,7 @@ import utils
 exp_dir = os.path.join(os.getcwd(), 'export')
 shapes_dir = os.path.join(exp_dir, "shapes")
 geom_dir = os.path.join(os.getcwd(), "geometry")
-geometry = os.path.join(geom_dir, "geometry.yaml")  # Path needs to be set in file
+geometry = os.path.join(geom_dir, "geometry_glass.yaml")  # Path needs to be set in file
 receiver = os.path.join(geom_dir, "receiver.yaml")
 receiver_heat = os.path.join(geom_dir, "heatmap", "receiver.yaml")
 geometry_heat = os.path.join(geom_dir, "heatmap", "geometry.yaml")  # Path needs to be set in file

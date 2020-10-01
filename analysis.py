@@ -11,17 +11,17 @@ columns = {"potential_flux": 2,
            }
 
 df = pd.read_csv(transversal.rawfile, sep='\s+',names=range(47))
-angles = df.loc[df[1] == 'Sun'][transversal.sun_col]  # set 4 for longitudinal
+angles = df.loc[df[1] == 'Sun', [transversal.sun_col]]  # set 4 for longitudinal
 eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
 
 for i in columns.keys():
     eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
 colnames = ["efficiency"] + [*columns.keys()]
-eff = eff.set_index(angles.values)
+eff = eff.set_index(angles[3].values)
 eff.columns = colnames
 
 
-for i in columns.keys():
+for i in colnames:
     plt.plot(eff[i])
     plt.title(transversal.name)
     plt.ylabel(i.replace("_"," ").title())
