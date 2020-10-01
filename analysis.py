@@ -12,16 +12,14 @@ columns = {"potential_flux": 2,
 
 def read(trace):
     df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
-    angles = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
-    eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
-    
+    trace_df = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
+    trace_df.columns = ["angle"]
+    trace_df["efficiency"] = df.loc[df[0] == 'absorber',[23]].values # Overall effficiency, add [23,24] for error
     for i in columns.keys():
-        eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
-    colnames = ["efficiency"] + [*columns.keys()]
-    eff = eff.set_index(angles[3].values)
-    eff.columns = colnames
-    eff.name = trace.name
-    return eff
+        trace_df[i] = df[0].iloc[trace_df.index + columns.get(i)].astype('float').values
+    trace_df = trace_df.set_index("angle")
+    trace_df.name = trace.name
+    return trace_df
 
 def plot_cols(df):
     for i in columns:
@@ -43,18 +41,3 @@ tr_gi = read(transversal_glass_ideal)
 tr_g05 = read(transversal_glass_05)
 # plot_cols(tr_pi)    
 plot_effs([tr_pi, tr_gi, tr_g05])
-# plt.plot(angle_eff_err["efficiency"])
-# plt.plot(angle_eff_err["min"])
-# plt.plot(angle_eff_err["max"])
-# # def plot_angle_efficiency(series):
-# #     plt.plot(series)
-# #     plt.title(series.name)
-# #     plt.ylabel("Optical efficiency")
-# #     if series.name == "transversal":
-# #         plt.xticks(np.arange(30,145,10))
-# #         plt.xlim(40, 140)
-# #         plt.xlabel('Azimuth (90$\degree$=nornal incidence)')
-# #     else:
-# #         plt.xlabel(xlabel="Zenith (0$\degree$=nornal incidence)")
-# #     plt.savefig(f'plots/{series.name}.png')
-# #     plt.show()
