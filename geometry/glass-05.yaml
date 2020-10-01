@@ -1,22 +1,47 @@
-- sun:
+# - spectrum : &solar_spectrum
+#     - {wavelength: 0.30, data: 1}
+#     - {wavelength: 0.40, data: 2}
+#     - {wavelength: 0.50, data: 0.5}
+#     - {wavelength: 0.60, data: 3.5}
+#     - {wavelength: 0.70, data: 1.5}
+#     - {wavelength: 0.80, data: 0.8}
+
+# - spectrum : &air_kabs
+#     - {wavelength: 0.30, data: 1.0e-4}
+#     - {wavelength: 0.40, data: 1.0e-5}
+#     - {wavelength: 0.50, data: 2.0e-5}
+#     - {wavelength: 0.60, data: 2.0e-4}
+#     - {wavelength: 0.70, data: 3.0e-5}
+#     - {wavelength: 0.80, data: 1.0e-4}
+
+# - spectrum : &glass_kabs
+#     - {wavelength: 0.30, data: 1.0e-2}
+#     - {wavelength: 0.40, data: 1.0e-3}
+#     - {wavelength: 0.50, data: 2.0e-3}
+#     - {wavelength: 0.60, data: 2.0e-2}
+#     - {wavelength: 0.70, data: 3.0e-3}
+#     - {wavelength: 0.80, data: 1.0e-3}
+
+# - spectrum : &glass_ref_index
+#     - {wavelength: 0.30, data: 1.40}
+#     - {wavelength: 0.40, data: 1.39}
+#     - {wavelength: 0.50, data: 1.37}
+#     - {wavelength: 0.60, data: 1.34}
+#     - {wavelength: 0.70, data: 1.30}
+#     - {wavelength: 0.80, data: 1.25}
+    
+    
+- sun: &sun
     dni: 1000
-
-- spectrum : &glass_kabs
-    - {wavelength: 0.30, data: 1.0e-2}
-    - {wavelength: 0.40, data: 1.0e-3}
-    - {wavelength: 0.50, data: 2.0e-3}
-    - {wavelength: 0.60, data: 2.0e-2}
-    - {wavelength: 0.70, data: 3.0e-3}
-    - {wavelength: 0.80, data: 1.0e-3}
-
+#    spectrum : *solar_spectrum
 
 - medium : &air_medium
     refractive_index : 1
-    extinction : 0
+    extinction : 1 #*air_kabs
 
 - medium : &glass_medium
-    refractive_index : 1
-    extinction : *glass_kabs
+    refractive_index : 1.5 # *glass_ref_index
+    extinction : 1 #*glass_kabs
 
 - material: &specular
     back:

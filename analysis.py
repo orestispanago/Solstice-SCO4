@@ -15,8 +15,8 @@ def read(trace):
     trace_df = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
     trace_df.columns = ["angle"]
     trace_df["efficiency"] = df.loc[df[0] == 'absorber',[23]].values # Overall effficiency, add [23,24] for error
-    for i in columns.keys():
-        trace_df[i] = df[0].iloc[trace_df.index + columns.get(i)].astype('float').values
+    for key in columns.keys():
+        trace_df[key] = df[0].iloc[trace_df.index + columns.get(key)].astype('float').values
     trace_df = trace_df.set_index("angle")
     trace_df.name = trace.name
     return trace_df
