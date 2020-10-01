@@ -1,20 +1,17 @@
 import pandas as pd
-import os
-import glob
 import matplotlib.pyplot as plt
 import numpy as np
+from run import transversal
+
 
 columns = {"potential_flux": 2,
            "absorbed_flux": 3,
            "cos_factor": 4,
-           "shadow_losses": 5,
+           "shadow_losses": 5
            }
 
-txtfiles = glob.glob('export/raw/*.txt')
-
-df = pd.read_csv(txtfiles[0], sep='\s+',names=range(47))
-fname = os.path.basename(txtfiles[0]).split(".")[0]
-angles = df.loc[df[1] == 'Sun'][3]  # set 4 for longitudinal
+df = pd.read_csv(transversal.rawfile, sep='\s+',names=range(47))
+angles = df.loc[df[1] == 'Sun'][transversal.sun_col]  # set 4 for longitudinal
 eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
 
 for i in columns.keys():
@@ -23,10 +20,13 @@ colnames = ["efficiency"] + [*columns.keys()]
 eff = eff.set_index(angles.values)
 eff.columns = colnames
 
+
 for i in columns.keys():
     plt.plot(eff[i])
-    plt.title(fname)
+    plt.title(transversal.name)
     plt.ylabel(i.replace("_"," ").title())
+    plt.xticks(np.arange(30,145,10))
+    plt.xlim(40, 140)
     plt.show()
 
 
