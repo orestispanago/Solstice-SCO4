@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from run import transversal
+from run import transversal_plain_ideal, transversal_glass_ideal
 
 
 columns = {"potential_flux": 2,
@@ -10,26 +10,39 @@ columns = {"potential_flux": 2,
            "shadow_losses": 5
            }
 
-df = pd.read_csv(transversal.rawfile, sep='\s+',names=range(47))
-angles = df.loc[df[1] == 'Sun', [transversal.sun_col]]  # set 4 for longitudinal
-eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
+def read(trace):
+    
+    df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
+    angles = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
+    eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
+    
+    for i in columns.keys():
+        eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
+    colnames = ["efficiency"] + [*columns.keys()]
+    eff = eff.set_index(angles[3].values)
+    eff.columns = colnames
+    eff.name = trace.name
+    return eff
 
-for i in columns.keys():
-    eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
-colnames = ["efficiency"] + [*columns.keys()]
-eff = eff.set_index(angles[3].values)
-eff.columns = colnames
+def plot_cols(df):
+    for i in columns:
+        plt.plot(df[i])
+        plt.title(df.name)
+        plt.ylabel(i.replace("_"," ").title())
+        plt.xticks(np.arange(30,145,10))
+        plt.xlim(40, 140)
+        plt.show()
 
+tr_pi = read(transversal_plain_ideal)
+tr_gi = read(transversal_glass_ideal)
+# plot_cols(tr_pi)
 
-for i in colnames:
-    plt.plot(eff[i])
-    plt.title(transversal.name)
-    plt.ylabel(i.replace("_"," ").title())
-    plt.xticks(np.arange(30,145,10))
-    plt.xlim(40, 140)
+def plot_effs(df1, df2):
+    plt.plot(df1["efficiency"])
+    plt.plot(df2["efficiency"])
     plt.show()
-
-
+    
+plot_effs(tr_pi, tr_gi)
 # plt.plot(angle_eff_err["efficiency"])
 # plt.plot(angle_eff_err["min"])
 # plt.plot(angle_eff_err["max"])
