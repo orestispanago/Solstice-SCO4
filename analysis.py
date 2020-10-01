@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from run import transversal_plain_ideal, transversal_glass_ideal
+from run import transversal_plain_ideal, transversal_glass_ideal, transversal_glass_05
 
 
 columns = {"potential_flux": 2,
@@ -11,7 +11,6 @@ columns = {"potential_flux": 2,
            }
 
 def read(trace):
-    
     df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
     angles = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
     eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
@@ -33,16 +32,17 @@ def plot_cols(df):
         plt.xlim(40, 140)
         plt.show()
 
-tr_pi = read(transversal_plain_ideal)
-tr_gi = read(transversal_glass_ideal)
-# plot_cols(tr_pi)
-
-def plot_effs(df1, df2):
-    plt.plot(df1["efficiency"])
-    plt.plot(df2["efficiency"])
+def plot_effs(df_list):
+    for df in df_list:
+        plt.plot(df["efficiency"])
     plt.show()
     
-plot_effs(tr_pi, tr_gi)
+    
+tr_pi = read(transversal_plain_ideal)
+tr_gi = read(transversal_glass_ideal)
+tr_g05 = read(transversal_glass_05)
+# plot_cols(tr_pi)    
+plot_effs([tr_pi, tr_gi, tr_g05])
 # plt.plot(angle_eff_err["efficiency"])
 # plt.plot(angle_eff_err["min"])
 # plt.plot(angle_eff_err["max"])
