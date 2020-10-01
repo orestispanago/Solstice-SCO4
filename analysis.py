@@ -2,6 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from run import transversal_plain_ideal, transversal_glass_ideal, transversal_glass_05
+from run import longitudinal_plain_ideal, longitudinal_glass_ideal, longitudinal_glass_05
 
 
 columns = {"potential_flux": 2,
@@ -22,17 +23,19 @@ def read(trace):
     return trace_df
 
 def plot_cols(df):
-    for i in columns:
-        plt.plot(df[i])
+    for col in df.columns:
+        plt.plot(df[col])
         plt.title(df.name)
-        plt.ylabel(i.replace("_"," ").title())
-        plt.xticks(np.arange(30,145,10))
-        plt.xlim(40, 140)
+        plt.ylabel(col.replace("_"," ").title())
+        if df.name == "Transversal":
+            plt.xticks(np.arange(30,145,10))
+            plt.xlim(40, 140)
         plt.show()
 
 def plot_effs(df_list):
     for df in df_list:
         plt.plot(df["efficiency"])
+        plt.ylabel("Overall efficiency")
     plt.show()
     
     
@@ -41,3 +44,10 @@ tr_gi = read(transversal_glass_ideal)
 tr_g05 = read(transversal_glass_05)
 # plot_cols(tr_pi)    
 plot_effs([tr_pi, tr_gi, tr_g05])
+
+
+ln_pi = read(longitudinal_plain_ideal)
+ln_gi = read(longitudinal_glass_ideal)
+ln_g05 = read(longitudinal_glass_05)
+# plot_cols(ln_pi)    
+plot_effs([ln_pi, ln_gi, ln_g05])

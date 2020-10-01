@@ -1,12 +1,10 @@
-import numpy as np
 import os
+import numpy as np
 import subprocess
 import utils
 
+
 CWD = os.getcwd()
-# exp_dir = os.path.join(CWD, 'export', 'ideal')
-shapes_dir = os.path.join(CWD, 'export', "shapes")
-# geometry = os.path.join(CWD, "geometry", "geometry_glass.yaml")
 receiver = os.path.join(CWD, "geometry", "receiver.yaml")
 
 
@@ -53,12 +51,11 @@ class Trace():
                 
     def export_heat(self, nrays=1000000):
         receiver_heat = os.path.join(CWD, "geometry", "heatmap", "receiver.yaml")
-        geometry_heat = os.path.join(CWD, "geometry", "heatmap", "geometry.yaml")  # Path needs to be set in file
-
+        geometry_heat = os.path.join(CWD, "geometry", "heatmap", "geometry.yaml")
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}_heatmap.vtk"
-            heat_path = os.path.join(shapes_dir, fname)
+            heat_path = os.path.join(self.exp_dir,"shapes", fname)
             cmd = f'solstice  -n {nrays} -v -t16 -D {pair} -R {receiver_heat} {geometry_heat}'.split()
             with open(heat_path, 'w') as f:
                 subprocess.run(cmd, stdout=f)
@@ -71,8 +68,8 @@ class Transversal(Trace):
         self.sun_col = 3  # sun direction column in txt output file
         
 
-# class Longitudinal(Trace):
-#     def __init__(self, min_angle, max_angle, step, rays):
-#         super().__init__(min_angle, max_angle, step, rays, name=self.__class__.__name__)
-#         self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
-#         self.sun_col = 4  # sun direction column in txt output file
+class Longitudinal(Trace):
+    def __init__(self, min_angle, max_angle, step, rays, geometry):
+        super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
+        self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
+        self.sun_col = 4  # sun direction column in txt output file
