@@ -43,8 +43,15 @@ xx, yy = np.meshgrid(centered_x, centered_y)
 plt.plot(xx, yy, marker=',', color='k', linestyle='none')
 plt.plot(0,0,'ro')
 
-utils.keep_until(geometry, occurence='reflector', lines_before=1)
-utils.keep_until(geometry_heat, occurence='reflector', lines_before=1)
+# utils.keep_until(geometry, occurence='reflector', lines_before=1)
+# utils.keep_until(geometry_heat, occurence='reflector', lines_before=1)
 
-append_reflectors_to_yaml(geometry)
-append_reflectors_to_yaml(geometry_heat)
+# append_reflectors_to_yaml(geometry)
+# append_reflectors_to_yaml(geometry_heat)
+
+def move_absorber(x,y):
+    abs_transform=f"    transform: {{ rotation: [90, 0, 0], "\
+        f"translation: &absorber_translation [{x}, 1.5, {y}] }}\n"
+    utils.replace_line(geometry,newline=abs_transform)
+
+move_absorber(0,0)
