@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import utils
-from traces import geometry, geometry_heat
+# from traces import geometry, geometry_heat
+geometry = "geometry/glass-ideal.yaml"
+geometry_heat= "geometry/heatmap/glass-ideal.yaml"
 
 x = 0.14  # mirror x dimension
 y = 0.14

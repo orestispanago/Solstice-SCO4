@@ -43,11 +43,11 @@ tr_pi = read(transversal_plain_ideal)
 tr_gi = read(transversal_glass_ideal)
 tr_g05 = read(transversal_glass_05)
 # plot_cols(tr_pi)    
-plot_effs([tr_pi, tr_gi, tr_g05])
+plot_effs([tr_pi, tr_gi])
 
 
 ln_pi = read(longitudinal_plain_ideal)
 ln_gi = read(longitudinal_glass_ideal)
 ln_g05 = read(longitudinal_glass_05)
 # plot_cols(ln_pi)    
-plot_effs([ln_pi, ln_gi, ln_g05])
+plot_effs([ln_pi, ln_gi])
