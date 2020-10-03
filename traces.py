@@ -84,6 +84,7 @@ class Transversal(Trace):
         super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
         self.angle_pairs = [f"{a:.1f},0" for a in self.angles]
         self.sun_col = 3  # sun direction column in txt output file
+        self.xlabel = "Azimuth $(\degree), 90$\degree$=Normal Incidence"
         
 
 class Longitudinal(Trace):
@@ -91,3 +92,4 @@ class Longitudinal(Trace):
         super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
         self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
         self.sun_col = 4  # sun direction column in txt output file
+        self.xlabel = "Elevation $(\degree), 90$\degree$=Normal Incidence"

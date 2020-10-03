@@ -1,6 +1,8 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from tqdm import tqdm
 from run import transversal_plain_ideal, transversal_glass_ideal, transversal_glass_05
 from run import longitudinal_plain_ideal, longitudinal_glass_ideal, longitudinal_glass_05
 from mirror_coordinates import centered_x, centered_y, move_absorber
@@ -54,14 +56,16 @@ def plot_effs(df_list):
 # ln_g05 = read(longitudinal_glass_05)
 # # plot_cols(ln_pi)    
 # plot_effs([ln_pi, ln_gi])
-import time
 
 
-start = time.time()
 def change_abs_run_mean(trace):
+    """ Changes absorber position, 
+    runs trace and outputs to dataframe (as class attribute),
+    calculates mean of dataframe column
+    returns new dataframe with coords and column mean """
     df = pd.DataFrame(columns=["abs_x", "abs_y", "efficiency"])
-    for x in np.arange(centered_x[0], centered_x[-1], 0.1):
-        for y in np.arange(centered_y[0], centered_y[-1], 0.1):
+    for x in tqdm(np.arange(centered_x[0], centered_x[-1], 0.01)):
+        for y in np.arange(centered_y[0], centered_y[-1], 0.01):
             move_absorber(trace.geometry, x, y)
             trace.run_to_df()
             tr_pi = read(trace)
@@ -70,5 +74,13 @@ def change_abs_run_mean(trace):
                             "efficiency": tr_pi["efficiency"].mean()
                             }, ignore_index=True)
     return df
-df1 = change_abs_run_mean(transversal_plain_ideal)
-print(time.time() - start, f" seconds for {len(df1)} runs")
+
+result = change_abs_run_mean(transversal_plain_ideal)
+
+df1 = result.pivot(index='abs_y', columns='abs_x', values='efficiency')
+
+heatmap = sns.heatmap(df1, 
+            xticklabels=df1.columns.values.round(1), 
+            yticklabels=df1.index.values.round(1),
+            cbar_kws={'label': 'Overall efficiency'})
+# plt.xlabel("labels on x axis") 

@@ -38,7 +38,7 @@
 - entity:
     name: absorber
     primary: 0
-    transform: { rotation: [90, 0, 0], translation: &absorber_translation [0.6899999999999996, 1.5, 0.3739999999999998] }
+    transform: { rotation: [90, 0, 0], translation: &absorber_translation [-0.7000000000000001, 1.5, -0.18599999999999983] }
     anchors:
       - name: "anchor0"
         position: [0, 0, 0] #in the referential of the receiver
