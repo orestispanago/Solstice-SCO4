@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from run import transversal_plain_ideal, transversal_glass_ideal, transversal_glass_05
 from run import longitudinal_plain_ideal, longitudinal_glass_ideal, longitudinal_glass_05
-
+from mirror_coordinates import centered_x, centered_y, move_absorber
 
 columns = {"potential_flux": 2,
            "absorbed_flux": 3,
@@ -12,7 +12,10 @@ columns = {"potential_flux": 2,
            }
 
 def read(trace):
-    df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
+    if trace.df is not None:
+        df = trace.df
+    else:
+        df = pd.read_csv(trace.rawfile, sep='\s+',names=range(47))
     trace_df = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
     trace_df.columns = ["angle"]
     trace_df["efficiency"] = df.loc[df[0] == 'absorber',[23]].values # Overall effficiency, add [23,24] for error
@@ -39,15 +42,33 @@ def plot_effs(df_list):
     plt.show()
     
     
-tr_pi = read(transversal_plain_ideal)
-tr_gi = read(transversal_glass_ideal)
-tr_g05 = read(transversal_glass_05)
-# plot_cols(tr_pi)    
-plot_effs([tr_pi, tr_gi])
+# tr_pi = read(transversal_plain_ideal)
+# tr_gi = read(transversal_glass_ideal)
+# tr_g05 = read(transversal_glass_05)
+# # plot_cols(tr_pi)    
+# plot_effs([tr_pi, tr_gi])
 
 
-ln_pi = read(longitudinal_plain_ideal)
-ln_gi = read(longitudinal_glass_ideal)
-ln_g05 = read(longitudinal_glass_05)
-# plot_cols(ln_pi)    
-plot_effs([ln_pi, ln_gi])
+# ln_pi = read(longitudinal_plain_ideal)
+# ln_gi = read(longitudinal_glass_ideal)
+# ln_g05 = read(longitudinal_glass_05)
+# # plot_cols(ln_pi)    
+# plot_effs([ln_pi, ln_gi])
+import time
+
+
+start = time.time()
+def change_abs_run_mean(trace):
+    df = pd.DataFrame(columns=["abs_x", "abs_y", "efficiency"])
+    for x in np.arange(centered_x[0], centered_x[-1], 0.1):
+        for y in np.arange(centered_y[0], centered_y[-1], 0.1):
+            move_absorber(trace.geometry, x, y)
+            trace.run_to_df()
+            tr_pi = read(trace)
+            df = df.append({"abs_x": x, 
+                            "abs_y":  y, 
+                            "efficiency": tr_pi["efficiency"].mean()
+                            }, ignore_index=True)
+    return df
+df1 = change_abs_run_mean(transversal_plain_ideal)
+print(time.time() - start, f" seconds for {len(df1)} runs")

@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import utils
+from run import transversal_plain_ideal
+import pandas as pd
 # from traces import geometry, geometry_heat
 
 geometry = "geometry/glass-ideal.yaml"
@@ -37,26 +39,17 @@ def append_reflectors_to_yaml(fpath):
                 f.writelines(reflector)
                 count+=1
 
+def move_absorber(geometry, x,y):
+    abs_transform=f"    transform: {{ rotation: [90, 0, 0], "\
+        f"translation: &absorber_translation [{x}, 1.5, {y}] }}\n"
+    utils.replace_line(geometry,newline=abs_transform)
 
 centered_x = create_coords(x, space, num_x)
 centered_y = create_coords(y, space, num_y)
     
-plot_coords()
+# plot_coords()
 
 
 # append_reflectors_to_yaml(geometry)
 # append_reflectors_to_yaml(geometry_heat)
 
-def move_absorber(x,y):
-    abs_transform=f"    transform: {{ rotation: [90, 0, 0], "\
-        f"translation: &absorber_translation [{x}, 1.5, {y}] }}\n"
-    utils.replace_line(geometry,newline=abs_transform)
-
-# move_absorber(0,0)
-
-# TODO complete function
-# count = 0
-# for x in np.arange(centered_x[0], centered_x[-1], 0.2):
-#     for y in np.arange(centered_y[0], centered_y[-1], 0.2):
-#         move_absorber...
-#         trace()...

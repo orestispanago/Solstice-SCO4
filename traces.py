@@ -2,7 +2,8 @@ import os
 import numpy as np
 import subprocess
 import utils
-
+from io import StringIO
+import pandas as pd
 
 CWD = os.getcwd()
 receiver = os.path.join(CWD, "geometry", "receiver.yaml")
@@ -20,6 +21,7 @@ class Trace():
         self.geometry = os.path.join(CWD, "geometry", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
+        self.df = None
         
     def run(self):
         with open(self.rawfile, 'w') as f:
@@ -29,6 +31,22 @@ class Trace():
                 chunk = ":".join(chunk)
                 cmd = f'solstice -D {chunk} -n {self.rays} -v -R {receiver} {self.geometry}'.split()
                 subprocess.run(cmd, stdout=f)
+
+    def run_to_df(self):
+        """ Runs Trace and pipes output to dataframe """
+        # Solstice cannot take too long string of angle arguments, so split into chunks
+        df_list = []
+        for i in range(0, len(self.angle_pairs), 50):
+            chunk = self.angle_pairs[i:i + 50]
+            chunk = ":".join(chunk)
+            cmd = f'solstice -D {chunk} -n {self.rays} -v -R {receiver} {self.geometry}'.split()
+            a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+            b = StringIO(a.communicate()[0].decode('utf-8'))
+            df = pd.read_csv(b, sep='\s+',names=range(47))
+            df_list.append(df)
+        df_out = pd.concat(df_list)
+        self.df = df_out
+    
 
     def export_vtk(self, nrays=100):
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
