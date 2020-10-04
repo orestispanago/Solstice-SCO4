@@ -58,29 +58,43 @@ def plot_effs(df_list):
 # plot_effs([ln_pi, ln_gi])
 
 
-def change_abs_run_mean(trace):
+def change_abs_run_mean(trace, step=0.05):
     """ Changes absorber position, 
-    runs trace and outputs to dataframe (as class attribute),
+    runs trace with output to dataframe (as Trace class attribute),
     calculates mean of dataframe column
     returns new dataframe with coords and column mean """
-    df = pd.DataFrame(columns=["abs_x", "abs_y", "efficiency"])
-    for x in tqdm(np.arange(centered_x[0], centered_x[-1], 0.01)):
-        for y in np.arange(centered_y[0], centered_y[-1], 0.01):
+    df = pd.DataFrame(columns=["abs_x", "abs_y", "efficiency", 
+                               "potential_flux", "absorbed_flux", 
+                               "cos_factor", "shadow_losses" ])
+    for x in tqdm(np.arange(centered_x[0], centered_x[-1], step)):
+        for y in np.arange(centered_y[0], centered_y[-1], step):
             move_absorber(trace.geometry, x, y)
             trace.run_to_df()
-            tr_pi = read(trace)
-            df = df.append({"abs_x": x, 
-                            "abs_y":  y, 
-                            "efficiency": tr_pi["efficiency"].mean()
+            tr_df = read(trace)
+            df = df.append({"abs_x": round(x,3), 
+                            "abs_y":  round(y,3), 
+                            "efficiency": tr_df["efficiency"].mean(),
+                            "potential_flux": tr_df["potential_flux"].mean(),
+                            "absorbed_flux": tr_df["absorbed_flux"].mean(),
+                            "cos_factor": tr_df["cos_factor"].mean(),
+                            "shadow_losses": tr_df["shadow_losses"].mean()
                             }, ignore_index=True)
+    move_absorber(trace.geometry, 0, 0)
+    df.name=trace.name
     return df
 
+
+def plot_heatmap(df, values='efficiency'):
+    tracename = df.name.split(" ")
+    fpath = f'export/{tracename[1]}/plots/{tracename[0]}-heatmap.png'
+    df1 = df.pivot(index='abs_y', columns='abs_x', values=values)
+    heatmap = sns.heatmap(df1, cbar_kws={'label': values})
+    plt.locator_params(axis='y', nbins=8)   # y-axis
+    plt.locator_params(axis='x', nbins=6)  # x-axis
+    plt.title(df.name)
+    plt.savefig(fpath)
+    
+
+
 result = change_abs_run_mean(transversal_plain_ideal)
-
-df1 = result.pivot(index='abs_y', columns='abs_x', values='efficiency')
-
-heatmap = sns.heatmap(df1, 
-            xticklabels=df1.columns.values.round(1), 
-            yticklabels=df1.index.values.round(1),
-            cbar_kws={'label': 'Overall efficiency'})
-# plt.xlabel("labels on x axis") 
+plot_heatmap(result)

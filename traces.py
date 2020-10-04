@@ -17,7 +17,7 @@ class Trace():
         self.step = step
         self.rays = rays
         self.angles = np.arange(min_angle, max_angle + 1, step).tolist()
-        self.name = name
+        self.name = name + " "+ geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometry", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")

@@ -51,5 +51,6 @@ centered_y = create_coords(y, space, num_y)
 
 
 # append_reflectors_to_yaml(geometry)
+# move_absorber(geometry, 0,0)
 # append_reflectors_to_yaml(geometry_heat)
 
