@@ -10,31 +10,18 @@ longitudinal_glass_ideal = Longitudinal(0, 25, 0.5, 10000, "glass-ideal.yaml")
 longitudinal_glass_05 = Longitudinal(0, 25, 0.5, 10000, "glass-05.yaml")
 
 
-# transversal_plain_ideal.run_to_df()
-# transversal_glass_ideal.run_to_df()
-# transversal_glass_05.run_to_df()
-
 
 if __name__ == "__main__":
     
-    # transversal_glass_05.run()
-    # transversal_glass_05.export_obj()
-    # transversal_glass_05.export_vtk()
-    # # transversal.export_heat()
+    transversal_glass_ideal.run_set_df()
+    transversal_glass_ideal.export_obj()
+    transversal_glass_ideal.export_vtk()
+    # transversal_glass_ideal.export_heat()
     
-    # longitudinal_glass_05.run()
-    # longitudinal_glass_05.export_obj()
-    # longitudinal_glass_05.export_vtk()
-    # longitudinal.export_heat()
+    transversal_plain_ideal.run_set_df()
+    transversal_plain_ideal.export_obj()
+    transversal_plain_ideal.export_vtk()
+    # transversal_plain_ideal.export_heat()
     
-    # transversal_glass_ideal.run()
-    # transversal_glass_ideal.export_obj()
-    # transversal_glass_ideal.export_vtk()
-    
-    # longitudinal_glass_ideal.run()
-    # longitudinal_glass_ideal.export_obj()
-    # longitudinal_glass_ideal.export_vtk()
-    
-    transversal_plain_ideal.run_to_df()
-    transversal_glass_ideal.run_to_df()
-    transversal_glass_05.run_to_df()
+    longitudinal_plain_ideal.run()
+    longitudinal_glass_ideal.run()

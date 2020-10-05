@@ -41,7 +41,7 @@ def append_reflectors_to_yaml(fpath):
 
 def move_absorber(geometry, x,y):
     abs_transform=f"    transform: {{ rotation: [90, 0, 0], "\
-        f"translation: &absorber_translation [{x}, 1.5, {y}] }}\n"
+        f"translation: [&abs_x {x}, 1.5, &abs_y {y}] }}\n"
     utils.replace_line(geometry,newline=abs_transform)
 
 centered_x = create_coords(x, space, num_x)
@@ -54,3 +54,4 @@ centered_y = create_coords(y, space, num_y)
 # move_absorber(geometry, 0,0)
 # append_reflectors_to_yaml(geometry_heat)
 
+move_absorber(geometry, 0, 0)

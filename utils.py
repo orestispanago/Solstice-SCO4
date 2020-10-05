@@ -25,7 +25,7 @@ def keep_until(fpath, occurrence='reflector', lines_before=0):
                 break
         fout.writelines(lines_in[:count-lines_before])
 
-def replace_line(fpath, occurence="&absorber_translation", newline=""):
+def replace_line(fpath, occurence="&abs_x", newline=""):
     """ Replaces line that contains occurrence with new line """
     with open(fpath, "r") as fin:
         lines_in = fin.readlines()

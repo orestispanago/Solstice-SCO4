@@ -17,7 +17,8 @@ class Trace():
         self.step = step
         self.rays = rays
         self.angles = np.arange(min_angle, max_angle + 1, step).tolist()
-        self.name = name + " "+ geometry.split(".")[0]
+        self.name = name 
+        self.title = self.name + " "+ geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometry", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
@@ -32,8 +33,8 @@ class Trace():
                 cmd = f'solstice -D {chunk} -n {self.rays} -v -R {receiver} {self.geometry}'.split()
                 subprocess.run(cmd, stdout=f)
 
-    def run_to_df(self):
-        """ Runs Trace and pipes output to dataframe """
+    def run_set_df(self):
+        """ Runs Trace and pipes output to dataframe, sets df as Trace attr """
         # Solstice cannot take too long string of angle arguments, so split into chunks
         df_list = []
         for i in range(0, len(self.angle_pairs), 50):
@@ -46,7 +47,6 @@ class Trace():
             df_list.append(df)
         df_out = pd.concat(df_list)
         self.df = df_out
-    
 
     def export_vtk(self, nrays=100):
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
@@ -84,7 +84,7 @@ class Transversal(Trace):
         super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
         self.angle_pairs = [f"{a:.1f},0" for a in self.angles]
         self.sun_col = 3  # sun direction column in txt output file
-        self.xlabel = "Azimuth $(\degree), 90$\degree$=Normal Incidence"
+        self.xlabel = "Azimuth $(\degree)$, 90$\degree$=Normal Incidence"
         
 
 class Longitudinal(Trace):
@@ -92,4 +92,4 @@ class Longitudinal(Trace):
         super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
         self.angle_pairs = [f"90,{a:.1f}" for a in self.angles]
         self.sun_col = 4  # sun direction column in txt output file
-        self.xlabel = "Elevation $(\degree), 90$\degree$=Normal Incidence"
+        self.xlabel = "Elevation $(\degree)$, 90$\degree$=Normal Incidence"
