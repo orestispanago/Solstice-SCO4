@@ -9,7 +9,7 @@ from run import longitudinal_plain_ideal, longitudinal_glass_ideal
 import reader
 
 
-def change_abs_run_mean(trace, step=0.5):
+def change_abs_run_mean(trace, step=0.02):
     """ Changes absorber position, 
     runs trace with output to dataframe (as Trace class attribute),
     calculates mean of dataframe column
@@ -44,8 +44,11 @@ def plot_heatmap(df, values='efficiency'):
     plt.locator_params(axis='x', nbins=6)  # x-axis
     plt.title(df.title)
     plt.savefig(fpath)
+    plt.show()
     
 
 
-result = change_abs_run_mean(transversal_glass_ideal)
+result = change_abs_run_mean(transversal_plain_ideal)
 plot_heatmap(result)
+result1 = change_abs_run_mean(longitudinal_plain_ideal)
+plot_heatmap(result1)

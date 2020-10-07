@@ -13,6 +13,7 @@ def plot_quantities(df_list, quantity="efficiency"):
         ax.set_xlabel(df.xlabel)
         ax.set_ylabel(quantity.capitalize())
     ax.legend()
+    fig.savefig(f"comparison-plots/{df.title}.png")
 
 
 tr_pi = reader.read(transversal_plain_ideal)
