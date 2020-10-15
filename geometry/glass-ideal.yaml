@@ -20,7 +20,16 @@
         thickness: 0.002
         medium_i: *air_medium
         medium_t: *glass_medium
-        
+
+# - material: &glazing
+#     back:
+#       dielectric:
+#         medium_i: *air_medium
+#         medium_t: *glass_medium
+#     front:
+#       dielectric:
+#         medium_i: *glass_medium
+#         medium_t: *air_medium
 
 - material: &black
     back:
