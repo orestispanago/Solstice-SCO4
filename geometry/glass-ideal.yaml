@@ -61,6 +61,17 @@
             - [ 0.125, 0.125]
             - [ 0.125,-0.125]
 
+- geometry: &mirrors_glazing
+    - material: *glazing
+      plane:
+        clip:
+          - operation: AND
+            vertices:
+            - [-0.78, -0.496]
+            - [-0.78, 0.496]
+            - [ 0.78, 0.496]
+            - [ 0.78,-0.496]
+
 - geometry: &absorber_housing
     - material: *specular
       plane:
@@ -75,7 +86,7 @@
             - [-0.125, 0.125]
             - [ 0.125, 0.125]
             - [ 0.125,-0.125]
-
+            
 
 - entity:
     name: absorber
@@ -97,6 +108,12 @@
     primary: 0
     transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.44, *abs_y] }
     geometry: *absorber_housing
+    
+- entity:
+    name: mirrors_glazing
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [0, 0.2, 0] }
+    geometry: *mirrors_glazing
 
 - template: &self_oriented_facet
     name: so_facet
