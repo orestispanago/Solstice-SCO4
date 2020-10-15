@@ -1,47 +1,26 @@
-import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
-from run import transversal
+from run import transversal_plain_ideal, transversal_glass_ideal
+from run import longitudinal_plain_ideal, longitudinal_glass_ideal
+import reader
 
 
-columns = {"potential_flux": 2,
-           "absorbed_flux": 3,
-           "cos_factor": 4,
-           "shadow_losses": 5
-           }
 
-df = pd.read_csv(transversal.rawfile, sep='\s+',names=range(47))
-angles = df.loc[df[1] == 'Sun'][transversal.sun_col]  # set 4 for longitudinal
-eff = df.loc[df[0] == 'absorber',[23]] # Overall effficiency, add [23,24] for error
-
-for i in columns.keys():
-    eff[i] = df[0].iloc[angles.index + columns.get(i)].astype('float').values
-colnames = ["efficiency"] + [*columns.keys()]
-eff = eff.set_index(angles.values)
-eff.columns = colnames
+def plot_quantities(df_list, quantity="efficiency"):
+    fig, ax = plt.subplots()
+    for df in df_list:
+        ax.plot(df[quantity], label=df.label)
+        ax.set_title(df.title)
+        ax.set_xlabel(df.xlabel)
+        ax.set_ylabel(quantity.capitalize())
+    ax.legend()
+    fig.savefig(f"comparison-plots/{df.title}.png")
 
 
-for i in columns.keys():
-    plt.plot(eff[i])
-    plt.title(transversal.name)
-    plt.ylabel(i.replace("_"," ").title())
-    plt.xticks(np.arange(30,145,10))
-    plt.xlim(40, 140)
-    plt.show()
+tr_pi = reader.read(transversal_plain_ideal)
+tr_gi = reader.read(transversal_glass_ideal)
+ln_pi = reader.read(longitudinal_plain_ideal)
+ln_gi = reader.read(longitudinal_glass_ideal)
 
 
-# plt.plot(angle_eff_err["efficiency"])
-# plt.plot(angle_eff_err["min"])
-# plt.plot(angle_eff_err["max"])
-# # def plot_angle_efficiency(series):
-# #     plt.plot(series)
-# #     plt.title(series.name)
-# #     plt.ylabel("Optical efficiency")
-# #     if series.name == "transversal":
-# #         plt.xticks(np.arange(30,145,10))
-# #         plt.xlim(40, 140)
-# #         plt.xlabel('Azimuth (90$\degree$=nornal incidence)')
-# #     else:
-# #         plt.xlabel(xlabel="Zenith (0$\degree$=nornal incidence)")
-# #     plt.savefig(f'plots/{series.name}.png')
-# #     plt.show()
+plot_quantities([tr_pi, tr_gi])
+plot_quantities([ln_pi, ln_gi])
