@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from run import transversal_plain_ideal, transversal_glass_ideal
+from run import transversal_plain_ideal, transversal_glass_ideal,transversal_mirrorbox
 from run import longitudinal_plain_ideal, longitudinal_glass_ideal
 import reader
 
@@ -20,7 +20,7 @@ tr_pi = reader.read(transversal_plain_ideal)
 tr_gi = reader.read(transversal_glass_ideal)
 ln_pi = reader.read(longitudinal_plain_ideal)
 ln_gi = reader.read(longitudinal_glass_ideal)
+tr_mb = reader.read(transversal_mirrorbox)
 
-
-plot_quantities([tr_pi, tr_gi])
+plot_quantities([tr_pi, tr_gi, tr_mb])
 plot_quantities([ln_pi, ln_gi])

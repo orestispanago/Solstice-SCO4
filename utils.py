@@ -1,3 +1,9 @@
+import os
+
+def mkdir_if_not_exists(dirname):
+    if not os.path.exists(dirname):
+        os.makedirs(dirname)
+
 def del_first_line(fpath):
     """ Deletes first line from vtk file to be opened by Paraview """
     with open(fpath, 'r') as fin:
@@ -37,5 +43,3 @@ def replace_line(fpath, occurence="&abs_x", newline=""):
         fout.writelines(lines_in)
 
 
-
-    

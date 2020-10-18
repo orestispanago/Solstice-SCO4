@@ -21,10 +21,12 @@ class Trace():
         self.title = self.name + " "+ geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometry", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
+        self.shape_dir = os.path.join(self.exp_dir,"shapes")
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
         self.df = None
         
     def run(self):
+        utils.mkdir_if_not_exists(os.path.dirname(self.rawfile))
         with open(self.rawfile, 'w') as f:
             # Solstice cannot take too long string of angle arguments, so split into chunks
             for i in range(0, len(self.angle_pairs), 50):
@@ -52,6 +54,7 @@ class Trace():
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}.vtk"
+            utils.mkdir_if_not_exists(self.shape_dir)
             vtkpath = os.path.join(self.exp_dir, "shapes", fname)
             cmd = f'solstice  -n {nrays} -p default -t1 -D {pair} -R {receiver} {self.geometry}'.split()
             with open(vtkpath, 'w') as f:
@@ -62,7 +65,8 @@ class Trace():
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}.obj"
-            objpath = os.path.join(self.exp_dir,"shapes", fname)
+            utils.mkdir_if_not_exists(self.shape_dir)
+            objpath = os.path.join(self.shape_dir, fname)
             cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver} {self.geometry}'.split()
             with open(objpath, 'w') as f:
                 subprocess.run(cmd, stdout=f)
