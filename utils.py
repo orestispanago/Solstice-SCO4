@@ -31,13 +31,13 @@ def keep_until(fpath, occurrence='reflector', lines_before=0):
                 break
         fout.writelines(lines_in[:count-lines_before])
 
-def replace_line(fpath, occurence="&abs_x", newline=""):
+def replace_line(fpath, occurrence="&abs_x", newline=""):
     """ Replaces line that contains occurrence with new line """
     with open(fpath, "r") as fin:
         lines_in = fin.readlines()
     with open(fpath, "w") as fout:
         for count,line in enumerate(lines_in):
-            if occurence in line:
+            if occurrence in line:
                 break
         lines_in[count] = newline
         fout.writelines(lines_in)

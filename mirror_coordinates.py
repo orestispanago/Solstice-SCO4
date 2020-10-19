@@ -50,8 +50,25 @@ centered_y = create_coords(y, space, num_y)
 # plot_coords()
 
 
-# append_reflectors_to_yaml(geometry)
-# move_absorber(geometry, 0,0)
+append_reflectors_to_yaml(geometry)
 # append_reflectors_to_yaml(geometry_heat)
 
 move_absorber(geometry, 0, 0)
+
+
+def add_mirrorbox(geometry, box_space_x=0.01, box_h = 0.1, box_space_y = 0.01):
+    box_z = centered_x[-1]+x/2 + box_space_x
+    box_z_h = f"            - [ &box_z {box_z},        *box_h]\n"
+    box_z_neg = f"            - [ &box_z_neg {-box_z},   &box_h_neg {-box_h}]\n"
+    box_h_pos = f"            - [ *box_z_neg,         &box_h {box_h}]\n"
+    utils.replace_line(geometry, occurrence="&box_z ", newline=box_z_h)
+    utils.replace_line(geometry, occurrence="&box_z_neg", newline=box_z_neg)
+    utils.replace_line(geometry, occurrence="&box_h ", newline=box_h_pos)
+    
+    box_x = centered_y[-1]+y/2 + box_space_y
+    box_x_pos = f"            - [ &box_x {box_x},       *box_h]\n"
+    box_x_neg = f"            - [ &box_x_neg {-box_x},  *box_h_neg]\n"
+    utils.replace_line(geometry, occurrence="&box_x ", newline=box_x_pos)
+    utils.replace_line(geometry, occurrence="&box_x_neg ", newline=box_x_neg)
+
+add_mirrorbox(geometry)
