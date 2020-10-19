@@ -82,10 +82,10 @@
         clip:
           - operation: AND
             vertices:
-            - [ &box_z_neg -0.79,   &box_h_neg -0.1]
-            - [ *box_z_neg,         &box_h 0.1]
-            - [ &box_z 0.79,        *box_h]
-            - [ *box_z,             *box_h_neg]
+            - [-0.79, &box_h_neg -0.1]
+            - [-0.79, &box_h_pos 0.1]
+            - [ 0.79, *box_h_pos]
+            - [ 0.79, *box_h_neg]
 
 - geometry: &mirrors_housing_side_x
     - material: *specular
@@ -93,10 +93,32 @@
         clip:
           - operation: AND
             vertices:
-            - [ &box_x_neg -0.506,  *box_h_neg]
-            - [ *box_x_neg,         *box_h]
-            - [ &box_x 0.506,       *box_h]
-            - [ *box_x,             *box_h_neg]
+            - [-0.506, *box_h_neg]
+            - [-0.506, *box_h_pos]
+            - [ 0.506, *box_h_pos]
+            - [ 0.506, *box_h_neg]
+
+- geometry: &absorber_support_horizontal
+    - material: *specular
+      plane:
+        clip:
+          - operation: AND
+            vertices:
+            - [-0.125, -0.506]
+            - [-0.125, -0.125]
+            - [ 0.125, -0.125]
+            - [ 0.125, -0.506]
+            
+- geometry: &absorber_support_vertical
+    - material: *specular
+      plane:
+        clip:
+          - operation: AND
+            vertices:
+            - [-0.125, -1.44] # absorber glazing height
+            - [-0.125, 0]
+            - [ 0.125, 0]
+            - [ 0.125, -1.44]
             
 
 - entity:
@@ -121,27 +143,39 @@
     geometry: *absorber_housing
     
 - entity:
+    name: absorber_support_horizontal
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.44, *abs_y] }
+    geometry: *absorber_support_horizontal
+
+- entity:
+    name: absorber_support_vertical
+    primary: 0
+    transform: { rotation: [0, 0, 0], translation: [0, 1.44, -0.506] }
+    geometry: *absorber_support_vertical
+
+- entity:
     name: mirrors_housing_side_z_pos
     primary: 0
-    transform: { rotation: [0, 0, 0], translation: [0, 0, *box_x] }
+    transform: { rotation: [0, 0, 0], translation: [0, 0, 0.506] }
     geometry: *mirrors_housing_side_z
 
 - entity:
     name: mirrors_housing_side_z_neg
     primary: 0
-    transform: { rotation: [0, 0, 0], translation: [0, 0, *box_x_neg] }
+    transform: { rotation: [0, 0, 0], translation: [0, 0, -0.506] }
     geometry: *mirrors_housing_side_z
 
 - entity:
     name: mirrors_housing_side_x_pos
     primary: 0
-    transform: { rotation: [0, 90, 0], translation: [*box_z, 0, 0] }
+    transform: { rotation: [0, 90, 0], translation: [0.79, 0, 0] }
     geometry: *mirrors_housing_side_x
 
 - entity:
     name: mirrors_housing_side_x_neg
     primary: 0
-    transform: { rotation: [0, 90, 0], translation: [*box_z_neg, 0, 0] }
+    transform: { rotation: [0, 90, 0], translation: [-0.79, 0, 0] }
     geometry: *mirrors_housing_side_x
 
 

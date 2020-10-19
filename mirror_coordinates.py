@@ -5,7 +5,7 @@ from run import transversal_plain_ideal
 import pandas as pd
 # from traces import geometry, geometry_heat
 
-geometry = "geometry/glass-ideal.yaml"
+geometry = "geometry/glass-ideal-mirrorbox.yaml"
 geometry_heat= "geometry/heatmap/glass-ideal.yaml"
 
 x = 0.14  # mirror x dimension
@@ -54,4 +54,4 @@ centered_y = create_coords(y, space, num_y)
 # move_absorber(geometry, 0,0)
 # append_reflectors_to_yaml(geometry_heat)
 
-# move_absorber(geometry, 0, 0)
+move_absorber(geometry, 0, 0)
