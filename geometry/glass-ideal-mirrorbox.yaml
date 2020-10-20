@@ -33,11 +33,11 @@
       plane:
         clip:
         - operation: AND
-          vertices:
-          - [-0.07,-0.07] # [x,y] if not rotated
-          - [-0.07,0.07]
-          - [ 0.07,0.07]
-          - [ 0.07,-0.07]
+          vertices: &mirror_vertices
+          - [-0.07, -0.07]
+          - [-0.07,  0.07]
+          - [ 0.07,  0.07]
+          - [ 0.07, -0.07]
 
 - geometry: &receiver
     - material: *black

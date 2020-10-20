@@ -42,4 +42,13 @@ def replace_line(fpath, occurrence="&abs_x", newline=""):
         lines_in[count] = newline
         fout.writelines(lines_in)
 
-
+def replace_occurence_and_four_next(fpath, occurrence="", newlines=""):
+    """ Replaces line containing occurence and next four with newlines """
+    with open(fpath, "r") as fin:
+        lines_in = fin.readlines()
+    with open(fpath, "w") as fout:
+        for count,line in enumerate(lines_in):
+            if occurrence in line:
+                break
+        lines_in[count:count+5] = newlines
+        fout.writelines(lines_in)

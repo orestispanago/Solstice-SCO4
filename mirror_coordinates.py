@@ -59,6 +59,16 @@ def add_mirrorbox(geometry, box_space_x=0.01, box_h = 0.1, box_space_y = 0.01):
     utils.replace_line(geometry, occurrence="&box_x ", newline=box_x_pos)
     utils.replace_line(geometry, occurrence="&box_x_neg ", newline=box_x_neg)
 
+def set_vertices(geometry, name, x,y):
+    vertices =  f"          vertices: {name}\n"\
+                f"          - [{-x}, {-y}]\n"\
+                f"          - [{-x},  {y}]\n"\
+                f"          - [ {x},  {y}]\n"\
+                f"          - [ {x}, {-y}]\n"
+    utils.replace_occurence_and_four_next(geometry, 
+                                          occurrence=name,
+                                          newlines=vertices)
+
 centered_x = create_coords(x, space, num_x)
 centered_y = create_coords(y, space, num_y)
     
@@ -70,3 +80,5 @@ append_reflectors_to_yaml(geometry)
 move_absorber(geometry, 0, 0)
 
 add_mirrorbox(geometry)
+
+set_vertices(geometry, "&mirror_vertices",x/2, y/2)
