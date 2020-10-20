@@ -44,18 +44,6 @@ def move_absorber(geometry, x,y):
         f"translation: [&abs_x {x}, 1.5, &abs_y {y}] }}\n"
     utils.replace_line(geometry,newline=abs_transform)
 
-centered_x = create_coords(x, space, num_x)
-centered_y = create_coords(y, space, num_y)
-    
-# plot_coords()
-
-
-append_reflectors_to_yaml(geometry)
-# append_reflectors_to_yaml(geometry_heat)
-
-move_absorber(geometry, 0, 0)
-
-
 def add_mirrorbox(geometry, box_space_x=0.01, box_h = 0.1, box_space_y = 0.01):
     box_z = centered_x[-1]+x/2 + box_space_x
     box_z_h = f"            - [ &box_z {box_z},        *box_h]\n"
@@ -70,5 +58,15 @@ def add_mirrorbox(geometry, box_space_x=0.01, box_h = 0.1, box_space_y = 0.01):
     box_x_neg = f"            - [ &box_x_neg {-box_x},  *box_h_neg]\n"
     utils.replace_line(geometry, occurrence="&box_x ", newline=box_x_pos)
     utils.replace_line(geometry, occurrence="&box_x_neg ", newline=box_x_neg)
+
+centered_x = create_coords(x, space, num_x)
+centered_y = create_coords(y, space, num_y)
+    
+# plot_coords()
+
+
+append_reflectors_to_yaml(geometry)
+# append_reflectors_to_yaml(geometry_heat)
+move_absorber(geometry, 0, 0)
 
 add_mirrorbox(geometry)
