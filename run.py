@@ -31,7 +31,7 @@ if __name__ == "__main__":
     # longitudinal_glass_ideal.run()
     
     # transversal_mirrorbox.run()
-    transversal_mirrorbox.export_obj()
+    transversal_mirrorbox_support.export_obj()
     # transversal_mirrorbox.export_vtk()
     # transversal_mirrorbox_support.run()
     # transversal_mirrorbox_support.export_obj()
