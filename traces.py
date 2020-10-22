@@ -6,7 +6,7 @@ from io import StringIO
 import pandas as pd
 
 CWD = os.getcwd()
-receiver = os.path.join(CWD, "geometry", "receiver.yaml")
+receiver = os.path.join(CWD, "geometries", "receiver.yaml")
 
 
 class Trace():
@@ -19,7 +19,7 @@ class Trace():
         self.angles = np.arange(min_angle, max_angle + 1, step).tolist()
         self.name = name 
         self.title = self.name + " "+ geometry.split(".")[0]
-        self.geometry = os.path.join(CWD, "geometry", geometry)
+        self.geometry = os.path.join(CWD, "geometries", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
         self.shape_dir = os.path.join(self.exp_dir,"shapes")
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
@@ -72,8 +72,8 @@ class Trace():
                 subprocess.run(cmd, stdout=f)
                 
     def export_heat(self, nrays=1000000):
-        receiver_heat = os.path.join(CWD, "geometry", "heatmap", "receiver.yaml")
-        geometry_heat = os.path.join(CWD, "geometry", "heatmap", "geometry.yaml")
+        receiver_heat = os.path.join(CWD, "geometries", "heatmap", "receiver.yaml")
+        geometry_heat = os.path.join(CWD, "geometries", "heatmap", "geometry.yaml")
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}_heatmap.vtk"

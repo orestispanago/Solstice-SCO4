@@ -1,18 +1,14 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import utils
-from run import transversal_plain_ideal
-import pandas as pd
-# from traces import geometry, geometry_heat
+from config import geom
 
-geometry = "geometry/glass-ideal-mirrorbox-support.yaml"
-geometry_heat= "geometry/heatmap/glass-ideal.yaml"
 
-mir_len_x = 0.14  # mirror x dimension
-mir_len_y = 0.14
-space = 0.002  # space between mirrors
-num_x = 11  # number of mirrors in x direction
-num_y = 7
+mir_len_x = geom.mirror_array.mirror_dimensions.x
+mir_len_y = geom.mirror_array.mirror_dimensions.y
+space = geom.mirror_array.space
+num_x = geom.mirror_array.number_of_mirrors.x
+num_y = geom.mirror_array.number_of_mirrors.y
+
 
 
 def create_coords(dim,space,num_elements):
@@ -25,82 +21,11 @@ def plot_coords():
     plt.plot(xx, yy, marker=',', color='k', linestyle='none')
     plt.plot(0,0,'ro')
 
-def append_reflectors_to_yaml(fpath):
-    """ Appends reflectors to yaml as entities """
-    utils.keep_until(fpath, occurrence='reflector', lines_before=1)
-    count=1
-    with open(fpath, 'a') as f:
-        for x in centered_x:
-            for y in centered_y:
-                reflector = f"- entity:\n    name: reflector{count}\n"\
-                    f"    transform: {{ rotation: [0 ,0, 0], "\
-                        f"translation: [ {x:.3f}, 0, {y:.3f} ] }}\n"\
-                        "    children: [ *self_oriented_facet ]\n\n"
-                f.writelines(reflector)
-                count+=1
-
-def move_absorber(geometry, abs_pos_x, abs_pos_y):
-    abs_transform=f"    transform: {{ rotation: [90, 0, 0], "\
-        f"translation: [&abs_x {abs_pos_x}, 1.5, &abs_y {abs_pos_y}] }}\n"
-    utils.replace_line(geometry,newline=abs_transform)
-
-def add_mirrorbox(geometry, box_space_x=0.01, box_h = 0.1, box_space_y = 0.01):
-    box_z = centered_x[-1]+mir_len_x/2 + box_space_x
-    box_z_h = f"            - [ &box_z {box_z},        *box_h]\n"
-    box_z_neg = f"            - [ &box_z_neg {-box_z},   &box_h_neg {-box_h}]\n"
-    box_h_pos = f"            - [ *box_z_neg,         &box_h {box_h}]\n"
-    utils.replace_line(geometry, occurrence="&box_z ", newline=box_z_h)
-    utils.replace_line(geometry, occurrence="&box_z_neg", newline=box_z_neg)
-    utils.replace_line(geometry, occurrence="&box_h ", newline=box_h_pos)
-    
-    box_x = centered_y[-1]+mir_len_y/2 + box_space_y
-    box_x_pos = f"            - [ &box_x {box_x},       *box_h]\n"
-    box_x_neg = f"            - [ &box_x_neg {-box_x},  *box_h_neg]\n"
-    utils.replace_line(geometry, occurrence="&box_x ", newline=box_x_pos)
-    utils.replace_line(geometry, occurrence="&box_x_neg ", newline=box_x_neg)
-
-def set_vertices(geometry, name, len_x, len_y):
-    x = len_x/2
-    y = len_y/2
-    vertices =  f"          vertices: {name}\n"\
-                f"          - [{-x}, {-y}]\n"\
-                f"          - [{-x},  {y}]\n"\
-                f"          - [ {x},  {y}]\n"\
-                f"          - [ {x}, {-y}]\n"
-    utils.replace_occurence_and_four_next(geometry, 
-                                          occurrence=name,
-                                          newlines=vertices)
-
-def set_horizontal_support_vertices(geometry, len_x, len_y, abs_x, abs_y):
-    x = len_x/2
-    y = len_y/2
-    name = "&absorber_support_horizontal_vertices"
-    vertices =  f"            vertices: &absorber_support_horizontal_vertices\n"\
-                f"            - [{-x}, -0.506]\n"\
-                f"            - [ {-x+abs_x},  {-y+abs_y}]\n"\
-                f"            - [ {x+abs_x},  {-y+abs_y}]\n"\
-                f"            - [ {x}, -0.506]\n"
-    utils.replace_occurence_and_four_next(geometry, 
-                                          occurrence=name,
-                                          newlines=vertices)
 
 centered_x = create_coords(mir_len_x, space, num_x)
 centered_y = create_coords(mir_len_y, space, num_y)
     
 # plot_coords()
 
-abs_len_x = 0.25
-abs_len_y = 0.25
 
-abs_pos_x = 0.7
-abs_pos_y = 0.5
 
-move_absorber(geometry, abs_pos_x, abs_pos_y)
-# append_reflectors_to_yaml(geometry)
-# append_reflectors_to_yaml(geometry_heat)
-
-add_mirrorbox(geometry)
-
-set_vertices(geometry, "&mirror_vertices",mir_len_x, mir_len_y)
-
-set_horizontal_support_vertices(geometry,abs_len_x, abs_len_y, abs_pos_x, abs_pos_y)

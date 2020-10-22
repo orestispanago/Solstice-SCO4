@@ -1,6 +1,12 @@
 import matplotlib.pyplot as plt
-from run import transversal_plain_ideal, transversal_glass_ideal,transversal_mirrorbox, transversal_mirrorbox_support
-from run import longitudinal_plain_ideal, longitudinal_glass_ideal, longitudinal_mirrorbox, longitudinal_mirrorbox_support
+from run import (transversal_plain_ideal, 
+                transversal_glass_ideal, 
+                transversal_mirrorbox, 
+                transversal_mirrorbox_support)
+from run import (longitudinal_plain_ideal, 
+                longitudinal_glass_ideal, 
+                longitudinal_mirrorbox, 
+                longitudinal_mirrorbox_support)
 import reader
 
 
