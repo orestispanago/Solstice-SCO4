@@ -97,17 +97,46 @@
             - [ &box_x 0.506,       *box_h]
             - [ *box_x,             *box_h_neg]
 
+
+
+- entity:
+    name: absorber
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [&abs_x 0.7, 1.5, &abs_y 0.5] }
+    anchors:
+      - name: "anchor0"
+        position: [0, 0, 0] #in the referential of the receiver
+    geometry: *receiver
+
+- entity:
+    name: absorber_glazing
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.45, *abs_y] }
+    geometry: *absorber_glazing
+
+# - entity:
+#     name: absorber_top_cover
+#     primary: 0
+#     transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.55, *abs_y] }
+#     geometry: *absorber_top_cover
+
+- entity:
+    name: absorber_housing
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.44, *abs_y] }
+    geometry: *absorber_housing
+
 - geometry: &absorber_support_horizontal
     - material: *specular
       plane:
         clip:
           - operation: AND
-            vertices:
+            vertices: &absorber_support_horizontal_vertices
             - [-0.125, -0.506]
-            - [-0.125, -0.125]
-            - [ 0.125, -0.125]
+            - [ 0.575,  0.375]
+            - [ 0.825,  0.375]
             - [ 0.125, -0.506]
-
+            
 - geometry: &absorber_support_vertical
     - material: *specular
       plane:
@@ -121,36 +150,9 @@
 
 
 - entity:
-    name: absorber
-    primary: 0
-    transform: { rotation: [90, 0, 0], translation: [&abs_x 0.5, 1.5, &abs_y 0.5] }
-    anchors:
-      - name: "anchor0"
-        position: [0, 0, 0] #in the referential of the receiver
-    geometry: *receiver
-
-- entity:
-    name: absorber_glazing
-    primary: 0
-    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.45, *abs_y] }
-    geometry: *absorber_glazing
-
-- entity:
-    name: absorber_top_cover
-    primary: 0
-    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.55, *abs_y] }
-    geometry: *absorber_top_cover
-
-- entity:
-    name: absorber_housing
-    primary: 0
-    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.44, *abs_y] }
-    geometry: *absorber_housing
-
-- entity:
     name: absorber_support_horizontal
     primary: 0
-    transform: { rotation: [90, 0, 0], translation: [*abs_x, 1.44, *abs_y] }
+    transform: { rotation: [90, 0, 0], translation: [0, 1.44, 0] }
     geometry: *absorber_support_horizontal
 
 - entity:
