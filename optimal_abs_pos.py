@@ -3,9 +3,16 @@ import numpy as np
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
-from mirror_coordinates import centered_x, centered_y, move_absorber
-from run import transversal_plain_ideal, transversal_glass_ideal
-from run import longitudinal_plain_ideal, longitudinal_glass_ideal
+from mirror_coordinates import centered_x, centered_y
+from mod_geometry import move_absorber
+from run import (transversal_plain_ideal, 
+                 transversal_glass_ideal,
+                 transversal_mirrorbox, 
+                 transversal_mirrorbox_support)
+from run import (longitudinal_plain_ideal, 
+                 longitudinal_glass_ideal,
+                 longitudinal_mirrorbox,
+                 longitudinal_mirrorbox_support)
 import reader
 
 
@@ -48,7 +55,7 @@ def plot_heatmap(df, values='efficiency'):
     
 
 
-result = change_abs_run_mean(transversal_plain_ideal)
-plot_heatmap(result)
-result1 = change_abs_run_mean(longitudinal_plain_ideal)
+#result = change_abs_run_mean(transversal_mirrorbox_support)
+#plot_heatmap(result)
+result1 = change_abs_run_mean(longitudinal_mirrorbox_support)
 plot_heatmap(result1)
