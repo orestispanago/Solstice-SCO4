@@ -22,12 +22,12 @@ longitudinal_mirrorbox_support = Longitudinal(*ln_args, "glass-ideal-mirrorbox-s
 
 if __name__ == "__main__":
     
-    transversal_glass_ideal.run()
+#    transversal_glass_ideal.run()
     # transversal_glass_ideal.export_obj()
     # transversal_glass_ideal.export_vtk()
     # # transversal_glass_ideal.export_heat()
     
-    transversal_plain_ideal.run()
+#    transversal_plain_ideal.run()
     # transversal_plain_ideal.export_obj()
     # transversal_plain_ideal.export_vtk()
     # # transversal_plain_ideal.export_heat()
@@ -35,12 +35,12 @@ if __name__ == "__main__":
     # longitudinal_plain_ideal.run()
     # longitudinal_glass_ideal.run()
     
-    transversal_mirrorbox.run()
+#    transversal_mirrorbox.run()
     # transversal_mirrorbox_support.export_obj()
     # transversal_mirrorbox.export_vtk()
     transversal_mirrorbox_support.run()
     # transversal_mirrorbox_support.export_obj()
     # transversal_mirrorbox_support.export_vtk()
     
-    longitudinal_mirrorbox.run()
-    longitudinal_mirrorbox_support.run()
+#    longitudinal_mirrorbox.run()
+#    longitudinal_mirrorbox_support.run()

@@ -24,8 +24,8 @@ def change_abs_run_mean(trace, step=0.02):
     df = pd.DataFrame(columns=["abs_x", "abs_y", "efficiency", 
                                "potential_flux", "absorbed_flux", 
                                "cos_factor", "shadow_losses" ])
-    for x in tqdm(np.arange(centered_x[0], centered_x[-1], step)):
-        for y in np.arange(centered_y[0], centered_y[-1], step):
+    for x in tqdm(np.arange(round(centered_x[0],1), round(centered_x[-1],1)+0.0001, step)):
+        for y in np.arange(round(centered_y[0],1), round(centered_y[-1],1)+0.0001, step):
             move_absorber(trace.geometry, x, y)
             trace.run_set_df()
             tr_df = reader.read(trace)
@@ -39,23 +39,31 @@ def change_abs_run_mean(trace, step=0.02):
                             }, ignore_index=True)
     move_absorber(trace.geometry, 0, 0)
     df.title=trace.title
+    df.to_csv(f'{trace.rawfile.split(".")[0]}-{step}-means.csv', index=False)
     return df
 
 
 def plot_heatmap(df, values='efficiency'):
     tracename = df.title.split(" ")
     fpath = f'export/{tracename[1]}/plots/{tracename[0]}-heatmap.png'
-    df1 = df.pivot(index='abs_y', columns='abs_x', values=values)
-    heatmap = sns.heatmap(df1, cbar_kws={'label': values})
-    plt.locator_params(axis='y', nbins=8)   # y-axis
-    plt.locator_params(axis='x', nbins=6)  # x-axis
+    df1 = df.pivot(index='abs_y', columns='abs_x', values='efficiency')
+    xticks = df1.columns
+    yticks = df1.index
+    xticklabels = [df1.columns[i] for i in xticks]
+    yticklabels = [df1.index[i] for i in yticks]
+    heatmap = sns.heatmap(df1, cbar_kws={'label': 'efficiency'}, 
+                          yticklabels=yticklabels,
+                          xticklabels=xticklabels)
+    heatmap.set_xticks(xticks)
+    heatmap.set_yticks(yticks)
     plt.title(df.title)
     plt.savefig(fpath)
     plt.show()
-    
 
 
-#result = change_abs_run_mean(transversal_mirrorbox_support)
+result = change_abs_run_mean(transversal_glass_ideal)
 #plot_heatmap(result)
-result1 = change_abs_run_mean(longitudinal_mirrorbox_support)
-plot_heatmap(result1)
+
+
+result1 = change_abs_run_mean(longitudinal_glass_ideal)
+#plot_heatmap(result1)
