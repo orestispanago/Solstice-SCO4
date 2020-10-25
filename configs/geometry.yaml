@@ -1,0 +1,40 @@
+mirror_array:
+    mirror_dimensions:
+        x: 0.14
+        y: 0.14
+    number_of_mirrors:
+        x: 11
+        y: 7
+    space: 0.002
+
+absorber:
+    dimensions: &abs_dims
+        x: 0.25
+        y: 0.25
+    position:
+        x: &abs_pos_x 0
+        y: &abs_pos_y 0
+        z: 1.5
+
+top_cover:
+    dimensions:
+        x: 0.3
+        y: 0.3
+    position:
+        x: *abs_pos_x
+        y: *abs_pos_y
+        z: 1.55
+        
+glazing:
+    dimensions: *abs_dims
+    position:
+        x: *abs_pos_x
+        y: *abs_pos_y
+        z: 1.45
+            
+mirror_box:
+    space:
+        x: 0.01
+        y: 0.01
+    height: 0.2
+        

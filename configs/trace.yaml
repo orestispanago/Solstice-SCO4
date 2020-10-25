@@ -1,0 +1,13 @@
+transversal: 
+    min: 45
+    max: 135
+    step: 1
+    rays: 10000
+  
+longitudinal: 
+    min: 0
+    max: 25
+    step: 0.5
+    rays: 10000
+
+absorber_shift_step: 0.02

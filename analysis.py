@@ -1,8 +1,10 @@
+import os
 import matplotlib.pyplot as plt
-from run import transversal_plain_ideal, transversal_glass_ideal,transversal_mirrorbox, transversal_mirrorbox_support
-from run import longitudinal_plain_ideal, longitudinal_glass_ideal, longitudinal_mirrorbox, longitudinal_mirrorbox_support
+import seaborn as sns
+from run import ideal_transversal_traces
+from run import ideal_longitudinal_traces
 import reader
-
+import utils
 
 
 def plot_quantities(df_list, quantity="efficiency"):
@@ -13,17 +15,30 @@ def plot_quantities(df_list, quantity="efficiency"):
         ax.set_xlabel(df.xlabel)
         ax.set_ylabel(quantity.capitalize())
     ax.legend()
-    fig.savefig(f"comparison-plots/{df.title}.png")
+    fig.savefig(f"comparison-plots/{df.title}-{quantity}.png")
+    plt.show()
 
 
-tr_pi = reader.read(transversal_plain_ideal)
-tr_gi = reader.read(transversal_glass_ideal)
-ln_pi = reader.read(longitudinal_plain_ideal)
-ln_gi = reader.read(longitudinal_glass_ideal)
-tr_mb = reader.read(transversal_mirrorbox)
-tr_mb_sup = reader.read(transversal_mirrorbox_support)
-ln_mb = reader.read(longitudinal_mirrorbox)
-ln_mb_sup = reader.read(longitudinal_mirrorbox_support)
+def plot_heatmap(trace, values='efficiency'):
+    df = reader.read_mean(trace)
+    pic_path = os.path.join(trace.exp_dir, "plots", trace.name + "-heatmap.png")
+    utils.mkdir_if_not_exists(os.path.dirname(pic_path))
+    df1 = df.pivot(index='abs_y', columns='abs_x', values=values)
+    sns.heatmap(df1, cbar_kws={'label': 'efficiency'},
+                xticklabels=10, yticklabels=10)
+    plt.title(trace.title)
+    plt.savefig(pic_path)
+    plt.show()
 
-plot_quantities([tr_pi, tr_gi, tr_mb, tr_mb_sup])
-plot_quantities([ln_pi, ln_gi, ln_mb, ln_mb_sup])
+
+ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
+ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
+
+plot_quantities(ideal_tr_df_list)
+plot_quantities(ideal_ln_df_list)
+
+for tr in ideal_transversal_traces:
+    plot_heatmap(tr)
+
+for ln in ideal_longitudinal_traces:
+    plot_heatmap(ln)
