@@ -17,14 +17,15 @@ class Trace():
         self.step = step
         self.rays = rays
         self.angles = np.arange(min_angle, max_angle + 1, step).tolist()
-        self.name = name 
-        self.title = self.name + " "+ geometry.split(".")[0]
+        self.name = name
+        self.title = self.name + " " + geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometries", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
-        self.shape_dir = os.path.join(self.exp_dir,"shapes")
+        self.shape_dir = os.path.join(self.exp_dir, "shapes")
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
+        self.meanfile = os.path.join(self.exp_dir, 'raw', self.name + "-means.csv")
         self.df = None
-        
+
     def run(self):
         utils.mkdir_if_not_exists(os.path.dirname(self.rawfile))
         with open(self.rawfile, 'w') as f:
@@ -45,7 +46,7 @@ class Trace():
             cmd = f'solstice -D {chunk} -n {self.rays} -v -R {receiver} {self.geometry}'.split()
             a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
             b = StringIO(a.communicate()[0].decode('utf-8'))
-            df = pd.read_csv(b, sep='\s+',names=range(47))
+            df = pd.read_csv(b, sep='\s+', names=range(47))
             df_list.append(df)
         df_out = pd.concat(df_list)
         self.df = df_out
@@ -70,26 +71,27 @@ class Trace():
             cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {receiver} {self.geometry}'.split()
             with open(objpath, 'w') as f:
                 subprocess.run(cmd, stdout=f)
-                
+
     def export_heat(self, nrays=1000000):
         receiver_heat = os.path.join(CWD, "geometries", "heatmap", "receiver.yaml")
         geometry_heat = os.path.join(CWD, "geometries", "heatmap", "geometry.yaml")
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}_heatmap.vtk"
-            heat_path = os.path.join(self.exp_dir,"shapes", fname)
+            heat_path = os.path.join(self.exp_dir, "shapes", fname)
             cmd = f'solstice  -n {nrays} -v -t16 -D {pair} -R {receiver_heat} {geometry_heat}'.split()
             with open(heat_path, 'w') as f:
                 subprocess.run(cmd, stdout=f)
             utils.del_until(heat_path)
-                
+
+
 class Transversal(Trace):
     def __init__(self, min_angle, max_angle, step, rays, geometry):
         super().__init__(min_angle, max_angle, step, rays, geometry, name=self.__class__.__name__)
         self.angle_pairs = [f"{a:.1f},0" for a in self.angles]
         self.sun_col = 3  # sun direction column in txt output file
         self.xlabel = "Azimuth $(\degree)$, 90$\degree$=Normal Incidence"
-        
+
 
 class Longitudinal(Trace):
     def __init__(self, min_angle, max_angle, step, rays, geometry):

@@ -9,3 +9,5 @@ longitudinal:
     max: 25
     step: 0.5
     rays: 10000
+
+absorber_shift_step: 0.02
