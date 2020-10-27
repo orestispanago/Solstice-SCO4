@@ -6,15 +6,17 @@ from run import ideal_longitudinal_traces
 import reader
 import utils
 
+sns.set_theme()
 
 def plot_quantities(df_list, quantity="efficiency"):
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(9,6))
     for df in df_list:
         ax.plot(df[quantity], label=df.label)
         ax.set_title(df.title)
         ax.set_xlabel(df.xlabel)
         ax.set_ylabel(quantity.capitalize())
     ax.legend()
+    # plt.grid()
     fig.savefig(f"comparison-plots/{df.title}-{quantity}.png")
     plt.show()
 
@@ -37,8 +39,8 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 plot_quantities(ideal_tr_df_list)
 plot_quantities(ideal_ln_df_list)
 
-for tr in ideal_transversal_traces:
-    plot_heatmap(tr)
+# for tr in ideal_transversal_traces:
+#     plot_heatmap(tr)
 
-for ln in ideal_longitudinal_traces:
-    plot_heatmap(ln)
+# for ln in ideal_longitudinal_traces:
+#     plot_heatmap(ln)
