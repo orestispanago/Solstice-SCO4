@@ -1,9 +1,19 @@
 import pandas as pd
+from config import trace
+from traces import Transversal
+import matplotlib.pyplot as plt
+import numpy as np
+
+
+tr_args = trace.transversal.values()
 
 columns = {"potential_flux": 2,
            "absorbed_flux": 3,
            "cos_factor": 4,
-           "shadow_losses": 5
+           "shadow_losses": 5,
+           "missing_losses": 6,
+           "reflectivity_losses": 7,
+           "absorptivity_losses": 8
            }
 
 
