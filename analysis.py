@@ -69,11 +69,14 @@ def plot_columns_list(df, columns_list):
     plt.savefig(pic_path)
     plt.show()
     
-plot_columns_list(df, ["intercept_factor", "efficiency"])
+# plot_columns_list(df, ["intercept_factor", "efficiency"])
 # plot_quantities(df, "cos_factor", "cos_90_index")
 # plot_quantities(df, "absorbed_flux", "total")
 
 
-for i in df.columns:
-    plot_columns_list(df, [i])
-    
+# for i in df.columns:
+#     plot_columns_list(df, [i])
+
+
+# ideal_transversal_traces[0].export_vtk()
+# ideal_transversal_traces[0].export_obj()

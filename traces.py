@@ -51,7 +51,7 @@ class Trace():
         df_out = pd.concat(df_list)
         self.df = df_out
 
-    def export_vtk(self, nrays=100):
+    def export_vtk(self, nrays=100000):
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}.vtk"
