@@ -1,8 +1,5 @@
 import pandas as pd
 from config import trace
-from traces import Transversal
-import matplotlib.pyplot as plt
-import numpy as np
 
 
 tr_args = trace.transversal.values()
@@ -35,6 +32,8 @@ def read(trace):
     for key in columns.keys():
         trace_df[key] = df[0].iloc[trace_df.index + columns.get(key)].astype('float').values
     trace_df = trace_df.set_index("angle")
+    if trace.name == "Transversal":
+        trace_df.index = trace_df.index-90
     return get_trace_attrs(trace_df, trace)
 
 

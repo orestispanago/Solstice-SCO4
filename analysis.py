@@ -34,6 +34,13 @@ def plot_heatmap(trace, values='efficiency'):
     plt.savefig(pic_path)
     plt.show()
 
+def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
+    for m in main_str_list:
+        for s in substr_list:
+            if s in m:
+                return True
+    return False
+
 
 ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
 ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
@@ -47,36 +54,35 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 # for ln in ideal_longitudinal_traces:
 #     plot_heatmap(ln)
 
-df = ideal_tr_df_list[0]
-df.index = df.index-90
-df["cos_index"] = np.cos(np.deg2rad(df.index))
-df["intercept_factor"] = df["efficiency"]/df["cos_index"]
-df["total"] = df["potential_flux"]*df["cos_factor"] - \
-                                df["shadow_losses"] - \
-                                df["missing_losses"] -\
-                                df["reflectivity_losses"] - \
-                                df["absorptivity_losses"]
+df = ideal_ln_df_list[0]
+df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
+# Used to confirm absorbed calculation
+# df["calculated_absorbed"] = df["potential_flux"]*df["cos_factor"] - \
+#                                 df["shadow_losses"] - \
+#                                 df["missing_losses"] -\
+#                                 df["reflectivity_losses"] - \
+#                                 df["absorptivity_losses"]
 
 def plot_columns_list(df, columns_list):
     """ Plots list of columns in same plot """
     pic_path = os.path.join(os.getcwd(), "export", "ideal-plain", "plots", 
-                            "Transversal",'-'.join(columns_list)+".png")
+                            df.title,'-'.join(columns_list)+".png")
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
     fig, ax = plt.subplots(figsize=(9,6))
     for col in columns_list:        
         ax.plot(df[col], label=col.title().replace("_"," "))
+    ax.set_xlabel(df.xlabel)
+    if contains_flux_or_losses(columns_list):
+        ax.set_ylabel("Watts")
+    ax.set_title(df.title)
     ax.legend()
     plt.savefig(pic_path)
     plt.show()
     
-# plot_columns_list(df, ["intercept_factor", "efficiency"])
-# plot_quantities(df, "cos_factor", "cos_90_index")
-# plot_quantities(df, "absorbed_flux", "total")
+plot_columns_list(df, ["intercept_factor", "efficiency"])
 
 
 # for i in df.columns:
 #     plot_columns_list(df, [i])
 
 
-# ideal_transversal_traces[0].export_vtk()
-# ideal_transversal_traces[0].export_obj()
