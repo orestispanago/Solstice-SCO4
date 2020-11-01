@@ -9,6 +9,21 @@ import utils
 
 sns.set_theme()
 
+params = {'figure.figsize': (14, 4),
+          'axes.titlesize': 20,
+          'axes.titleweight': 'bold',
+          'axes.labelsize': 20,
+          'axes.labelweight': 'bold',
+          'xtick.labelsize': 20,
+          'ytick.labelsize': 20,
+          'font.weight' : 'bold',
+          'font.size': 20,
+          'legend.fontsize': 20,
+          # 'savefig.dpi': 300.0,
+          # 'savefig.format': 'tiff',
+          'figure.constrained_layout.use': True}
+plt.rcParams.update(params)
+
 def plot_quantity_dfs(df_list, quantity="efficiency"):
     """ Plots a column of each dataframe """
     fig, ax = plt.subplots(figsize=(9,6))
@@ -54,7 +69,7 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 # for ln in ideal_longitudinal_traces:
 #     plot_heatmap(ln)
 
-df = ideal_ln_df_list[0]
+df = ideal_tr_df_list[0]
 df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
 # Used to confirm absorbed calculation
 # df["calculated_absorbed"] = df["potential_flux"]*df["cos_factor"] - \
@@ -71,10 +86,9 @@ def plot_columns_list(df, columns_list):
     fig, ax = plt.subplots(figsize=(9,6))
     for col in columns_list:        
         ax.plot(df[col], label=col.title().replace("_"," "))
-    ax.set_xlabel(df.xlabel)
+    ax.set_xlabel("$\\theta_z \quad  (\degree)$")
     if contains_flux_or_losses(columns_list):
         ax.set_ylabel("Watts")
-    ax.set_title(df.title)
     ax.legend()
     plt.savefig(pic_path)
     plt.show()
@@ -82,7 +96,7 @@ def plot_columns_list(df, columns_list):
 plot_columns_list(df, ["intercept_factor", "efficiency"])
 
 
-# for i in df.columns:
-#     plot_columns_list(df, [i])
+for i in df.columns:
+    plot_columns_list(df, [i])
 
 
