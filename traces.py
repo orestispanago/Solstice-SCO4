@@ -52,7 +52,7 @@ class Trace():
         self.df = df_out
 
     def export_vtk(self, nrays=100000):
-        for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
+        for pair in [self.angle_pairs[20], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}.vtk"
             utils.mkdir_if_not_exists(self.shape_dir)
@@ -63,7 +63,7 @@ class Trace():
             utils.del_first_line(vtkpath)
 
     def export_obj(self):
-        for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
+        for pair in [self.angle_pairs[20], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}.obj"
             utils.mkdir_if_not_exists(self.shape_dir)

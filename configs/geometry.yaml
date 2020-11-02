@@ -18,8 +18,8 @@ absorber:
 
 top_cover:
     dimensions:
-        x: 0.3
-        y: 0.3
+        x: 0.35
+        y: 0.35
     position:
         x: *abs_pos_x
         y: *abs_pos_y

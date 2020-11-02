@@ -64,10 +64,10 @@
         clip:
         - operation: AND
           vertices: &absorber_top_cover_vertices
-           - [-0.15, -0.15]
-           - [-0.15,  0.15]
-           - [ 0.15,  0.15]
-           - [ 0.15, -0.15]
+           - [-0.175, -0.175]
+           - [-0.175,  0.175]
+           - [ 0.175,  0.175]
+           - [ 0.175, -0.175]
 
 - geometry: &absorber_housing
     - material: *specular

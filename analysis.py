@@ -18,7 +18,7 @@ params = {'figure.figsize': (14, 4),
           'ytick.labelsize': 20,
           'font.weight' : 'bold',
           'font.size': 20,
-          'legend.fontsize': 20,
+          'legend.fontsize': 16,
           # 'savefig.dpi': 300.0,
           # 'savefig.format': 'tiff',
           'figure.constrained_layout.use': True}
@@ -29,9 +29,11 @@ def plot_quantity_dfs(df_list, quantity="efficiency"):
     fig, ax = plt.subplots(figsize=(9,6))
     for df in df_list:
         ax.plot(df[quantity], label=df.label)
-        ax.set_title(df.title)
-        ax.set_xlabel(df.xlabel)
+        # ax.set_title(df.title)
+        # ax.set_xlabel(df.xlabel)
+        ax.set_xlabel("$\\theta_z \quad  (\degree)$")
         ax.set_ylabel(quantity.capitalize())
+        # ax.set_xlim(0,45)
     ax.legend()
     # plt.grid()
     fig.savefig(f"comparison-plots/{df.title}-{quantity}.png")
@@ -43,6 +45,7 @@ def plot_heatmap(trace, values='efficiency'):
     pic_path = os.path.join(trace.exp_dir, "heatmaps", trace.name + ".png")
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
     df1 = df.pivot(index='abs_y', columns='abs_x', values=values)
+    fig, ax = plt.subplots(figsize=(10,7))  
     sns.heatmap(df1, cbar_kws={'label': 'efficiency'},
                 xticklabels=10, yticklabels=10)
     plt.title(trace.title)
@@ -60,8 +63,8 @@ def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
 ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
 ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 
-# plot_quantity_dfs(ideal_tr_df_list)
-# plot_quantity_dfs(ideal_ln_df_list)
+plot_quantity_dfs(ideal_tr_df_list)
+plot_quantity_dfs(ideal_ln_df_list)
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)
@@ -70,6 +73,8 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 #     plot_heatmap(ln)
 
 df = ideal_tr_df_list[0]
+
+# TODO check calculation with partners
 df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
 # Used to confirm absorbed calculation
 # df["calculated_absorbed"] = df["potential_flux"]*df["cos_factor"] - \
@@ -93,10 +98,8 @@ def plot_columns_list(df, columns_list):
     plt.savefig(pic_path)
     plt.show()
     
-plot_columns_list(df, ["intercept_factor", "efficiency"])
+# plot_columns_list(df, ["intercept_factor", "efficiency"])
 
 
-for i in df.columns:
-    plot_columns_list(df, [i])
-
-
+# for i in df.columns:
+#     plot_columns_list(df, [i])
