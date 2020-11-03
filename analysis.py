@@ -29,13 +29,13 @@ def plot_quantity_dfs(df_list, quantity="efficiency"):
     fig, ax = plt.subplots(figsize=(9,6))
     for df in df_list:
         ax.plot(df[quantity], label=df.label)
-        # ax.set_title(df.title)
-        # ax.set_xlabel(df.xlabel)
         ax.set_xlabel("$\\theta_z \quad  (\degree)$")
-        ax.set_ylabel(quantity.capitalize())
-        # ax.set_xlim(0,45)
+        ax.set_ylabel(quantity.replace("_"," ").capitalize())
+        ylabel = quantity.replace("_"," ").capitalize()
+        if contains_flux_or_losses([quantity]):
+            ylabel = ylabel + " (W)"
+        ax.set_ylabel(ylabel)
     ax.legend()
-    # plt.grid()
     fig.savefig(f"comparison-plots/{df.title}-{quantity}.png")
     plt.show()
 
@@ -63,8 +63,8 @@ def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
 ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
 ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 
-plot_quantity_dfs(ideal_tr_df_list)
-plot_quantity_dfs(ideal_ln_df_list)
+plot_quantity_dfs(ideal_tr_df_list[-2:])
+plot_quantity_dfs(ideal_ln_df_list[-2:])
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)
@@ -72,7 +72,7 @@ plot_quantity_dfs(ideal_ln_df_list)
 # for ln in ideal_longitudinal_traces:
 #     plot_heatmap(ln)
 
-df = ideal_tr_df_list[0]
+df = ideal_tr_df_list[-1]
 
 # TODO check calculation with partners
 df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
@@ -85,7 +85,7 @@ df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_fa
 
 def plot_columns_list(df, columns_list):
     """ Plots list of columns in same plot """
-    pic_path = os.path.join(os.getcwd(), "export", "ideal-plain", "plots", 
+    pic_path = os.path.join(os.getcwd(), "export", "ideal-frame-mirrorbox-support", "plots", 
                             df.title,'-'.join(columns_list)+".png")
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
     fig, ax = plt.subplots(figsize=(9,6))

@@ -14,9 +14,9 @@ ideal_longitudinal_traces = [Longitudinal(*ln_args, g) for g in ideal_geometries
 
 def run_vtk_obj_heat(trace):
     trace.run()
-    trace.export_vtk()
-    trace.export_obj()
-    trace.export_heat()
+    # trace.export_vtk()
+    # trace.export_obj()
+    # trace.export_heat()
 
 
 if __name__ == "__main__":

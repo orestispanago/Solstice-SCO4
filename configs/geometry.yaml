@@ -5,7 +5,7 @@ mirror_array:
     number_of_mirrors:
         x: 11
         y: 7
-    space: 0.002
+    space: 0.01
 
 absorber:
     dimensions: &abs_dims
@@ -34,7 +34,7 @@ glazing:
             
 mirror_box:
     space:
-        x: 0.01
-        y: 0.01
+        x: 0.1
+        y: 0.1
     height: 0.2
         
