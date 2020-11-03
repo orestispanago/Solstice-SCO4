@@ -15,10 +15,13 @@ columns = {"potential_flux": 2,
 
 
 def get_trace_attrs(df, trace):
-    df.label = trace.title.split(" ")[1]
-    df.title = trace.title.split(" ")[0]
-    df.xlabel = trace.xlabel
+    df.trace_geometry = trace.title.split(" ")[1]
+    df.trace_direction = trace.title.split(" ")[0]
     return df
+
+# TODO check calculation with partners
+def calc_intercept_factor(df):
+    df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
 
 
 def read(trace):
@@ -34,6 +37,7 @@ def read(trace):
     trace_df = trace_df.set_index("angle")
     if trace.name == "Transversal":
         trace_df.index = trace_df.index-90
+    calc_intercept_factor(trace_df)
     return get_trace_attrs(trace_df, trace)
 
 
