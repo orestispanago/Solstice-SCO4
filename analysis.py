@@ -2,8 +2,8 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-from run import ideal_transversal_traces
-from run import ideal_longitudinal_traces
+from run import ideal_transversal_traces, errors_transversal_traces
+from run import ideal_longitudinal_traces, errors_longitudinal_traces
 import reader
 import utils
 
@@ -81,8 +81,14 @@ def plot_all_quantities(df):
 ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
 ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 
-plot_geometries_quantity(ideal_tr_df_list[-2:])
-plot_geometries_quantity(ideal_ln_df_list[-2:])
+errors_tr_df_list = [reader.read(tr) for tr in errors_transversal_traces]
+errors_ln_df_list = [reader.read(ln) for ln in errors_longitudinal_traces]
+
+# plot_geometries_quantity(ideal_tr_df_list[-2:])
+# plot_geometries_quantity(ideal_ln_df_list[-2:])
+
+plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="shadow_losses")
+plot_geometries_quantity([errors_ln_df_list[0],ideal_ln_df_list[0]], quantity="shadow_losses")
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)
@@ -93,4 +99,4 @@ plot_geometries_quantity(ideal_ln_df_list[-2:])
 
 # plot_columns_list(df, ["intercept_factor", "efficiency"])
 
-# plot_all_quantities(ideal_tr_df_list[-2])
+# plot_geometries_quantity(ideal_tr_df_list[-2])
