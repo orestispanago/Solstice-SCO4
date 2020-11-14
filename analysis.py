@@ -1,5 +1,4 @@
 import os
-import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from run import ideal_transversal_traces, errors_transversal_traces
@@ -24,14 +23,19 @@ params = {'figure.figsize': (14, 4),
           'figure.constrained_layout.use': True}
 plt.rcParams.update(params)
 
+def get_label(string):
+    if string.isupper():
+        return string
+    return string.title().replace("_"," ")
+
 def plot_geometries_quantity(df_list, quantity="efficiency"):
     """ Plots a column of each dataframe """
+    ylabel = get_label(quantity)
     fig, ax = plt.subplots(figsize=(9,6))
     for df in df_list:
         ax.plot(df[quantity], label=df.trace_geometry)
         ax.set_xlabel("$\\theta_z \quad  (\degree)$")
-        ax.set_ylabel(quantity.title().replace("_"," "))
-        ylabel = quantity.replace("_"," ").capitalize()
+        ax.set_ylabel(get_label(quantity))
         if contains_flux_or_losses([quantity]):
             ylabel = ylabel + " (W)"
         ax.set_ylabel(ylabel)
@@ -66,7 +70,7 @@ def plot_geometry_quantities(df, quantities_list):
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
     fig, ax = plt.subplots(figsize=(9,6))
     for col in quantities_list:        
-        ax.plot(df[col], label=col.title().replace("_"," "))
+        ax.plot(df[col], label=get_label(col))
     ax.set_xlabel("$\\theta_z \quad  (\degree)$")
     if contains_flux_or_losses(quantities_list):
         ax.set_ylabel("Watts")
@@ -84,11 +88,11 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 errors_tr_df_list = [reader.read(tr) for tr in errors_transversal_traces]
 errors_ln_df_list = [reader.read(ln) for ln in errors_longitudinal_traces]
 
-# plot_geometries_quantity(ideal_tr_df_list[-2:])
-# plot_geometries_quantity(ideal_ln_df_list[-2:])
+# plot_geometries_quantity(ideal_tr_df_list[:2], quantity="incidence_angle_modifier")
+# plot_geometries_quantity(ideal_ln_df_list, quantity="incidence_angle_modifier")
 
-plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="shadow_losses")
-plot_geometries_quantity([errors_ln_df_list[0],ideal_ln_df_list[0]], quantity="shadow_losses")
+plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="IAM")
+# plot_geometries_quantity([errors_ln_df_list[1],ideal_ln_df_list[0]], quantity="IAM")
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)

@@ -22,7 +22,9 @@ def get_trace_attrs(df, trace):
 # TODO check calculation with partners
 def calc_intercept_factor(df):
     df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
-
+    
+def calc_iam(df):
+    df["IAM"] = df["intercept_factor"] / df["intercept_factor"][0]
 
 def read(trace):
     if trace.df is not None:
@@ -38,6 +40,7 @@ def read(trace):
     if trace.name == "Transversal":
         trace_df.index = trace_df.index-90
     calc_intercept_factor(trace_df)
+    calc_iam(trace_df)
     return get_trace_attrs(trace_df, trace)
 
 
