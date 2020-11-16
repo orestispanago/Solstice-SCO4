@@ -1,0 +1,45 @@
+- sun:
+    dni: 1000
+
+- material: &specular
+    back:
+      mirror: { reflectivity: 1, slope_error: 0 }
+    front:
+      mirror: { reflectivity: 1, slope_error: 0 }
+
+- material: &black
+    back:
+      matte: { reflectivity: 0 }
+    front:
+      matte: { reflectivity: 0 }
+
+    
+- geometry: &mirror_plane_geometry
+    - material: *specular
+      plane:
+        clip:
+          - operation: AND
+            vertices: &mirror_plane_vertices
+            - [-0.78, -0.496]
+            - [-0.78, 0.496]
+            - [ 0.78, 0.496]
+            - [ 0.78,-0.496]
+
+- geometry: &receiver
+    - material: *black
+      plane:
+        clip:
+          - operation: AND
+            vertices: *mirror_plane_vertices
+            
+- entity:
+    name: mirror_plane
+    primary: 1
+    transform: { rotation: [90, 0, 0], translation: [0, 0, 0] }
+    geometry: *mirror_plane_geometry
+
+- entity:
+    name: absorber
+    primary: 0
+    transform: { rotation: [90, 0, 0], translation: [0, 1, 0] }
+    geometry: *receiver

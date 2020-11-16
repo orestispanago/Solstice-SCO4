@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from run import ideal_transversal_traces, errors_transversal_traces
 from run import ideal_longitudinal_traces, errors_longitudinal_traces
+from run import virtual_transversal_traces
 import reader
 import utils
 
@@ -88,10 +89,13 @@ ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
 errors_tr_df_list = [reader.read(tr) for tr in errors_transversal_traces]
 errors_ln_df_list = [reader.read(ln) for ln in errors_longitudinal_traces]
 
+virtual_mirror_plane = [reader.read(ln) for ln in virtual_transversal_traces][0]
+plot_all_quantities(virtual_mirror_plane)
+
 # plot_geometries_quantity(ideal_tr_df_list[:2], quantity="incidence_angle_modifier")
 # plot_geometries_quantity(ideal_ln_df_list, quantity="incidence_angle_modifier")
 
-plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="IAM")
+# plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="IAM")
 # plot_geometries_quantity([errors_ln_df_list[1],ideal_ln_df_list[0]], quantity="IAM")
 
 # for tr in ideal_transversal_traces:
@@ -100,7 +104,5 @@ plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="I
 # for ln in ideal_longitudinal_traces:
 #     plot_heatmap(ln)
 
-
-# plot_columns_list(df, ["intercept_factor", "efficiency"])
 
 # plot_geometries_quantity(ideal_tr_df_list[-2])
