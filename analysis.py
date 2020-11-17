@@ -92,13 +92,24 @@ ideal_ln_dfs = reader.read_list(ideal_longitudinal)
 errors_tr_dfs = reader.read_list(errors_transversal)
 errors_ln_dfs = reader.read_list(errors_longitudinal)
 
-virtual_mirror_plane = reader.read(virtual_transversal)[0]
-# plot_all_quantities(virtual_mirror_plane)
+virtual_mirror_plane = reader.read(virtual_transversal[0])
+virtual_abs = reader.read(virtual_transversal[1])
 
+ideal_plain = ideal_tr_dfs[0]
+
+ideal_plain["mirrors_shadow_losses"] = virtual_abs["shadow_losses"]
+ideal_plain["receiver_shadow_losses"] = ideal_plain["shadow_losses"] - ideal_plain["mirrors_shadow_losses"]
+
+plot_geometry_quantities(ideal_plain, [
+                                        "shadow_losses", 
+                                       "mirrors_shadow_losses",
+                                       "receiver_shadow_losses"])
+# plot_all_quantities(virtual_abs)
+# plot_geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
 # plot_geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
 
-plot_geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
-plot_geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
+# plot_geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
+# plot_geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)

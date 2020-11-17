@@ -1,8 +1,5 @@
 import pandas as pd
-from config import trace
 
-
-tr_args = trace.transversal.values()
 
 columns = {"potential_flux": 2,
            "absorbed_flux": 3,
