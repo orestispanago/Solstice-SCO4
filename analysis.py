@@ -1,9 +1,9 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-from run import ideal_transversal_traces, errors_transversal_traces
-from run import ideal_longitudinal_traces, errors_longitudinal_traces
-from run import virtual_transversal_traces
+from run import ideal_transversal, errors_transversal
+from run import ideal_longitudinal, errors_longitudinal
+from run import virtual_transversal
 import reader
 import utils
 
@@ -24,12 +24,20 @@ params = {'figure.figsize': (14, 4),
           'figure.constrained_layout.use': True}
 plt.rcParams.update(params)
 
+
 def get_label(string):
     if string.isupper():
         return string
     return string.title().replace("_"," ")
 
-def plot_geometries_quantity(df_list, quantity="efficiency"):
+def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
+    for m in main_str_list:
+        for s in substr_list:
+            if s in m:
+                return True
+    return False
+
+def plot_geometries_comparison(df_list, quantity="efficiency"):
     """ Plots a column of each dataframe """
     ylabel = get_label(quantity)
     fig, ax = plt.subplots(figsize=(9,6))
@@ -57,12 +65,6 @@ def plot_heatmap(trace, values='efficiency'):
     plt.savefig(pic_path)
     plt.show()
 
-def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
-    for m in main_str_list:
-        for s in substr_list:
-            if s in m:
-                return True
-    return False
 
 def plot_geometry_quantities(df, quantities_list):
     """ Plots list of df columns in same plot """
@@ -79,24 +81,24 @@ def plot_geometry_quantities(df, quantities_list):
     plt.savefig(pic_path)
     plt.show()
     
+    
 def plot_all_quantities(df):
     for i in df.columns:
         plot_geometry_quantities(df, [i])
 
-ideal_tr_df_list = [reader.read(tr) for tr in ideal_transversal_traces]
-ideal_ln_df_list = [reader.read(ln) for ln in ideal_longitudinal_traces]
+ideal_tr_dfs = reader.read_list(ideal_transversal)
+ideal_ln_dfs = reader.read_list(ideal_longitudinal)
 
-errors_tr_df_list = [reader.read(tr) for tr in errors_transversal_traces]
-errors_ln_df_list = [reader.read(ln) for ln in errors_longitudinal_traces]
+errors_tr_dfs = reader.read_list(errors_transversal)
+errors_ln_dfs = reader.read_list(errors_longitudinal)
 
-virtual_mirror_plane = [reader.read(ln) for ln in virtual_transversal_traces][0]
-plot_all_quantities(virtual_mirror_plane)
+virtual_mirror_plane = reader.read(virtual_transversal)[0]
+# plot_all_quantities(virtual_mirror_plane)
 
-# plot_geometries_quantity(ideal_tr_df_list[:2], quantity="incidence_angle_modifier")
-# plot_geometries_quantity(ideal_ln_df_list, quantity="incidence_angle_modifier")
+# plot_geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
 
-# plot_geometries_quantity([errors_tr_df_list[0],ideal_tr_df_list[0]], quantity="IAM")
-# plot_geometries_quantity([errors_ln_df_list[1],ideal_ln_df_list[0]], quantity="IAM")
+plot_geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
+plot_geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
 
 # for tr in ideal_transversal_traces:
 #     plot_heatmap(tr)
@@ -105,4 +107,4 @@ plot_all_quantities(virtual_mirror_plane)
 #     plot_heatmap(ln)
 
 
-# plot_geometries_quantity(ideal_tr_df_list[-2])
+# plot_geometries_comparison(ideal_tr_df_list[-2])

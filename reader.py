@@ -9,8 +9,8 @@ columns = {"potential_flux": 2,
            "cos_factor": 4,
            "shadow_losses": 5,
            "missing_losses": 6,
-           "reflectivity_losses": 7,
-           "absorptivity_losses": 8
+           # "reflectivity_losses": 7,
+           # "absorptivity_losses": 8
            }
 
 
@@ -43,6 +43,8 @@ def read(trace):
     calc_iam(trace_df)
     return get_trace_attrs(trace_df, trace)
 
+def read_list(traces):
+    return [read(tr) for tr in traces]
 
 def read_mean(trace):
     trace_df = pd.read_csv(trace.meanfile)

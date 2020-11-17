@@ -75,6 +75,7 @@ class Trace():
     def export_heat(self, nrays=1000000):
         receiver_heat = os.path.join(CWD, "geometries", "heatmap", "receiver.yaml")
         geometry_heat = os.path.join(CWD, "geometries", "heatmap", "geometry.yaml")
+        utils.mkdir_if_not_exists(self.shape_dir)
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}_heatmap.vtk"
