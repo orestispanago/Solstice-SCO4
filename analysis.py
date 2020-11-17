@@ -100,10 +100,16 @@ ideal_plain = ideal_tr_dfs[0]
 ideal_plain["mirrors_shadow_losses"] = virtual_abs["shadow_losses"]
 ideal_plain["receiver_shadow_losses"] = ideal_plain["shadow_losses"] - ideal_plain["mirrors_shadow_losses"]
 
-plot_geometry_quantities(ideal_plain, [
-                                        "shadow_losses", 
-                                       "mirrors_shadow_losses",
-                                       "receiver_shadow_losses"])
+# plot_geometry_quantities(ideal_plain, [
+#                                         "shadow_losses", 
+#                                        "mirrors_shadow_losses",
+#                                        "receiver_shadow_losses"])
+
+virtual_abs["FpCp"] = virtual_abs["potential_flux"] * virtual_abs["cos_factor"]
+virtual_abs["incident"] = virtual_abs["FpCp"] - virtual_abs["shadow_losses"]
+plot_geometry_quantities(virtual_abs, ["FpCp", "incident"])
+# TODO check intercept factor denominator in reader
+
 # plot_all_quantities(virtual_abs)
 # plot_geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
 # plot_geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
