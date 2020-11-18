@@ -1,9 +1,7 @@
 import os
 import matplotlib.pyplot as plt
 import seaborn as sns
-from run import ideal_transversal, errors_transversal
-from run import ideal_longitudinal, errors_longitudinal
-from run import virtual_transversal
+from groups import ideal, errors, virtual
 import reader
 import utils
 
@@ -86,14 +84,14 @@ def plot_all_quantities(df):
     for i in df.columns:
         plot_geometry_quantities(df, [i])
 
-ideal_tr_dfs = reader.read_list(ideal_transversal)
-ideal_ln_dfs = reader.read_list(ideal_longitudinal)
+ideal_tr_dfs = reader.read_list(ideal.transversal)
+ideal_ln_dfs = reader.read_list(ideal.longitudinal)
 
-errors_tr_dfs = reader.read_list(errors_transversal)
-errors_ln_dfs = reader.read_list(errors_longitudinal)
+errors_tr_dfs = reader.read_list(errors.transversal)
+errors_ln_dfs = reader.read_list(errors.longitudinal)
 
-virtual_mirror_plane = reader.read(virtual_transversal[0])
-virtual_abs = reader.read(virtual_transversal[1])
+virtual_mirror_plane = reader.read(virtual.transversal[0])
+virtual_abs = reader.read(virtual.transversal[1])
 
 ideal_plain = ideal_tr_dfs[0]
 
@@ -105,12 +103,25 @@ ideal_plain["receiver_shadow_losses"] = ideal_plain["shadow_losses"] - ideal_pla
 #                                        "mirrors_shadow_losses",
 #                                        "receiver_shadow_losses"])
 
-virtual_abs["FpCp"] = virtual_abs["potential_flux"] * virtual_abs["cos_factor"]
-virtual_abs["incident"] = virtual_abs["FpCp"] - virtual_abs["shadow_losses"]
-plot_geometry_quantities(virtual_abs, ["FpCp", "incident"])
+virtual_abs["FpCf"] = virtual_abs["potential_flux"] * virtual_abs["cos_factor"]
+virtual_abs["incident"] = virtual_abs["FpCf"] - virtual_abs["shadow_losses"]
+# plot_geometry_quantities(virtual_abs, ["FpCp", "incident"])
 # TODO check intercept factor denominator in reader
 
-# plot_all_quantities(virtual_abs)
+virtual_mirror_plane["FpCf"] = virtual_mirror_plane["potential_flux"] * virtual_mirror_plane["cos_factor"]
+ideal_plain["FpCf"] = ideal_plain["potential_flux"] * ideal_plain["cos_factor"]
+
+plot_geometries_comparison([ideal_plain,virtual_mirror_plane], quantity="FpCf")
+
+
+
+ideal_plain["intercep_factorG"] = ideal_plain["absorbed_flux"] / \
+    (ideal_plain["FpCf"] - ideal_plain["missing_losses"])
+    
+plot_geometry_quantities(ideal_plain, ["intercept_factor","intercep_factorG"])
+
+
+# plot_all_quantities(ideal_plain)
 # plot_geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
 # plot_geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
 

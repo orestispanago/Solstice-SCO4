@@ -3,8 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from mirror_coordinates import centered_x, centered_y
 from mod_geometry import move_absorber
-from run import ideal_transversal_traces
-from run import ideal_longitudinal_traces
+from groups import ideal
 import reader
 from config import trace
 
@@ -33,5 +32,9 @@ def change_abs_run_mean(trace, step=trace.absorber_shift_step):
     move_absorber(trace.geometry, 0, 0)
     df.to_csv(trace.meanfile, index=False)
 
-# change_abs_run_mean(transversal_mirrorbox_support)
-# change_abs_run_mean(longitudinal_mirrorbox_support)
+
+transversal_mirrorbox_support = ideal.transversal[-2]
+longitudinal_mirrorbox_support = ideal.longitudinal[-2]
+
+change_abs_run_mean(transversal_mirrorbox_support)
+change_abs_run_mean(longitudinal_mirrorbox_support)
