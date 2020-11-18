@@ -21,6 +21,7 @@ class Trace():
         self.title = self.name + " " + geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometries", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
+        self.raw_dir = os.path.join(self.exp_dir, 'raw')
         self.shape_dir = os.path.join(self.exp_dir, "shapes")
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
         self.meanfile = os.path.join(self.exp_dir, 'raw', self.name + "-means.csv")

@@ -2,7 +2,7 @@ import utils
 from mirror_coordinates import centered_x, centered_y
 from config import geom
 
-geometry = "geometries/ideal-frame-mirrorbox-support1.yaml"
+# geometry = "geometries/ideal-frame-mirrorbox-support.yaml"
 
 mir_len_x = geom.mirror_array.mirror_dimensions.x  # mirror x dimension
 mir_len_y = geom.mirror_array.mirror_dimensions.y
@@ -98,5 +98,5 @@ def setup_base_geometry(geometry):
     move_absorber(geometry, abs_pos_x, abs_pos_y)
 
 
-setup_base_geometry(geometry)
+# setup_base_geometry(geometry)
 # move_absorber(geometry, 0.5, 0.5)
