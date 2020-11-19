@@ -40,11 +40,11 @@ def geometries_comparison(df_list, quantity="efficiency"):
     fig, ax = plt.subplots(figsize=(9,6))
     for df in df_list:
         ax.plot(df[quantity], label=df.trace_geometry)
-        ax.set_xlabel("$\\theta_z \quad  (\degree)$")
-        ax.set_ylabel(get_label(quantity))
-        if contains_flux_or_losses([quantity]):
-            ylabel = ylabel + " (W)"
-        ax.set_ylabel(ylabel)
+    ax.set_xlabel("$\\theta_z \quad  (\degree)$")
+    ax.set_ylabel(get_label(quantity))
+    if contains_flux_or_losses([quantity]):
+        ylabel = ylabel + " (W)"
+    ax.set_ylabel(ylabel)
     ax.legend()
     fig.savefig(f"comparison-plots/{df.trace_direction}-{quantity}")
     plt.show()
