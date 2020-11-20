@@ -21,6 +21,7 @@ class Trace():
         self.title = self.name + " " + geometry.split(".")[0]
         self.geometry = os.path.join(CWD, "geometries", geometry)
         self.exp_dir = os.path.join(CWD, 'export', geometry.split(".")[0])
+        self.raw_dir = os.path.join(self.exp_dir, 'raw')
         self.shape_dir = os.path.join(self.exp_dir, "shapes")
         self.rawfile = os.path.join(self.exp_dir, 'raw', self.name + ".txt")
         self.meanfile = os.path.join(self.exp_dir, 'raw', self.name + "-means.csv")
@@ -75,6 +76,7 @@ class Trace():
     def export_heat(self, nrays=1000000):
         receiver_heat = os.path.join(CWD, "geometries", "heatmap", "receiver.yaml")
         geometry_heat = os.path.join(CWD, "geometries", "heatmap", "geometry.yaml")
+        utils.mkdir_if_not_exists(self.shape_dir)
         for pair in [self.angle_pairs[0], self.angle_pairs[-1]]:
             pair_str = pair.replace(',', '_')
             fname = f"{self.name}_{pair_str}_heatmap.vtk"
