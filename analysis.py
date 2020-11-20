@@ -26,8 +26,8 @@ calc_shadow_losses(ideal_plain_tr, virtual_abs_tr)
 #                                         "receiver_shadow_losses"])
 
 
-plots.geometries_comparison([ideal_tr_dfs[1], errors_tr_dfs[1]], "absorbed_flux")
-plots.geometries_comparison([ideal_ln_dfs[1], errors_ln_dfs[1]], "absorbed_flux")
+plots.geometries_comparison([ideal_tr_dfs[0], errors_tr_dfs[2]], "absorbed_flux")
+plots.geometries_comparison([ideal_ln_dfs[0], errors_ln_dfs[2]], "absorbed_flux")
 
 # plot_all_quantities(ideal_plain)
 # plot_geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
