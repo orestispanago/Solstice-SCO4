@@ -8,7 +8,7 @@ def run_vtk_obj_heat(trace):
     # trace.export_heat()
 
 
-for i in virtual.longitudinal:
+for i in errors.transversal:
     run_vtk_obj_heat(i)
-# for i in errors_longitudinal_traces:
-#     run_vtk_obj_heat(i)
+for i in errors.longitudinal:
+    run_vtk_obj_heat(i)

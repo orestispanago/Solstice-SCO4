@@ -3,9 +3,9 @@
 
 - material: &specular
     back:
-      mirror: { reflectivity: 1, slope_error: 0.40107 } # slope_error in degrees, 7mrad=0.40107deg
+      mirror: { reflectivity: 1, slope_error: 0.007 } # slope_error in radians
     front:
-      mirror: { reflectivity: 1, slope_error: 0.40107 }
+      mirror: { reflectivity: 1, slope_error: 0.007 }
 
 - material: &black
     back:
