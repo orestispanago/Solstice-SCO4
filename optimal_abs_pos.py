@@ -41,5 +41,7 @@ def move_abs_run_mean(trace, aggregate):
 transversal_mirrorbox_support = ideal.transversal[-2]
 longitudinal_mirrorbox_support = ideal.longitudinal[-2]
 
-move_abs_run_mean(transversal_mirrorbox_support, "mean")
-# move_abs_run_mean(longitudinal_mirrorbox_support)
+# move_abs_run_mean(transversal_mirrorbox_support, "sum")
+# move_abs_run_mean(longitudinal_mirrorbox_support, "sum")
+for i in [ideal.transversal[0], ideal.transversal[-2], ideal.longitudinal[0], ideal.longitudinal[-2]]:
+    move_abs_run_mean(i, "sum")
