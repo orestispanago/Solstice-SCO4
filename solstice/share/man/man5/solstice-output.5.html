@@ -1,0 +1,1035 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>solstice-output(5)</title>
+<style type="text/css">
+/* Copyright (C) 2016-2018 CNRS
+ *
+ * This is free style sheet: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This CSS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/. */
+
+body.manpage {
+  font-family:"Liberation Sans",sans-serif;
+  font-size:10pt;
+  text-align: justify;
+  max-width: 55em;
+  margin: 1em;
+  background: #ffffff
+}
+
+body.manpage .monospaced, .literalblock {
+  margin: 2em;
+  color: #636261
+}
+
+body.manpage em {
+  color: #660000
+}
+
+body.manpage div.verseblock > pre.content {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage h1 {
+  padding-bottom: 0.5em;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+body.manpage code {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage #footer { display: none; }
+
+body.manpage div#toctitle { display: none; }
+
+body.manpage div#toc {
+  display: block;
+  position:fixed;
+  top:0;
+  left:60em;
+  height:100%;
+  width: 100%;
+  padding:3em 0 0 0;
+  border-left:1px solid #dbdbdb;
+  background: #eeeeee
+}
+
+body.manpage a {
+  font-weight: bold;
+  color: #225588;
+}
+
+body.manpage div#toc a, div#toc a:link, div#toc a:visited {
+  margin:0;
+  padding-left: 2em;
+  color:#999999;
+  text-decoration:none;
+  font-weight: normal;
+}
+
+body.manpage div.toclevel1 {
+  line-height: 1.5em;
+}
+
+body.manpage div.toclevel2 {
+  margin-left: 2em;
+}
+
+body.manpage div#toc a:hover {
+  color:#666666;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="manpage">
+<div id="header">
+<h1>
+solstice-output(5) Manual Page
+</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+<h2>NAME</h2>
+<div class="sectionbody">
+<p>solstice-output -
+   output format of solstice(1) results
+</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_description">DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The <strong>solstice-output</strong> describes the output format of the <strong>solstice</strong>(1) program.
+All the data generated by a <strong>solstice</strong>(1) invocation are written in a single
+file or on the standard output whether an <em>output</em> file is defined through the
+<strong>-o</strong> option or not, respectively. Note that submitting several sun directions
+to <strong>solstice</strong>(1), through the <strong>-D</strong> option, will produce as many outputs as sun
+directions. In other words, invoking <strong>solstice</strong>(1) with <em>N</em> sun directions
+looks like calling <strong>solstice</strong>(1) <em>N</em> times and concatenating their associated
+output.</p></div>
+<div class="paragraph"><p>The type of the data that are generated depends on the mode in which
+<strong>solstice</strong>(1) is invoked. By default, <strong>solstice</strong>(1) evaluates the power
+collected by the submitted solar plant. When invoked with the <strong>-g</strong> option,
+<strong>solstice</strong>(1) converts the solar plant geometries in a list of CAO files. The
+<strong>-p</strong> option is used to track the sampled radiative paths while, finally, the
+<strong>-r</strong> option allows to render an image of the solar facility.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_grammar">GRAMMAR</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The output values are mainly ASCII data formatted line by line. By convention,
+in the following grammar the line data are listed between quote marks. The
+grammar may use new lines for formatting constraints, but data are actually on
+the same line while a closed quote mark is not defined.</p></div>
+<div class="verseblock">
+<pre class="content">&lt;output&gt;              ::= &lt;simulation-output&gt;
+                        | &lt;dump-geometry-output&gt; # -g option
+                        | &lt;dump-radiative-paths-output&gt; # -p option
+                        | &lt;rendering-output&gt; # -r option
+
+&lt;simulation-output&gt;   ::= &lt;sun-direction&gt;
+                          &lt;counts&gt;
+                          &lt;global&gt;
+                        [ &lt;receivers-list&gt; ]
+                        [ &lt;primaries-list&gt; ]
+                        [ &lt;rcvXprims-list&gt; ]
+                        [ &lt;receiver-maps&gt; ]
+                        [ &lt;simulation-output&gt; &#8230; ]
+
+&lt;dump-geometry-output&gt;
+                      ::= &lt;sun-direction&gt;
+                          &lt;geometry-data&gt;
+                        [ &lt;dump-geometry-output&gt; &#8230; ]
+
+&lt;dump-radiative-paths-output&gt;
+                      ::= &lt;sun-direction&gt;
+                          VTK-RADIATIVE-PATHS
+                        [ &lt;dump-radiative-paths-output&gt; &#8230; ]
+
+&lt;rendering-output&gt;    ::= &lt;sun-direction&gt;
+                          PPM-FILE # ASCII PPM with 8-bits per component [1]
+                        [ &lt;rendering-output&gt; &#8230; ]
+
+-------------------------------------
+
+&lt;sun-direction&gt;       ::= "#--- Sun direction: &lt;alpha&gt; &lt;beta&gt; (&lt;sun-vector&gt;)"
+
+&lt;counts&gt;              ::= "&lt;#globals&gt; &lt;#receivers&gt; &lt;#primaries&gt;
+                           &lt;#samples&gt; &lt;#failed&gt;"
+
+&lt;#globals&gt;            ::= 7
+&lt;#receivers&gt;          ::= INTEGER # in [0, INF)
+&lt;#primaries&gt;          ::= INTEGER # in [0, INF)
+&lt;#samples&gt;            ::= INTEGER # in [0, INF)
+&lt;#failed&gt;             ::= INTEGER # in [0, INF)
+
+&lt;global&gt;              ::= &lt;potential-flux&gt;
+                          &lt;absorbed-flux&gt;
+                          &lt;cos-factor&gt;
+                          &lt;shadow-loss&gt;
+                          &lt;missing-loss&gt;
+                          &lt;materials-loss&gt;
+                          &lt;atmospheric-loss&gt;
+
+-------------------------------------
+
+&lt;receivers-list&gt;      ::= &lt;receiver&gt;
+                        [ &lt;receiver&gt; &#8230; ]
+
+&lt;receiver&gt;            ::= "&lt;receiver-name&gt; &lt;receiver-id&gt; &lt;area&gt;
+                           &lt;front&gt; &lt;back&gt;"
+
+&lt;receiver-name&gt;       ::= &lt;entity-identifier&gt;
+
+&lt;receiver-id&gt;         ::= INTEGER
+
+&lt;front&gt;               ::= &lt;side&gt;
+&lt;back&gt;                ::= &lt;side&gt;
+
+&lt;side&gt;                ::= "&lt;incoming-flux&gt; &lt;in-if-no-mat-loss&gt;
+                           &lt;in-if-no-atm-loss&gt; &lt;in-mat-loss&gt; &lt;in-atm-loss&gt;
+                           &lt;absorbed-flux&gt; &lt;abs-if-no-mat-loss&gt;
+                           &lt;abs-if-no-atm-loss&gt; &lt;abs-mat-loss&gt; &lt;abs-atm-loss&gt;
+                           &lt;efficiency&gt;"
+
+-------------------------------------
+
+&lt;primaries-list&gt;      ::= &lt;primary&gt;
+                        [ &lt;primary&gt; &#8230; ]
+
+&lt;primary&gt;             ::= "&lt;primary-name&gt; &lt;primary-id&gt; &lt;area&gt; &lt;#samples&gt;
+                           &lt;cos-factor&gt; &lt;shadow-loss&gt;"
+
+&lt;primary-name&gt;        ::= &lt;entity-identifier&gt;
+
+&lt;primary-id&gt;          ::= INTEGER
+
+-------------------------------------
+
+&lt;rcvXprims-list&gt;      ::= &lt;rcvXprim&gt;
+                        [ &lt;rcvXprim&gt; &#8230; ]
+
+&lt;rcvXprim&gt;            ::= "&lt;receiver-id&gt; &lt;primary-id&gt;
+                           &lt;rcvXprim-front&gt; &lt;rcvXprim-back&gt;"
+
+&lt;rcvXprim-front&gt;      ::= &lt;rcvXprim-side&gt;
+&lt;rcvXprim-back&gt;       ::= &lt;rcvXprim-side&gt;
+
+&lt;rcvXprim-side&gt;       ::= "&lt;incoming-flux&gt; &lt;in-if-no-mat-loss&gt;
+                           &lt;in-if-no-atm-loss&gt; &lt;in-mat-loss&gt; &lt;in-atm-loss&gt;
+                           &lt;absorbed-flux&gt; &lt;abs-if-no-mat-loss&gt;
+                           &lt;abs-if-no-atm-loss&gt; &lt;abs-mat-loss&gt; &lt;abs-atm-loss&gt;"
+
+-------------------------------------
+
+&lt;receiver-maps&gt;       ::= VTK-RECEIVER-MAP
+                        [ &lt;receiver-maps&gt; &#8230; ]
+
+&lt;geometry-data&gt;       ::= OBJ-FILE
+                        [ ---
+                          &lt;geometry-data&gt; &#8230; ]
+
+-------------------------------------
+
+&lt;area&gt;                ::= REAL # in ]0, INF)
+
+&lt;real3&gt;               ::= REAL REAL REAL
+
+&lt;alpha&gt;               ::= REAL # Degrees in [0, 360[
+&lt;beta&gt;                ::= REAL # Degrees in [0, 90]
+&lt;sun-vector&gt;          ::= &lt;real3&gt;
+
+&lt;incoming-flux&gt;       ::= &lt;estimate&gt;
+&lt;in-if-no-mat-loss&gt;   ::= &lt;estimate&gt;
+&lt;in-if-no-atm-loss&gt;   ::= &lt;estimate&gt;
+&lt;in-mat-loss&gt;         ::= &lt;estimate&gt;
+&lt;in-atm-loss&gt;         ::= &lt;estimate&gt;
+&lt;absorbed-flux&gt;       ::= &lt;estimate&gt;
+&lt;abs-if-no-mat-loss&gt;  ::= &lt;estimate&gt;
+&lt;abs-if-no-atm-loss&gt;  ::= &lt;estimate&gt;
+&lt;abs-mat-loss&gt;        ::= &lt;estimate&gt;
+&lt;abs-atm-loss&gt;        ::= &lt;estimate&gt;
+&lt;cos-factor&gt;          ::= &lt;estimate&gt;
+&lt;missing-loss&gt;        ::= &lt;estimate&gt;
+&lt;materials-loss&gt;      ::= &lt;estimate&gt;
+&lt;atmospheric-loss&gt;    ::= &lt;estimate&gt;
+&lt;shadow-loss&gt;         ::= &lt;estimate&gt;
+&lt;efficiency&gt;          ::= &lt;estimate&gt;
+
+&lt;estimate&gt;            ::= &lt;expected-value&gt; &lt;standard-error&gt;
+&lt;expected-value&gt;      ::= REAL
+&lt;standard-error&gt;      ::= REAL # in [0, INF)
+
+&lt;entity-identifier&gt;   # Defined in <strong>solstice-input</strong>(5)</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_simulation">SIMULATION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A <strong>simulation-output</strong> begins with two header lines. The first one reports the
+sun direction used in the simulation (two angles in degrees, plus the
+corresponding sun vector),
+and the second one lists the numbers of global, per receiver and per
+primary results as well as the overall number of Monte-Carlo experiments used
+by the simulation and the number of experiments that failed due to unforeseen
+errors as numerical imprecisions. As soon as the number of failed experiments
+reaches 1% of the required number of Monte-Carlo experiments, the code exits
+with a "Error in integrating the solar flux" message, and the validity of
+subsequent results is questionable: estimates are produced using the number of
+Monte-Carlo experiments that have been successful, which is necessarily smaller
+than the required number of experiments.</p></div>
+<div class="sect2">
+<h3 id="_global_results">Global results</h3>
+<div class="paragraph"><p>After the 2 header lines, the output includes various <strong>global</strong> result lines,
+the exact number of lines being part of the headers. Currently this number is
+7. Each global result is a pair of real numbers: the expected value and its
+standard error. The global results are, in this order:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>potential-flux</strong>: maximum flux that all the primary geometries could
+  intercept if properly oriented and flat-shaped;
+</p>
+</li>
+<li>
+<p>
+<strong>absorbed-flux</strong>: absorbed part of the flux reaching any receiver geometry.
+  At most equal to the potential flux;
+</p>
+</li>
+<li>
+<p>
+<strong>cos-factor</strong>: cos of the angle between the sun direction and the normal of
+  the primary surfaces (average cos over all primary geometries);
+</p>
+</li>
+<li>
+<p>
+<strong>shadow-loss</strong>: potential flux intercepted by another geometry before
+  reaching a primary geometry;
+</p>
+</li>
+<li>
+<p>
+<strong>missing-loss</strong>: part of the flux that reaches a primary geometry, follows a
+  radiative path, but is not absorbed; this flux could have bounced on
+  geometries, including receivers, but without being absorbed;
+</p>
+</li>
+<li>
+<p>
+<strong>materials-loss</strong>: total flux absorbed by non-receivers along radiative
+  paths; includes both surface and volume absorption;
+</p>
+</li>
+<li>
+<p>
+<strong>atmospheric-loss</strong>: total flux extinction by the atmosphere along radiative
+  paths.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>This results can be used to check conservation of energy:</p></div>
+<div class="paragraph"><p>potential-flux * cos-factor and (absorbed-flux + shadow-loss<br />
+missing-loss + materials-loss + atmospheric-loss)
+should be equal within their respective uncertainty ranges.</p></div>
+</div>
+<div class="sect2">
+<h3 id="_per_receiver_results">Per receiver results</h3>
+<div class="paragraph"><p>Following global results, the output includes various per-receiver lines, one
+line per receiver, the exact number of lines being part of the headers. The
+per-receiver results are sorted according to the order of the receivers as
+defined in the submitted <strong>solstice-receiver</strong>(5) file. Each line contains the
+following data:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>receiver-name</strong>: name of the receiver, i.e. <strong>entity-identifier</strong> of the
+  entity in which the receiving geometry is defined (see the
+  <strong>solstice-input</strong>(5) format);
+</p>
+</li>
+<li>
+<p>
+<strong>receiver-id</strong>: unique integer identifying the receiver;
+</p>
+</li>
+<li>
+<p>
+<strong>area</strong>: area of the receiver;
+</p>
+</li>
+<li>
+<p>
+<strong>front</strong>: estimated results for the front side of the receiver;
+</p>
+</li>
+<li>
+<p>
+<strong>back</strong>: estimated results for the back side of the receiver.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The estimates of the <strong>front</strong> and <strong>back</strong> sides are listed bellow. Note that
+each of the following estimates is actually a pair of real numbers: the
+expected value and its standard error.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>incoming-flux</strong>: flux that reaches the receiver side;
+</p>
+</li>
+<li>
+<p>
+<strong>in-if-no-mat-loss</strong>: incoming-flux if absorption on non-receivers is not
+  taken into account;
+</p>
+</li>
+<li>
+<p>
+<strong>in-if-no-atm-loss</strong>: incoming-flux if atmospheric extinction is not taken
+  into account;
+</p>
+</li>
+<li>
+<p>
+<strong>in-mat-loss</strong>: in-if-no-mat-loss - incoming-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>in-atm-loss</strong>: in-if-no-atm-loss - incoming-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>absorbed-flux</strong>: flux absorbed by the receiver side;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-if-no-mat-loss</strong>: absorbed-flux if absorption by non-receivers is not
+  taken into account;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-if-no-atm-loss</strong>: absorbed-flux if atmospheric extinction is not taken
+  into account;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-mat-loss</strong>: abs-if-no-mat-loss - absorbed-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-atm-loss</strong>: abs-if-no-atm-loss - absorbed-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>efficiency</strong>: fraction of the potential flux absorbed by this receiver side.
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Both <strong>front</strong> and <strong>back</strong> side estimates are output, even if the receiver has
+only a single receiving side. In this case, the results of the non-receiving
+side are meaningless (invalid -1 value).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_per_primary_results">Per primary results</h3>
+<div class="paragraph"><p>Following the per-receiver results, the output includes various per-primary
+result lines, one line per primary geometry, the exact number of lines being
+part of the headers. Each line contains:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>primary-name</strong>: name of the primary geometry, i.e. <strong>entity-identifier</strong> of
+  the entity in in which the primary geometry is  defined (see the
+  <strong>solstice-input</strong>(5) format);
+</p>
+</li>
+<li>
+<p>
+<strong>primary-id</strong>: unique integer identifying the primary geometry;
+</p>
+</li>
+<li>
+<p>
+<strong>area</strong>: area of the primary geometry;
+</p>
+</li>
+<li>
+<p>
+<strong>#sample</strong>: number of Monte-Carlo experiments sampled on the primary
+  geometry;
+</p>
+</li>
+<li>
+<p>
+<strong>cos-factor</strong>: cos of the angle between the sun direction and the normal of
+  the primary surface (average cos on the primary geometry);
+</p>
+</li>
+<li>
+<p>
+<strong>shadow-loss</strong>: potential flux intercepted by another geometry before reaching
+  the primary geometry of interest.
+</p>
+</li>
+</ul></div>
+</div>
+<div class="sect2">
+<h3 id="_per_receiver_and_per_primary_results">Per receiver and per primary results</h3>
+<div class="paragraph"><p>Following the per-primary results, the output includes various result lines,
+each describing the contribution of a primary geometry to a given receiver.
+The total number of such lines is the number of receivers times the number of
+primary geometries. Each line contains:</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>receiver-id</strong>: identifier of the involved receiver;
+</p>
+</li>
+<li>
+<p>
+<strong>primary-id</strong>:  identifier of the involved primary geometry;
+</p>
+</li>
+<li>
+<p>
+<strong>rcvXprim-front</strong>: estimated results for the receiver front side;
+</p>
+</li>
+<li>
+<p>
+<strong>rcvXprim-back</strong>: estimated results for the receiver back side;
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>The estimated values of <strong>rcvXprim-front</strong> and <strong>rcvXprim-back</strong> are listed
+bellow. Each of these estimates is actually a pair of real numbers: the
+expected value and its standard error.</p></div>
+<div class="ulist"><ul>
+<li>
+<p>
+<strong>incoming-flux</strong>: flux that reaches the receiver side;
+</p>
+</li>
+<li>
+<p>
+<strong>in-if-no-mat-loss</strong>: incoming-flux if absorption on non-receivers is not
+  taken into account;
+</p>
+</li>
+<li>
+<p>
+<strong>in-if-no-atm-loss</strong>: incoming-flux if atmospheric extinction is not taken
+  into account;
+</p>
+</li>
+<li>
+<p>
+<strong>in-mat-loss</strong>: in-if-no-mat-loss - incoming-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>in-atm-loss</strong>: in-if-no-atm-loss - incoming-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>absorbed-flux</strong>: flux absorbed by the receiver side;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-if-no-mat-loss</strong>: absorbed-flux if absorption by non-receivers is not
+  taken into account;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-if-no-atm-loss</strong>: absorbed-flux if atmospheric extinction is not taken
+  into account;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-mat-loss</strong>: abs-if-no-mat-loss - absorbed-flux;
+</p>
+</li>
+<li>
+<p>
+<strong>abs-atm-loss</strong>: abs-if-no-atm-loss - absorbed-flux;
+</p>
+</li>
+</ul></div>
+<div class="paragraph"><p>Both front and back side estimates are output, even if the receiver has only a
+single receiving side. In this case, the results of the non-receiving side are
+meaningless (invalid -1 value).</p></div>
+</div>
+<div class="sect2">
+<h3 id="_receiver_map">Receiver map</h3>
+<div class="paragraph"><p>A receiver defined in the submitted <strong>solstice-receiver</strong>(5) file, can have a
+per-primitive estimate of its incoming flux density and/or absorbed flux
+density if its <strong>per_primitive</strong> flag is active. In this case, <strong>solstice</strong>(1)
+generates a <strong>receiver-map</strong> that is actually an ASCII VTK file [2] that stores
+the triangular mesh of the receiver and, for each triangle, the estimate of
+its associated incoming flux density and/or absorbed flux density. The
+"definition" of the receiver map is thus controlled by the discretisation of
+the receiver&#8217;s shape, as described in the <strong>solstice-input</strong>(5) file. Note that
+to obtain a good estimate of the per-triangle flux densities, one have to
+ensure that the number of per-triangle experiments is sufficient regarding the
+targeted accuracy. Since only a small fraction of the overall sampled
+radiative paths reach a given triangle, the total number of experiments
+required through the <strong>-n</strong> option of <strong>solstice</strong>(1) should be increased
+significantly, as 1 or 2 order of magnitude.</p></div>
+<div class="paragraph"><p>The number of written per-triangle flux density estimates depends on the
+receiver&#8217;s parameters: both front and back sides of the receiver can be active
+and each side can produce an estimate both for the incoming flux density and
+for the absorbed flux density. As a consequence, the output can include up to
+4 different estimates that are written in the order: incoming front, absorbed
+front, incoming back, absorbed back. The following grammar gives a brief
+description of the formatting of a <strong>VTK-RECEIVER-MAP</strong>. Please refer to the VTK
+format specification [2] for more informations on the VTK file format.</p></div>
+<div class="verseblock">
+<pre class="content">VTK-RECEIVER-MAP      ::= # vtk DataFile Version 2.0
+                          &lt;receiver-name&gt;
+                          ASCII
+                          DATASET POLYDATA
+                          POINTS &lt;#vertices&gt; float
+                          &lt;map-vertices&gt;
+                          POLYGONS &lt;#triangles&gt; &lt;#triangles*4&gt;
+                          &lt;map-triangles&gt;
+                          CELL_DATA &lt;#triangles&gt;
+                          &lt;map-triangle-data&gt;
+
+&lt;map-vertices&gt;        ::= &lt;real3&gt;
+                        [ &lt;real3&gt; &#8230; ] # up to &lt;#vertices&gt;
+
+&lt;map-triangles&gt;       ::= 3 &lt;triangle-indices&gt;
+                        [ 3 &lt;triangle-indices&gt; &#8230; ] # up to &lt;#triangles&gt;
+
+&lt;map-triangle-data&gt;   ::= &lt;map-front-data&gt;
+                        | &lt;map-back-data&gt;
+                        | &lt;map-front-data&gt; &lt;map-back-data&gt;
+
+&lt;map-front-data&gt;      ::= &lt;map-side-data&gt;
+&lt;map-back-data&gt;       ::= &lt;map-side-data&gt;
+
+&lt;map-side-data&gt;       ::= &lt;incoming-flux&gt;
+                        | &lt;absorbed-flux&gt;
+                        | &lt;incoming-flux&gt; &lt;absorbed-flux&gt;
+
+&lt;incoming-flux&gt;       ::= &lt;flux-density-data&gt;
+&lt;absorbed-flux&gt;       ::= &lt;flux-density-data&gt;
+
+&lt;flux-density-data&gt;   ::= SCALARS &lt;side-and-flux-names&gt; float 2
+                          LOOKUP_TABLE default
+                          &lt;estimate&gt;
+                        [ &lt;estimate&gt; &#8230; ]
+
+&lt;side-and-flux-names&gt; ::= Front_faces_Incoming_flux
+                        | Front_faces_Absorbed_flux
+                        | Back_faces_Incoming_flux
+                        | Back_faces_Absorbed_flux
+
+&lt;#triangles&gt;          ::= INTEGER
+&lt;#vertices&gt;           ::= INTEGER
+&lt;triangle-indices&gt;    ::= INTEGER INTEGER INTEGER</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dump_geometry">DUMP GEOMETRY</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>A <strong>dump-geometry-output</strong> is generated when <strong>solstice</strong>(1) is invoked with the
+<strong>-g</strong> option. In this mode, for each submitted sun direction, <strong>solstice</strong>(1)
+converts the geometry of the submitted <strong>solstice-input</strong>(5) file in triangular
+meshes that are then written to the output with respect to the format provided
+by the <strong>format</strong> parameter of the <strong>-g</strong> option. The only format currently
+supported by <strong>solstice</strong>(1) is the Alias Wavefront OBJ [3] format. With no more
+sub-option, <strong>solstice</strong>(1) will thus generate one OBJ file containing the whole
+mesh of the solar plant. However, the <strong>split</strong> parameter of the <strong>-g</strong> option
+allows to generate several OBJ files: one description is generated per
+<strong>geometry</strong> or per <strong>object</strong>, as defined in the <strong>solstice-input</strong>(5) format,
+whether the <strong>split</strong> sub-option is set to <strong>geometry</strong> or <strong>object</strong>. In this
+situation, each OBJ description is followed by a line with 3 minus characters
+in order to identify the end of the current OBJ.</p></div>
+<div class="paragraph"><p>Independently of the <strong>split</strong> strategy, each <strong>solstice-input</strong>(1) geometry is an
+OBJ group whose name is the <strong>entity-identifier</strong> of the entity in which it is
+encapsulated. Finally, the <strong>dump-geometry-output</strong> uses the <strong>usemtl</strong> directive
+of the OBJ format to associate to a mesh the name of its material type. The
+following grammar succinctly describes the formatting of an <strong>OBJ-FILE</strong>. Please
+refer to the OBJ format specification [3] for more informations on the OBJ file
+format.</p></div>
+<div class="verseblock">
+<pre class="content">OBJ-FILE              ::= g &lt;entity-identifier&gt;
+                          &lt;obj-mesh&gt;
+                        [ &lt;obj-mesh&gt; &#8230; ]
+
+&lt;obj-mesh&gt;            ::= usemtl &lt;material-type&gt;
+                          &lt;obj-vertices&gt;
+                          &lt;obj-faces&gt;
+
+&lt;obj-vertices&gt;        ::= v &lt;real3&gt;
+                        [ v &lt;real3&gt; &#8230; ]
+
+&lt;obj-indices&gt;         ::= f &lt;triangle-indices&gt;
+                        [ f &lt;triangle-indices&gt; &#8230; ]
+
+&lt;material-type&gt;       ::= dielectric
+                        | matte
+                        | mirror
+                        | thin_dielectric
+                        | virtual</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_dump_radiative_paths">DUMP RADIATIVE PATHS</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>For each sun direction, the <strong>dump-radiative-paths-output</strong> lists the geometric
+data of the radiative paths sampled during a simulation. Each path is colored
+with respect to its type: the path is yellow if its first segment, i.e.
+the ray starting from the sun towards a primary geometry, is occluded by a non
+virtual object. If not occluded, the path can be blue or turquoise whether it
+reaches a receiver or not, respectively. Finally, the path can also be red if
+it was canceled due to a topologically incoherent impact (i.e. an impact on a
+surface not at the boundary of the medium in which the rays was propagating).
+The following grammar describes the formatting of a <strong>VTK-RADIATIVE-PATHS</strong>
+file. Refer to the VTK format specification [2] for more informations on the
+VTK file format.</p></div>
+<div class="verseblock">
+<pre class="content">VTK-RADIATIVE-PATHS   ::= # vtk DataFile Version 2.0
+                          Radiative paths
+                          ASCII
+                          DATASET POLYDATA
+                          POINTS &lt;#vertices&gt; float
+                          &lt;paths-vertices&gt;
+                          LINES &lt;#paths&gt; &lt;#paths+#vertices&gt;
+                          &lt;paths-lists&gt;
+                          CELL_DATA &lt;#paths&gt;
+                          SCALAR Radiative_path_type float 1
+                          LOOKUP_TABLE path_type
+                          &lt;paths-type&gt;
+                          LOOKUP_TABLE path_type 5
+                          &lt;color-error&gt;
+                          &lt;color-unused&gt;
+                          &lt;color-success&gt;
+                          &lt;color-missing&gt;
+                          &lt;color-occluded&gt;
+
+&lt;paths-vertices&gt;      ::= &lt;real3&gt;
+                        [ &lt;real3&gt; &#8230; ] # up to &lt;#vertices&gt;
+
+&lt;paths-lists&gt;         ::= &lt;radiative-path&gt;
+                        [ &lt;radiative-path&gt; &#8230; ] # up to &lt;#path&gt;
+
+&lt;radiative-path&gt;      ::= &lt;#path-segments&gt; &lt;path-vertex-id&gt; &#8230;
+
+&lt;paths-type&gt;          ::= &lt;color-id&gt;
+                        [ &lt;color-id&gt; &#8230; ] # up to &lt;#paths&gt;
+
+&lt;color-id&gt;            ::= 0.0  # Red: for error paths
+                        | 0.25 # Green: unused
+                        | 0.5  # Blue: for success paths
+                        | 0.75 # Turquoise: for missing paths
+                        | 1.0  # Yellow: for occluded paths
+
+&lt;color-error&gt;         ::= 1.0 0.0 0.0 1.0
+&lt;color-unused&gt;        ::= 0.0 1.0 0.0 1.0
+&lt;color-success&gt;       ::= 0.0 0.0 1.0 1.0
+&lt;color-missing&gt;       ::= 0.0 1.0 1.0 1.0
+&lt;color-occluded&gt;      ::= 1.0 1.0 0.0 1.0
+
+&lt;#paths&gt;              ::= INTEGER
+&lt;#path-segments&gt;      ::= INTEGER
+&lt;path-vertex-id&gt;      ::= INTEGER</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_rendering">RENDERING</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>When invoked with the <strong>-r</strong> option, <strong>solstice</strong>(1) generates an image of the
+solar facility for each submitted sun direction. Each image is preceded by its
+associated sun direction and is saved with respect to the ASCII PPM file
+format [1]. The output images are actually greyscale images whose pixels store
+the average normalized radiance that reaches them.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notes">NOTES</h2>
+<div class="sectionbody">
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+Portable PixMap - <a href="http://netpbm.sourceforge.net/doc/ppm.html">http://netpbm.sourceforge.net/doc/ppm.html</a>
+</p>
+</li>
+<li>
+<p>
+VTK file format -
+  <a href="http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf">http://www.vtk.org/wp-content/uploads/2015/04/file-formats.pdf</a>
+</p>
+</li>
+<li>
+<p>
+OBJ file format -
+  <a href="http://www.martinreddy.net/gfx/3d/OBJ.spec">http://www.martinreddy.net/gfx/3d/OBJ.spec</a>
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><strong>solstice</strong>(1),
+<strong>solstice-input</strong>(5),
+<strong>solstice-receiver</strong>(5)</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2019-06-04 14:20:08 UTC
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1245 @@
+'\" t
+.\"     Title: solstice-input
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 06/04/2019
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "SOLSTICE\-INPUT" "5" "06/04/2019" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+solstice-input \- solar plant description for solstice(1)
+.SH "DESCRIPTION"
+.sp
+The \fBsolstice\-input\fR is the format used by the \fBsolstice\fR(1) program to represent a solar plant\&. It relies on the YAML 1\&.1 data serialization standard [1]; assuming that the file is compatible with the \fBsolstice\-input\fR semantic, a solar plant can be described by using the whole YAML 1\&.1 functionalities including compact notation and data tagging\&.
+.sp
+A solar plant is composed of a \fBsun\fR, an optional \fBatmosphere\fR and a collection of \fBgeometries\fR, i\&.e\&. \fBshapes\fR with their associated \fBmaterial\fR\&. Beside the raw description of the aforementioned data, the \fBsolstice\-input\fR format provides the \fBentity\fR item to efficiently structure the geometries in the scene\&. An entity is a node in a tree data structure where the position of each child entity is relative to the position of its parent\&. An entity can either encapsulate a \fBgeometry\fR or a \fBpivot\fR that controls the dynamic positioning of its child entities with respect to the pivot constraints and the sun direction submitted to the \fBsolstice\fR(1) program\&.
+.SH "GRAMMAR"
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+<solar\-plant>         ::= \- <sun>
+                          \- <item>
+                        [ \- <item> \&... ]
+                        [ \- <atmosphere> ]
+
+<item>                ::= <entity>
+                        | <geometry>
+                        | <material>
+                        | <medium>
+                        | <spectrum>
+                        | <template>
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<geometry>            ::= geometry:
+                          \- <object>
+                        [ \- <object> \&... ]
+
+<object>              ::= <shape>
+                          <material>
+                        [ <transform> ]
+
+<x_pivot>             ::= x_pivot:
+                            <target>
+                        [   ref_point: <real3> ] # Default is [0,0,0]
+
+<zx_pivot>            ::= zx_pivot:
+                            <target>
+                        [   spacing: REAL ] # in [0, INF)\&. Default 0
+                        [   ref_point: <real3> ] # Default is [0,0,0]
+
+<target>              ::= target:
+                            anchor: <anchor\-identifier>
+                        |   direction: <real3>
+                        |   position: <real3>
+                        |   <sun>
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<shape>               ::= <cuboid>
+                        | <cylinder>
+                        | <hemisphere>
+                        | <hyperbol>
+                        | <parabol>
+                        | <parabolic\-cylinder>
+                        | <plane>
+                        | <sphere>
+                        | <stl>
+
+<cuboid>              ::= cuboid:
+                            size: <real3> # in ]0, INF]^3
+
+<cylinder>            ::= cylinder:
+                            height: REAL # in ]0, INF)
+                            radius: REAL # in ]0, INF)
+                        [   slices: INTEGER ] # in [4, 4096]\&. Default is 16
+                        [   stacks: INTEGER ] # in [1, 4096]\&. Default is 1
+
+<hemisphere>          ::= hemisphere:
+                            radius: REAL # in ]0, INF)
+                        [   clip: <polyclip\-list> ]
+                        [   slices: INTEGER ] # in [4, 4096]
+
+<hyperbol>            ::= hyperbol:
+                            focals: <hyperboloid\-focals>
+                            clip: <polyclip\-list>
+                        [   slices: INTEGER ] # in [4, 4096]
+
+<parabol>             ::= parabol:
+                            focal: REAL # in ]0, INF)
+                            clip: <polyclip\-list>
+                        [   slices: INTEGER ] # in [4, 4096]
+
+<parabolic\-cylinder>  ::= parabolic\-cylinder:
+                            focal: REAL # in ]0, INF)
+                            clip: <polyclip\-list>
+                        [   slices: INTEGER ] # in [4, 4096]
+
+<plane>               ::= plane:
+                            clip: <polyclip\-list>
+                        [   slices: INTEGER ] # in [1, 4096]\&. Default is 1
+
+<sphere>              ::= sphere:
+                            radius: REAL # in ]0, INF)
+                        [   slices: INTEGER ] # in [4, 4096]\&. Default is 16
+                        [   stacks: INTEGER ] # in [2, 4096]\&. Default is slices/2
+
+<stl>                 ::= stl:
+                            path: PATH
+
+<hyperboloid\-focals>  ::= real: REAL # in ]0, INF)
+                          image: REAL # in ]0, INF)
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<polyclip\-list>       ::= \- <polyclip>
+                        [ \- <polyclip> \&... ]
+
+<polyclip>            ::= operation: <AND|SUB>
+                          <contour\-descriptor>
+
+<contour\-descriptor>  ::= <circle\-descriptor>
+                        | <vertices\-descriptor>
+
+<vertices\-descriptor> ::= vertices: <vertices\-list>
+
+<circle\-descriptor>   ::= circle:
+                            radius: REAL # in ]0, INF)
+                        [   center: <real2> ] # Default is 0,0
+                        [   segments: INTEGER ] # in [3, 4096]\&. Default is 64
+
+<vertices\-list>       ::= \- <real2>
+                          \- <real2>
+                          \- <real2>
+                        [ \- <real2> \&... ]
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<material>            ::= material:
+                            <material\-descriptor>
+                        |   <double\-sided\-mtl>
+
+<double\-sided\-mtl>    ::= front: <material\-descriptor>
+                          back: <material\-descriptor>
+
+<material\-descriptor> ::= <dielectric>
+                        | <matte>
+                        | <mirror>
+                        | <thin\-dielectric>
+                        | <virtual>
+
+<dielectric>          ::= dielectric:
+                            medium_i: <medium\-descriptor>
+                            medium_t: <medium\-descriptor>
+                        [   <normal\-map> ]
+
+<matte>               ::= matte:
+                            reflectivity: <mtl\-data> # in [0, 1]
+                        [   <normal\-map> ]
+
+<mirror>              ::= mirror:
+                            reflectivity: <mtl\-data> # in [0, 1]
+                            slope_error: <mtl\-data>
+                        [   microfacet: <normal\-distrib> ] # Default is BECKMANN
+                        [   <normal\-map> ]
+
+<normal\-distrib>      ::= BECKMANN
+                        | PILLBOX
+
+<virtual>             ::= virtual: EMPTY\-STRING
+
+<thin\-dielectric>     ::= thin_dielectric:
+                            thickness: REAL # in [0, INF)
+                            medium_i: <medium\-descriptor>
+                            medium_t: <medium\-descriptor>
+                        [   <normal\-map> ]
+
+<normal\-map>          ::= normal_map:
+                            path: PATH
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<medium>              ::= medium: <medium\-descriptor>
+
+<medium\-descriptor>   ::= refractive_index: <mtl\-data> # in ]0, INF)
+                          extinction: <mtl\-data> # in [0, INF)
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<entity>              ::= entity: <entity\-data>
+
+<template>            ::= template: <entity\-data>
+
+<entity\-data>         ::= name: STRING
+                        [ <geometry\-data> | <x_pivot> | <zx_pivot> ]
+                        [ <anchors> ]
+                        [ <transform> ]
+                        [ <children>  ]
+
+<geometry\-data>       ::= primary: INTEGER # in [0, 1]
+                          <geometry>
+
+<children>            ::= children:
+                          \- <entity\-data>
+                        [ \- <entity\-data> \&... ]
+
+<anchors>             ::= anchors:
+                          \- <anchor\-data>
+                        [ \- <anchor\-data> \&... ]
+
+<anchor\-data>         ::= name: STRING
+                          <position\-descriptor>
+
+<position\-descriptor> ::= position: <real3>
+                        | hyperboloid_image_focals: <hyperboloid_focals>
+
+<entity\-identifier>   ::= <self|STRING>[\&.STRING \&... ]
+
+<anchor\-identifier>   ::= <entity\-identifier>\&.STRING
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<sun>                 ::= sun:
+                            dni: REAL # Direct Normal Irradiance in ]0, INF)
+                        [   <spectrum> ] # Default is the smarts295 spectrum
+                        [   <sun\-shape> ]
+
+<sun\-shape>           ::= <pillbox> | <gaussian> | <buie>
+
+<buie>                ::= buie:
+                            csr: REAL # in [1e\-6, 0\&.849]
+
+<pillbox>             ::= pillbox:
+                            half_angle: REAL # in ]0, 90]
+
+<gaussian>            ::= gaussian:
+                            std_dev: REAL # in ]0, INF)
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<atmosphere>          ::= atmosphere:
+                            extinction: <mtl\-data> # in [0, 1]
+
+\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-
+
+<mtl\-data>            ::= REAL
+                        | <spectrum\-data\-list>
+
+<transform>           ::= transform:
+                            translation: <real3>
+                            rotation: <real3>
+
+<real2>               ::= \- REAL
+                          \- REAL
+
+<real3>               ::= \- REAL
+                          \- REAL
+                          \- REAL
+
+<spectrum>            ::= spectrum: <spectrum\-data\-list>
+
+<spectrum\-data\-list>  ::= \- <spectrum\-data>
+                        [ \- <spectrum\-data> \&... ]
+
+<spectrum\-data>       ::= wavelength: REAL # in [0, INF)
+                          data: REAL # in [0, INF)
+.fi
+.if n \{\
+.RE
+.\}
+.SH "SUN"
+.sp
+The \fBsun\fR describes the source of the solar plant\&. Its direction is not defined into the \fBsolstice\-input\fR(5) file but is provided by the \fBsolstice\fR(1) command\&. This allows to use the same unmodified \fBsolstice\-input\fR(5) file for several simulations with different sun directions\&.
+.sp
+The main \fBsun\fR property is its direct normal irradiance, or \fBdni\fR in W\&.m^\-2\&. Its value is a scalar defining the direct irradiance received on a plane perpendicular to the main sun direction\&. The optional \fBspectrum\fR parameter describes the per wavelength distribution of the sun \fBdni\fR\&. Note that this distribution is automatically normalized by \fBsolstice\fR(1)\&. If the \fBspectrum\fR attribute is not defined, \fBsolstice\fR(1) uses a default spectrum computed with the SMARTS software [2] between 0\&.28 and 4 micro\-meters\&. The total \fBdni\fR (integrated over the spectral range) was set to 1000 W\&.m^\-2\&. The standard Mid\-Latitude\-Summer atmosphere was used with most of gases concentration set as default (the CO2 concentration was assumed 400ppmv in the atmosphere column)\&.
+.sp
+Even if an atmosphere is provided, the atmospheric effects from the top of the atmosphere to ground level are not computed using the atmosphere description\&. As a result, the sun description (\fBdni\fR and optional \fBspectrum\fR) is expected to include all the atmospheric effects (sun irradiance available at ground level)\&.
+.sp
+The \fBsun\-shape\fR parameter controls the angular distribution of the sun light intensity across the sun\(cqs disk\&. If not defined, the distribution is assumed to be a dirac distribution (infinite directional source)\&. The available sun shapes are:
+.PP
+\fBpillbox\fR
+.RS 4
+The
+\fBpillbox\fR
+distribution defines an uniform intensity over the sun\(cqs disk\&. Its single
+\fBhalf_angle\fR
+parameter is the sun\(cqs disk half\-angle in degrees, that is linked to the apparent size of the sun\&. A typical half_angle is 0\&.2664\&.
+.RE
+.PP
+\fBgaussian\fR
+.RS 4
+The
+\fBgaussian\fR
+distribution defines a gaussian distribution of the solar incoming direction\&. Its single
+\fBstd_dev\fR
+parameter is the standard deviation of the distribution in degrees\&. Values around 0\&.2 are typical\&. As the gaussian distribution is not truncated, the resulting sun vector can theoreticaly be oriented towards the sun, especially with a big, non\-typical
+\fBstd_dev\fR
+value\&.
+.RE
+.PP
+\fBbuie\fR
+.RS 4
+The
+\fBbuie\fR
+distribution, as first discribed in [3]\&. Its single
+\fBcsr\fR
+parameter is the ratio between the circumsolar irradiance and the sum of the circumsolar and sun\(cqs disk irradiance\&. An analysis on typical
+\fBcsr\fR
+values can be found in [4]\&.
+.RE
+.SH "ATMOSPHERE"
+.sp
+The \fBatmosphere\fR, when provided, describes the medium surrounding the solar plant\&. Its only parameter is its extinction coefficient in m^\-1, that can either be a scalar if the \fBextinction\fR is constant over the spectrum, or can be spectrally described\&. The extinction along light paths is only computed after the first reflector, as sun description must include all the atmospheric effects before the first reflector (see sun description for more details)\&.
+.sp
+If no atmosphere is provided, atmospheric extinction after the first reflector is not taken into account\&.
+.SH "MATERIAL"
+.sp
+A \fBmaterial\fR describes the properties of an interface\&. These properties can be the same for the two sides of the interface or may be differentiated with a \fBdouble\-sided\-mtl\fR\&. The material comportment is controlled by a \fBmaterial\-descriptor\fR that specifies the physical properties of the interface as well as its optional normal perturbation\&. Note that the physical properties can be either scalars or spectral data\&.
+.SS "Material descriptors"
+.sp
+The available material descriptors are:
+.PP
+\fBdielectric\fR
+.RS 4
+Interface between 2 dielectric media\&. Its
+\fBmedium_i\fR
+parameter defines the current medium, i\&.e\&. the medium the ray travels in, while
+\fBmedium_t\fR
+represents the opposite medium\&. Incoming rays are either specularly reflected or refracted according to a Fresnel term computed with respect to the refractive indices of the 2 media as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Fr = 1/2 * (Rs^2 + Rp^2)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with Rs and Rp the reflectance for the light polarized with its electric field perpendicular or parallel to the plane of incidence, respectively\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Rs = (n1 * |wi\&.N| \- n2 * |wt\&.N|) / (n1 * |wi\&.N| + n2 * |wt\&.N|)
+Rp = (n2 * |wi\&.N| \- n1 * |wt\&.N|) / (n2 * |wi\&.N| + n1 * |wt\&.N|)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with n1 and n2 the indices of refraction of the incident and transmitted media, and wi and wt the incident and transmitted direction\&.
+.sp
+Be careful to ensure the media consistency in the
+\fBsolstice\-input\fR(5) file; a ray travelling in a medium
+\fIA\fR
+can only encounter a medium interface whose
+\fBmedium_i\fR
+attribute is
+\fIA\fR\&. Consequently, a
+\fBdielectric\fR
+material must be defined as a double sided material whose front and back interfaces are dielectrics with inverted media:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+material:
+  front:
+    dielectric:
+      medium_i: &vacuum { refractive_index: 1, extinction: 0 }
+      medium_t: &glass { refractive_index: 1\&.5, extinction: 20 }
+  back:
+    dielectric:
+      medium_i: *glass
+      medium_t: *vacuum
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+If the media consistency is not ensured,
+\fBsolstice\fR(1) will fail to run simulations\&. Note that by default, the surrounding medium is assumed to be the vacuum, i\&.e\&. its refractive index and its extinction are scalars whose values are 1 and 0, respectively\&. If an atmosphere is defined, the refractive index of the surrounding medium is still the scalar 1 but its extinction is the one of the atmosphere\&. In other words, to reference the surrounding medium in the
+\fBmedium_i\fR
+or the
+\fBmedium_t\fR
+attribute of a
+\fBdielectric\fR
+interface, one has to define a medium whose refractive index is the scalar 1 and extinction is either 0 or the extinction of the atmosphere if the latter is defined or not, respectively\&.
+.RE
+.PP
+\fBmatte\fR
+.RS 4
+Diffuse surface\&. Reflects the same intensity in all directions independently of the incoming direction\&.
+.RE
+.PP
+\fBmirror\fR
+.RS 4
+Specular or glossy reflection whether the
+\fBslope_error\fR
+parameter is 0 or not, respectively\&. Glossy reflections are controlled by a microfacet BRDF\&. The microfacet normals are distributed with respect to the Beckmann or the Pillbox distribution according to the
+\fBnormal\-distrib\fR
+attribute\&.
+.sp
+Let S the
+\fBslope_error\fR
+parameter in ]0, 1]\&. The Beckmann distribution is defined as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+D(wh) = exp(\-tan^2(a) / m^2) / (PI * m^2 * cos^4(a))
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with a = arccos(wh\&.N), and m = sqrt(2)*S while the pillbox distribution is defined as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+        | 0; if |wh\&.N| >= S
+D(wh) = |
+        | 1 / (PI * (1 \- cos^2(S))); if |wh\&.N| < S
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBthin\-dielectric\fR
+.RS 4
+The interface is assumed to be a thin slab of a dielectric material\&. The
+\fBmedium_i\fR
+parameter defines the outside dielectric medium while
+\fBmedium_t\fR
+is the medium of the thin slab\&. Incoming rays are either specularly reflected or transmitted (without deviation) according to a Fresnel term computed with respect to the refractive indices of the 2 media as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Fr = 1/2 * (Rs^2 + Rp^2)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with Rs and Rp the reflectance for the light polarized with its electric field perpendicular or parallel to the plane of incidence, respectively\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+Rs = (n1 * |wi\&.N| \- n2 * |wt\&.N|) / (n1 * |wi\&.N| + n2 * |wt\&.N|)
+Rp = (n2 * |wi\&.N| \- n1 * |wt\&.N|) / (n2 * |wi\&.N| + n1 * |wt\&.N|)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with n1 and n2 the indices of refraction of the incident and transmitted media, and wi and wt the incident and transmitted direction\&. Note that the underlying scattering function correctly handles the multiple refraction effects into the thin slab\&.
+.sp
+Be careful to ensure the media consistency in the
+\fBsolstice\-input\fR(5) file; a ray travelling in a medium
+\fIA\fR
+can only encounter a medium interface whose
+\fBmedium_i\fR
+attribute is
+\fIA\fR\&. If the media consistency is not ensured,
+\fBsolstice\fR(1) will fail to run simulations\&. Note that by default, the surrounding medium is assumed to be the vacuum, i\&.e\&. its refractive index and its extinction are scalars whose values are 1 and 0, respectively\&. If an atmosphere is defined, the refractive index of the surrounding medium is still the scalar 1 but its extinction is the one of the atmosphere\&. In other words, to reference the surrounding medium in the
+\fBmedium_i\fR
+attribute of a
+\fBthin\-dielectric\fR
+interface, one has to define a medium whose refractive index is the scalar 1 and extinction is either 0 or the extinction of the atmosphere if the latter is defined\&.
+.RE
+.PP
+\fBvirtual\fR
+.RS 4
+Fully transparent interface\&.
+.RE
+.SS "Normal map"
+.sp
+All the material descriptors, excepted the \fBvirtual\fR, provide an optional \fBnormal\-map\fR attribute that defines a path toward a Portable PixMap image [5] whose pixels store a normal expressed in the tangent space of the interface\&. By default the unperturbed tangent space normal is {0,0,1}\&. The PPM image can be encoded on 8 or 16\-bits per component either in ASCII or binary\&. The parameterization of this 2D image onto the shape surfaces depends on the type of the shape\&. For the \fBhemisphere\fR, \fBhyperbol\fR, \fBparabol\fR, \fBplane\fR and \fBparabolic\-cylinder\fR shapes, the image is mapped in the {X,Y} plane\&. The other shapes are not parameterized and consequently, applying a normal\-mapped material on these shapes leads to undefined behaviors\&.
+.SH "SHAPE"
+.sp
+A \fBshape\fR describes a geometric model\&. It is defined in its local space, i\&.e\&. in a coordinate system whose origin is proper to the shape\&. No space transformation can be introduced through the declaration of a shape: it should be transformed externally through an \fBobject\fR and/or \fBentities\fR\&. \fBsolstice\-input\fR(1) provides 2 types of shape: quadric and mesh\&. The former is used to declare parametric surfaces, while the latter describes triangulated surfaces\&.
+.SS "Quadric"
+.sp
+A quadric shape is defined from a quadric equation and a set of 2D clipping operations performed in their {X,Y} plane\&. By convention, the front side of the quadric surface looks toward the positive Z axis\&. Internally, the clipped quadric surface is discretized in a triangular mesh with respect to the discretisation parameters of the quadric\&. This mesh is used by \fBsolstice\fR(1) as a "proxy" to speed up the access toward the quadric shape: the quadric position and its associated normal are in fine computed from the quadric equation\&.
+.sp
+The quadric surface is parameterized in the {X,Y} plane\&. Its parameterization domain is defined from the bounds of its clipped mesh in the {X,Y} plane:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+u = (x \- lowerX) / (upperX\-lowerX)
+v = (y \- lowerY) / (upperY\-lowerY)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with \fBu\fR and \fBv\fR the mapped 2D coordinates from a 3D position {\fBx\fR,\fBy\fR,\fBz\fR} onto the quadric, and \fBlower\fR<\fBX\fR|\fBY\fR> and \fBupper\fR<\fBX\fR|\fBY\fR> the lower and upper bounds of the clipped quadric along the X and Y axis\&. The available quadrics are:
+.PP
+\fBhemisphere\fR
+.RS 4
+Hemispheric shape defined along the Z axis whose minimum is positioned at the origin\&. The
+\fBslices\fR
+parameter controls the number of divisions along the Z axis\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+x^2 + y^2 + (z\-radius)^2 = radius^2
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBhyperbol\fR
+.RS 4
+Hyperbolic quadric defined along the Z axis whose minimum is positioned at the origin\&. The
+\fBslices\fR
+parameter controls the discretisation of the hyperbol\&. If not defined, it is automatically computed with respect to the hyperbol curvature\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+(x^2 + y^2) / a^2 \- (z + z0 \- g/2)^2 / b^2 + 1 = 0
+
+a^2 = g^2(f \- f^2)
+b = g(f \- 1/2)
+z0 = |b| + g/2
+g = focals\&.real + focals\&.image
+f = focals\&.real / g
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBparabol\fR
+.RS 4
+Parabolic quadric defined along the Z axis whose minimum is positioned at the origin\&. The
+\fBslices\fR
+parameter controls the discretisation of the parabol\&. If not defined, it is automatically computed with respect to the parabol curvature\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+x^2 + y^2 \- 4 * focal * z = 0
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBparabolic\-cylinder\fR
+.RS 4
+Parabolic cylinder oriented along the Z axis whose main axis is along the X axis and minimum is positioned at the origin\&. The
+\fBslices\fR
+parameter controls the discretisation of the parabolic cylinder\&. If not defined, it is automatically computed with respect to the parabolic cylinder curvature\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+y^2 \- 4 * focal * z = 0
+.fi
+.if n \{\
+.RE
+.\}
+.RE
+.PP
+\fBplane\fR
+.RS 4
+Plane whose normal points along the positive Z axis\&. The
+\fBslices\fR
+attribute controls the discretisation of the clipped plane\&.
+.RE
+.SS "Clipping"
+.sp
+A clipping operation, or \fBpolyclip\fR, is used to remove some parts of the quadric surface\&. It is defined by a 2D \fBcontour\-descriptor\fR expressed in the {X,Y} plane and a clipping \fBoperation\fR\&. The \fBAND\fR and \fBSUB\fR clip operands, remove the quadric surface that intersects or does not intersect the \fBcontour\-descriptor\fR, respectively\&. The available \fBcountour\-descriptors\fR are:
+.PP
+\fBcircle\-descriptor\fR
+.RS 4
+Circular contour whose size is defined by the
+\fBradius\fR
+parameter\&. Actually,
+\fBsolstice\fR(1) discretized the circular contour with respect to the
+\fBsegments\fR
+attribute that defines the overall number of segments used to approximate the circle\&.
+.RE
+.PP
+\fBvertices\-descriptor\fR
+.RS 4
+Polygonal contour described by a list of 2D vertices\&. The polygon edges are defined by connecting each vertex to its previous one\&. To ensure that the polygon is closed, an additional edge is automatically created between the first and the last vertex\&. Note that
+\fBsolstice\fR(1) assumes that the defined polygon does not overlap itself, i\&.e\&. their non consecutive edges are not intersecting\&.
+.RE
+.sp
+The \fBclip\fR parameter of the quadrics lists a set of the aforementioned 2D \fBpolyclips\fR\&. Each of these clipping operations is successively applied on the remaining quadric surface, in the order on which they are declared\&. For instance, the following example uses 5 clipping operations on a plane to build a rectangle with a circular hole at each of its corner\&. The first \fBpolyclip\fR limits the infinite plane to a rectangle centered in 0 whose size in X and Y is 8 and 4, respectively\&. The 4 subsequent \fBpolyclips\fR drill the rectangle near of its corner with circles whose radius is 0\&.5:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+plane:
+  clip:
+  \- {operation: AND, vertices: [[\-4,\-2],[\-4,2],[4,2],[4,\-2]]}
+  \- {operation: SUB, circle: {radius: 0\&.5, center: [\-3,\-1]}}
+  \- {operation: SUB, circle: {radius: 0\&.5, center: [\-3, 1]}}
+  \- {operation: SUB, circle: {radius: 0\&.5, center: [ 3,\-1]}}
+  \- {operation: SUB, circle: {radius: 0\&.5, center: [ 3, 1]}}
+.fi
+.if n \{\
+.RE
+.\}
+.SS "Triangular mesh"
+.sp
+Triangular meshes are generated by \fBsolstice\fR(1) from a shape description or loaded from a CAO file\&. Their normals are defined per triangle and are thus discontinuous even for smooth shapes as spheres\&. The triangular meshes are not parameterized, i\&.e\&. they do not provide a mapping from a 3D position onto its surface to a 2D coordinates\&. Applying a normal\-mapped material to a triangular mesh will thus produce undefined behaviors\&.
+.sp
+The available triangular meshes are:
+.PP
+\fBcuboid\fR
+.RS 4
+Axis aligned cuboid centered in 0 whose corner positions and dimensions along the 3 axis are defined by the
+\fBsize\fR
+parameter\&. The front side of the cuboid surface looks outside the cuboid\&.
+.RE
+.PP
+\fBcylinder\fR
+.RS 4
+Cylinder centered in 0 whose
+\fBheight\fR
+is along the positive Z axis\&. The top and the bottom of the cylinder is capped\&. The
+\fBstacks\fR
+and
+\fBslices\fR
+parameters control the discretisation, i\&.e\&. the number of divisions, along or around the Z axis, respectively\&. The front side of the cylinder surface looks outside the cylinder\&.
+.RE
+.PP
+\fBsphere\fR
+.RS 4
+Triangulated sphere centered in 0\&. The
+\fBstacks\fR
+and
+\fBslices\fR
+parameters control the discretisation, i\&.e\&. the number of divisions, along or around the Z axis, respectively\&. The front side of the sphere surface looks outside the sphere\&.
+.RE
+.PP
+\fBstl\fR
+.RS 4
+Path toward an external mesh file defined with respect to the ASCII
+\fBST\fRereo
+\fBL\fRithography file format\&. The front side of the loaded triangles is defined with respect to their vertex ordering into the STL file: a triangle is front facing when their vertices are clock wise ordered\&.
+.RE
+.SH "ENTITY"
+.sp
+An \fBentity\fR is used to declare and position shapes into the solar plant\&. Actually, the entity is the only item that effectively spawns a \fBgeometry\fR into the solar plant: if a geometry is declared but not referenced by an entity, it is ignored by \fBsolstice\fR(1)\&. An entity is a hierarchical data structure that can have child entities whose transformation is relative to their parent\&. If not defined, the \fBtransform\fR parameter of an entity is assumed to be the identity, i\&.e\&. its \fBrotation\fR and \fBtranslation\fR are nulls\&.
+.sp
+Each entity has a \fBname\fR which must be unique per hierarchy level: 2 root entities (i\&.e\&. entities without parent) cannot have the same name as well as the children of a same parent entity\&. In addition, the name string cannot contain dots, spaces or tabulations\&. A child entity is identified into the solar plant by successively concatenating, with the \*(Aq\&.\*(Aq character, the name of its ancestors with its own name\&. This naming convention is used in the \fBsolstice\-receiver\fR(5) format to define the entities to track during the \fBsolstice\fR(1) computations\&. For instance, in the following example, the \fBentity\-identifier\fR of the child entity named \fBlevel2\fR is \fBlevel0\&.level1\&.level2\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+entity:
+  name: level0
+  child:
+  \- name: level1
+    child:
+    \- name: level2
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+An entity encapsulates either a \fBgeometry\fR or a \fBpivot\fR\&. The former is a collection of \fBobjects\fR, i\&.e\&. \fBshapes\fR with their associated \fBmaterial\fR and an optional \fBtransformation\fR\&. The latter is used to control the dynamic positioning of the child entities with respect to some constraints defined by the pivot type, and the sun directions submitted by \fBsolstice\fR(1)\&. Each entity can also have a list of \fBanchors\fR\&. An anchor is used to define a position relative to the entity into which it is declared\&.
+.sp
+For a geometric entity one has to define if the encapsulated geometry is a \fBprimary\fR geometry, i\&.e\&. a geometry directly lit by the sun and used to concentrate the solar flux (e\&.g\&. a primary mirror)\&. One can define all the solar plant geometric entities as primaries but a well designed solar plant with correctly tagged primary geometries will drastically improve the convergence speed of the \fBsolstice\fR(1) simulations\&.
+.SS "Template"
+.sp
+A \fBtemplate\fR is a first level entity with no existence into the solar plant\&. It is used to pre\-declare an entity hierarchy that can then be instantiated several times in the solar plant by referencing it through common entities with YAML data tagging\&. In the following example, the templated entity \fBmy\-template\fR is instantiated 3 times into the scene:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- template: &my\-template
+    name: bar
+    primary: 1
+    geometry: \&.\&.\&.
+\- entity:
+    name: foo0
+    transform: {translation: [\-10\&.5, 0, 0]}
+    children: [*my\-template]
+\- entity:
+    name: foo1
+    transform: {translation: [0, 0, 0]}
+    children: [*my\-template]
+\- entity:
+    name: foo2
+    transform: {translation: [10\&.5, 0, 0]}
+    children: [*my\-template]
+.fi
+.if n \{\
+.RE
+.\}
+.SS "Pivot"
+.sp
+A \fBpivot\fR is a special kind of node that can be used in the tree data structure describing an entity to automatically point its child geometry according to the sun position and to the pivot parameters\&. It is supposed (but not mandatory) that the children of a pivot includes a reflector, that, once pivoted, will reflect the sun light towards a \fBtarget\fR\&. You should note that a pivot cannot be the child of another pivot\&.
+.sp
+The most noticeable pivot parameter is its \fBtarget\fR\&. Four different types of targets are available:
+.PP
+\fBposition\fR
+.RS 4
+Define the target as being an absolute point in world coordinates\&.
+.RE
+.PP
+\fBanchor\fR
+.RS 4
+Define the target as being a position relative to an entity (see the
+\fBanchor\fR
+section)\&.
+.RE
+.PP
+\fBsun\fR
+.RS 4
+Define the target as being the center of the sun\&.
+.RE
+.PP
+\fBdirection\fR
+.RS 4
+The pivot reflects light in the given direction, specified in world coordinates\&.
+.RE
+.sp
+Pivots can also have a \fBref_point\fR optional parameter defining a 3D point in the coordinate system the pivot children that will be used by the pointing algorithm\&. If not provided, it is set to the origin\&.
+.sp
+Two different flavours of \fBpivots\fR are available: \fBx_pivot\fR and \fBzx_pivot\fR, each with its own set of parameters and behaviour\&.
+.PP
+\fBx_pivot\fR
+.RS 4
+Pivot with a single rotation axis: the +X axis in its local coordinate system\&. It has a
+\fBtarget\fR
+and can have a
+\fBref_point\fR\&. Its pointing algorithm considers an incoming ray of light from the center of the sun and rotates its children so that a specular reflection at
+\fBref_point\fR
+using +Z as local normal will hit the target point of the pivot, or will have the specified direction (depending of the kind of target)\&.
+.RE
+.PP
+\fBzx_pivot\fR
+.RS 4
+Pivot with two rotation axis: the +Z axis in its local coordinate system, then the +X axis in the coordinate system resulting of the Z rotation\&. It has a
+\fBtarget\fR
+and can have a
+\fBref_point\fR
+and a
+\fBspacing\fR
+that defines the translation along the +Y axis after the first rotation\&. If not defined,
+\fBspacing\fR
+is 0\&. The
+\fBzx_pivot\fR
+pointing algorithm considers an incoming ray of light from the center of the sun and rotates its children so that a specular reflection at
+\fBref_point\fR
+using +Y as local normal will hit the target point of the pivot, or will have the specified direction (depending of the kind of target)\&.
+.RE
+.SS "Anchor"
+.sp
+An \fBanchor\fR defines a relative position into the entity hierarchy\&. They are particularly useful for pivots and hyperbolic shapes that may have to reference a position relative to an entity whose transformations may also depends of its ancestor\&. An anchor has a \fBname\fR that must be unique for the whole sets of per entity anchors\&. In addition, a name cannot contain dots, spaces or tabulations\&. An anchor is identified into the solar plant by concatenating, with the \*(Aq\&.\*(Aq character, its name to the \fBentity\-identifier\fR of the entity into which it is declared\&. For instance, in the following example, the \fBanchor\-identifier\fR of the anchor named \fBanchor0\fR is \fBlevel0\&.level1\&.anchor0\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+entity:
+  name: level0
+  child:
+  \- name: level1
+    anchor:
+    \- {name: anchor0, position: [0, 0, 0]}
+    \- {name: anchor1, position: [1, 2, 3]}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+In some situations, the \fBanchor\-identifier\fR cannot be fully determined\&. Let a templated entity with a descendant referencing an anchor of one of its ancestors\&. On its declaration, the template is still not instantiated through a parent entity and consequently the name of the root entity is unknown\&. Moreover, the name of the root entity cannot be fixed since it changes for each instance of the template\&. To handle these cases, the \fBself\fR reserved keyword allows to reference the unknown root entity of the currently declared hierarchy\&. In the following example, the entities \fBentity0\&.level0\&.level1\fR and \fBentity1\&.level0\&.level1\fR encapsulate a pivot that references the anchor \fBanchor0\fR defined in their respective parent \fBentity0\&.level0\fR and \fBentity1\&.level0\fR:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- template: &my\-template
+    name: level0
+    anchor: [{name: anchor0, position: [1, 2, 3]}]
+    child:
+    \- name: level1
+      pivot:
+        x_pivot:
+          ref_point: {0, 0, 0}
+          target: {anchor: self\&.level0\&.anchor0}
+
+\- entity: {name: entity0, child: [*my\-template]}
+\- entity: {name: entity1, child: [*my\-template]}
+.fi
+.if n \{\
+.RE
+.\}
+.SS "Transform"
+.sp
+A \fBtransform\fR is used to move an \fBobject\fR or an \fBentity\fR in space\&. The \fBrotation\fR parameter list 3 angles in degrees defining the rotation to perform around the X, Y and Z axis\&. The \fBtranslation\fR attribute describes the offsets to apply along the X, Y and Z axis\&. Let the local repair \fBp\fR of an object, \fBp\fR is transformed in \fBp\*(Aq\fR with respect to its associated \fBtransform\fR as follow:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+p\*(Aq = Rx * Ry * Rz * (T + p)
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+with \fBT\fR the translation vector and \fBRx\fR, \fBRy\fR and \fBRz\fR the rotation matrices around the X, Y and Z axis defined as:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+     | 1  0   0 |        | cY  0 sY |        | cZ \-sZ  0 |
+Rx = | 0 cX \-sX |;  Ry = |  0  1  0 |;  Rz = | sZ  cZ  0 |
+     | 0 sX  cX |        |\-sY  0 cY |        |  0   0  1 |
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+where \fBc\fR<\fBX\fR|\fBY\fR|\fBZ\fR> and \fBs\fR<\fBX\fR|\fBY\fR|\fBZ\fR> are the cosine and the sinus, respectively, of the rotation angles around the X, Y and Z axis\&.
+.SH "EXAMPLES"
+.sp
+Declare 2 entities and a point source sun\&. The first entity is a purely specular square of size 10, whose center is at the origin\&. The second entity is a purely transparent square used as a receiver of the solar flux\&. Its size is 1 and its center is positioned at {0,0,2}:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- sun: {dni: 1000}
+
+\- entity:
+    name: reflector
+    primary: 1
+    geometry:
+    \- material:
+        mirror:
+          reflectivity: 1
+          slope_error: 0
+      plane:
+        clip:
+        \- operation: AND
+          vertices:
+          \- [\-5\&.0,\-5\&.0]
+          \- [\-5\&.0, 5\&.0]
+          \- [ 5\&.0, 5\&.0]
+          \- [ 5\&.0,\-5\&.0]
+
+\- entity:
+    name: receiver
+    primary: 0
+    transform:
+      translation: [0, 0, 2]
+    geometry:
+    \- material:
+        virtual: # No attrib
+      plane:
+        clip:
+        \- operation: AND
+          vertices:
+          \- [\-0\&.5,\-0\&.5]
+          \- [\-0\&.5, 0\&.5]
+          \- [ 0\&.5, 0\&.5]
+          \- [ 0\&.5,\-0\&.5]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Define a circular diffuse reflector surrounded by a virtual sphere and a pillbox\-shaped sun whose \fBhalf_angle\fR is 0\&.1 degree\&. Use anchors and tags of the YAML format to reference into the entities a pre\-declared geometry\&. Rely on the YAML compact notation to reduce the number of lines required to describe the scene:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- sun: {dni: 1000, pillbox: {half_angle: 0\&.1}}
+
+\- geometry: &small\-circle
+  \- material: {matte: {reflectivity: 1}}
+    plane: {clip: [{operation: AND, circle: {radius: 0\&.5}}]}
+
+\- geometry: &big\-sphere
+  \- material: {?virtual}
+    sphere: {radius: 2, slices: 128}
+
+\- entity: {name: reflector, primary: 1, geometry: *small\-circle}
+\- entity: {name: receiver,  primary: 0, geometry: *big\-sphere}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Declare 2 parabolic reflectors from a \fBtemplated\fR parabola whose orientation is controlled by a \fBzx_pivot\fR\&. This pivot ensures that the reflector points toward the receiver, independently of its position, by targeting an \fBanchor\fR whose position is defined relatively to the receiver:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- sun: {dni: 1000}
+
+\- entity: # Receiver
+    name: square_receiver
+    primary: 0
+    transform: { rotation: [0,90,0], translation: [100,0,10] }
+    anchors: [{name: anchor0, position: [0,0,0]}]
+    geometry:
+    \- material: {?virtual}
+      plane:
+        clip:
+        \- operation: AND
+          vertices: [[\-\&.5,\-\&.5],[\-\&.5,\&.5],[\&.5,\&.5],[\&.5,\-\&.5]]
+
+\- template: &self_oriented_parabol # Reflector
+    name: pivot
+    transform: {translation: [0, 0, 4], rotation: [0, 0, 90]}
+    zx_pivot: {target: {anchor: square_receiver\&.anchor0}}
+    children:
+    \- name: parabol
+      transform: {rotation: [\-90, 0, 0]}
+      primary: 1
+      geometry:
+      \- material: {mirror: {reflectivity: 1, slope_error: 0}}
+        parabol:
+          focal: 100
+          clip:
+          \- operation: AND
+            vertices: [[\-5,\-5],[\-5,5],[5,5],[5,\-5]]
+
+# Instantiate the reflector template
+\- entity:
+    name: reflector1
+    transform: {translation: [0,0,0]}
+    children: [*self_oriented_parabol]
+\- entity:
+    name: reflector2
+    transform: {translation: [10,43\&.6,0]}
+    children: [*self_oriented_parabol]
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Declare a solar furnace with 9 heliostats instantiated from the same \fBtemplate\fR\&. Their position is controlled by a \fBzx_pivot\fR to ensure that the incoming sun rays are reflected toward the negative X axis\&. Reflected rays are then concentrated by a parabola toward a purely absorptive receiver\&. The heliostats and the parabola share the same material: the front faces are purely specular while the back faces are diffuse:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+\- sun: {dni: 1000}
+
+\- material: &specular
+    front: {mirror: {reflectivity: 1, slope_error: 0}}
+    back: {matte: {reflectivity: 1}}
+
+\- template: &H # Template of an heliostat
+    name: heliostat
+    transform: {translation: [0,0,5\&.5]}
+    zx_pivot: {target: {direction: [\-1,0,0]}}
+    children:
+    \- name: reflector
+      transform: {rotation: [\-90,0,0]}
+      primary: 1
+      geometry:
+      \- material: *specular
+        plane:
+          clip: [{operation: AND, vertices: [[\-5,\-5],[\-5,5],[5,5],[5,\-5]]}]
+
+\- entity: # Receiver entity
+    name: receiver
+    primary: 0
+    transform: {translation: [18,0,20], rotation: [0,90,0]}
+    geometry:
+    \- material: {matte: {reflectivity: 0}}
+      plane:
+        clip:
+        \- operation: AND
+          vertices: [[\-\&.5,\-\&.5],[\-\&.5,\&.5],[\&.5,\&.5],[\&.5,\-\&.5]]
+
+\- entity: # Great parabola
+    name: parabola
+    primary: 0
+    transform: {translation: [0,0,20], rotation: [0,90,90]}
+    geometry:
+    \- material: *specular
+      parabol:
+        focal: 18
+        clip: [{operation: AND, vertices: [[\-30,\-20],[\-30,20],[30,20],[30,\-20]]}]
+
+# Instantiate the heliostat template
+\- entity: {name: H1, children: [*H], transform: {translation: [40,\-20, 0]}}
+\- entity: {name: H2, children: [*H], transform: {translation: [40,  0, 0]}}
+\- entity: {name: H3, children: [*H], transform: {translation: [40, 20, 0]}}
+\- entity: {name: H4, children: [*H], transform: {translation: [60,\-20,10]}}
+\- entity: {name: H5, children: [*H], transform: {translation: [60,  0,10]}}
+\- entity: {name: H6, children: [*H], transform: {translation: [60, 20,10]}}
+\- entity: {name: H7, children: [*H], transform: {translation: [80,\-20,20]}}
+\- entity: {name: H8, children: [*H], transform: {translation: [80, 0, 20]}}
+\- entity: {name: H9, children: [*H], transform: {translation: [80, 20,20]}}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+This example illustrates the use of quadrics and refractive materials: in this example, three partial \fBparabols\fR with various focal distances and positions concentrate incoming radiation at a common focal position\&. But a \fBhyperbol\fR is located between the parabols and their common focal position, which is also one of the two focals of the hyperbol\&. Radiation is therefore redirected to the second focal of the hyperbol, where the square target is located\&. Finally, a \fBcuboid\fR using a glass material is located between the hyperbol and the target\&. In this example, a small fraction of incoming power is absorbed by the target\&. The rest is either missing the target, absorbed or refracted by the glass\&. Furthermore, this example illustrates the use of a \fBspectrum\fR for \fBrefractive index\fR and \fBextinction\fR by various \fBmedia\fR (air and glass)\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+# Spectra
+\- spectrum: &solar_spectrum
+  \- {wavelength: 0\&.3, data: 1\&.0}
+  \- {wavelength: 0\&.4, data: 2\&.0}
+  \- {wavelength: 0\&.5, data: 0\&.5}
+  \- {wavelength: 0\&.6, data: 3\&.5}
+  \- {wavelength: 0\&.7, data: 1\&.5}
+  \- {wavelength: 0\&.8, data: 0\&.8}
+
+\- spectrum: &air_kabs
+  \- {wavelength: 0\&.3, data: 1\&.0e\-4}
+  \- {wavelength: 0\&.4, data: 1\&.0e\-5}
+  \- {wavelength: 0\&.5, data: 2\&.0e\-5}
+  \- {wavelength: 0\&.6, data: 2\&.0e\-4}
+  \- {wavelength: 0\&.7, data: 3\&.0e\-5}
+  \- {wavelength: 0\&.8, data: 1\&.0e\-4}
+
+\- spectrum: &glass_kabs
+  \- {wavelength: 0\&.3, data: 1\&.0e\-2}
+  \- {wavelength: 0\&.4, data: 1\&.0e\-3}
+  \- {wavelength: 0\&.5, data: 2\&.0e\-3}
+  \- {wavelength: 0\&.6, data: 2\&.0e\-2}
+  \- {wavelength: 0\&.7, data: 3\&.0e\-3}
+  \- {wavelength: 0\&.8, data: 1\&.0e\-3}
+
+\- spectrum: &glass_ref_index
+  \- {wavelength: 0\&.30, data: 1\&.40}
+  \- {wavelength: 0\&.40, data: 1\&.39}
+  \- {wavelength: 0\&.50, data: 1\&.37}
+  \- {wavelength: 0\&.60, data: 1\&.34}
+  \- {wavelength: 0\&.70, data: 1\&.30}
+  \- {wavelength: 0\&.80, data: 1\&.25}
+
+# Media
+\- medium: &air_medium
+    refractive_index: 1
+    extinction: *air_kabs
+
+\- medium: &glass_medium
+    refractive_index: *glass_ref_index
+    extinction: *glass_kabs
+
+# Sun & atmosphere
+\- sun: {dni: 1, spectrum: *solar_spectrum}
+\- atmosphere: {extinction: *air_kabs}
+
+# Materials
+\- material: &specular {mirror: {reflectivity: 1, slope_error: 0}}
+\- material: &black {matte: {reflectivity: 0}}
+\- material: &glass
+    front: {dielectric: {medium_i: *air_medium, medium_t: *glass_medium}}
+    back:  {dielectric: {medium_i: *glass_medium, medium_t: *air_medium}}
+
+# Primary reflectors
+\- entity:
+    name: "primary_reflector1"
+    primary: 1
+    transform: {translation: [0, 0, \-2\&.0]}
+    geometry:
+    \- material: *specular
+      parabol:
+        focal: 12
+        clip:
+        \- {operation: AND, circle: {radius: 10}}
+        \- {operation: SUB, circle: {radius: 5}}
+
+\- entity:
+    name: "primary_reflector2"
+    primary: 1
+    transform: {translation: [0, 0, \-4]}
+    geometry:
+    \- material: *specular
+      parabol:
+        focal: 14
+        clip:
+        \- {operation: AND, circle: {radius: 15}}
+        \- {operation: SUB, circle: {radius: 10}}
+
+\- entity:
+    name: "primary_reflector3"
+    primary: 1
+    transform: {translation: [0, 0, \-6]}
+    geometry:
+    \- material: *specular
+      parabol:
+        focal: 16
+        clip:
+        \- {operation: AND, circle: {radius: 20}}
+        \- {operation: SUB, circle: {radius: 15}}
+
+# Secondary reflector
+\- entity:
+    name: "secondary_reflector"
+    primary: 0
+    transform: {translation: [0, 0, 6]}
+    geometry:
+    \- material: *specular
+      hyperbol:
+        focals: {real: 16\&.0, image: 4}
+        clip: [{operation: AND, circle: {radius: 5}}]
+
+# Glass box
+\- entity:
+    name: "glass_slide"
+    primary: 0 # The entity is not sampled as a primary reflector
+    geometry:
+    \- material: *glass
+      cuboid: {size: [10,10,0\&.5]}
+      transform: {translation: [0, 0, 0\&.25]}
+
+# Receiver
+\- entity:
+    name: "square_receiver"
+    primary: 0 # The entity is not sampled as a primary reflector
+    transform: {translation: [0, 0, \-10] }
+    geometry:
+    \- material: *black
+      plane:
+        clip:
+        \- operation: AND
+          vertices: [[\-0\&.5,\-0\&.5],[\-0\&.5,0\&.5],[0\&.5,0\&.5],[0\&.5,\-0\&.5]]
+.fi
+.if n \{\
+.RE
+.\}
+.SH "NOTES"
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 1.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  1." 4.2
+.\}
+YAML Ain\(cqt Markup Language \-
+http://yaml\&.org
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 2.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  2." 4.2
+.\}
+SMARTS, Simple Model of the Atmospheric Radiative Transfer of Sunshine \-
+http://www\&.nrel\&.gov/rredc/smarts/
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 3.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  3." 4.2
+.\}
+D\&. Buie, A\&.G\&. Monger, C\&.J\&. Dey\&. "Sunshape distributions for terrestrial solar simulations"\&. Solar Energy, 2003, 74, pp\&. 113\-122\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 4.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  4." 4.2
+.\}
+D\&. Buie, C\&.J\&. Dey, S\&. Bosi\&. "The effective size of the solar cone for solar concentrating systems"\&. Solar Energy, 2003, 74, pp\&. 417\-427\&.
+.RE
+.sp
+.RS 4
+.ie n \{\
+\h'-04' 5.\h'+01'\c
+.\}
+.el \{\
+.sp -1
+.IP "  5." 4.2
+.\}
+Portable PixMap \-
+http://netpbm\&.sourceforge\&.net/doc/ppm\&.html
+.RE
+.SH "SEE ALSO"
+.sp
+\fBsolstice\fR(1), \fBsolstice\-receiver\fR(5)

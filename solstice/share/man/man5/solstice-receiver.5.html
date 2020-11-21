@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>solstice-receiver(5)</title>
+<style type="text/css">
+/* Copyright (C) 2016-2018 CNRS
+ *
+ * This is free style sheet: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This CSS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/. */
+
+body.manpage {
+  font-family:"Liberation Sans",sans-serif;
+  font-size:10pt;
+  text-align: justify;
+  max-width: 55em;
+  margin: 1em;
+  background: #ffffff
+}
+
+body.manpage .monospaced, .literalblock {
+  margin: 2em;
+  color: #636261
+}
+
+body.manpage em {
+  color: #660000
+}
+
+body.manpage div.verseblock > pre.content {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage h1 {
+  padding-bottom: 0.5em;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+body.manpage code {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage #footer { display: none; }
+
+body.manpage div#toctitle { display: none; }
+
+body.manpage div#toc {
+  display: block;
+  position:fixed;
+  top:0;
+  left:60em;
+  height:100%;
+  width: 100%;
+  padding:3em 0 0 0;
+  border-left:1px solid #dbdbdb;
+  background: #eeeeee
+}
+
+body.manpage a {
+  font-weight: bold;
+  color: #225588;
+}
+
+body.manpage div#toc a, div#toc a:link, div#toc a:visited {
+  margin:0;
+  padding-left: 2em;
+  color:#999999;
+  text-decoration:none;
+  font-weight: normal;
+}
+
+body.manpage div.toclevel1 {
+  line-height: 1.5em;
+}
+
+body.manpage div.toclevel2 {
+  margin-left: 2em;
+}
+
+body.manpage div#toc a:hover {
+  color:#666666;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="manpage">
+<div id="header">
+<h1>
+solstice-receiver(5) Manual Page
+</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+<h2>NAME</h2>
+<div class="sectionbody">
+<p>solstice-receiver -
+   declare the solar-plant receivers for solstice(1)
+</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_description">DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>The <strong>solstice-receiver</strong> format is used by <strong>solstice</strong>(1) to declare which
+geometric entities defined in a <strong>solstice-input</strong>(5) file are receivers. For
+each receiver, <strong>solstice</strong>(1) computes its overall intercepted power, its
+associated losses as well as its efficiency. Refer to the <strong>solstice-output</strong>(5)
+format for informations on the per receiver data generated by <strong>solstice</strong>(1).
+Declaring the receivers separately of the solar plant, allows to use the same
+<strong>solstice-input</strong>(5) file for several simulations using different receivers. For
+instance, one can define a specific <strong>solstice-receiver</strong> file that declares some
+primary reflectors as receivers in order to track an unforeseen comportment
+observed during a previous simulation.</p></div>
+<div class="paragraph"><p>The <strong>solstice-receiver</strong> format uses the YAML 1.1 data serialization standard
+[1]; assuming that the file is compatible with the <strong>solstice-receiver</strong>
+semantic, the YAML compact notation can thus be used.</p></div>
+<div class="paragraph"><p>A receiver is identified by its <strong>name</strong> that must be a valid <strong>entity-identifier</strong>
+as defined in the <strong>solstice-input</strong>(5) format. This identifier must reference a
+geometric entity and not a pivot or an empty entity. The side of the geometry
+that is tracked is defined by the <strong>side</strong> attribute of the receiver. Note that
+the front and the back side of a geometry can be both considered if the <strong>side</strong>
+attribute is set to <strong>FRONT_AND_BACK</strong>. Refer to the <strong>solstice-input</strong>(5)
+specification for informations on which side of the geometry is front facing or
+back facing. Finally, if the optional <strong>per_primitive</strong> flag is set,
+<strong>solstice</strong>(1) will estimate the irradiance for each triangle of the receiver
+and use these data to generate a receiver map as described in
+<strong>solstice-output</strong>(5). The <strong>per-primitive</strong> flag can be set to <strong>INCOMING</strong>,
+<strong>ABSORBED</strong> or <strong>INCOMING_AND_ABSORBED</strong> to produce the incoming flux density
+map, the absorbed flux density map, or both.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_grammar">GRAMMAR</h2>
+<div class="sectionbody">
+<div class="verseblock">
+<pre class="content">&lt;receivers-list&gt;      ::= - &lt;receiver&gt;
+                        [ - &lt;receiver&gt; &#8230; ]
+
+&lt;receiver&gt;            ::= name: &lt;entity-identifier&gt;
+                          side: &lt;side-identifier&gt;
+                        [ per_primitive: &lt;per-primitive-mode&gt; ] # Default: NONE
+
+&lt;side-identifier&gt;     ::= FRONT
+                        | BACK
+                        | FRONT_AND_BACK
+
+&lt;per-primitive-mode&gt;  ::= NONE
+                        | INCOMING
+                        | ABSORBED
+                        | INCOMING_AND_ABSORBED
+
+&lt;entity-identifier&gt;   # Defined in <strong>solstice-input</strong>(5)</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples">EXAMPLES</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Define that the front and back side of the entity <strong>small_square</strong> are
+receivers. For each side, enable the computation of per triangle absorbed
+irradiance.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>- name: small_square
+  side: FRONT_AND_BACK
+  per_primitive: ABSORBED</code></pre>
+</div></div>
+<div class="paragraph"><p>Declare that the front side of 3 reflectors are receivers. Use the YAML
+compact notation to reduce the number of lines:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>- {name: H1.heliostat.reflector, side: FRONT}
+- {name: H4.heliostat.reflector, side: FRONT}
+- {name: H7.heliostat.reflector, side: FRONT}</code></pre>
+</div></div>
+<div class="paragraph"><p>Declare that the back side of <strong>receiver</strong> is effectively a receiver and enable
+the estimation of its associated incoming irradiance map. Make a receiver from
+the front side of the reflector named <strong>LFR0.pivot.reflector</strong>:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>- {name: receiver, side: BACK, per_primitive: INCOMING}
+- {name: LFR0.pivot.reflector, side: FRONT}</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_notes">NOTES</h2>
+<div class="sectionbody">
+<div class="olist arabic"><ol class="arabic">
+<li>
+<p>
+YAML Ain&#8217;t Markup Language - <a href="http://yaml.org">http://yaml.org</a>
+</p>
+</li>
+</ol></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><strong>solstice</strong>(1),
+<strong>solstice-input</strong>(5),
+<strong>solstice-output</strong>(5)</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2019-06-04 14:20:08 UTC
+</div>
+</div>
+</body>
+</html>

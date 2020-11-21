@@ -1,0 +1,743 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+<meta name="generator" content="AsciiDoc 8.6.9" />
+<title>solstice(1)</title>
+<style type="text/css">
+/* Copyright (C) 2016-2018 CNRS
+ *
+ * This is free style sheet: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This CSS is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see http://www.gnu.org/licenses/. */
+
+body.manpage {
+  font-family:"Liberation Sans",sans-serif;
+  font-size:10pt;
+  text-align: justify;
+  max-width: 55em;
+  margin: 1em;
+  background: #ffffff
+}
+
+body.manpage .monospaced, .literalblock {
+  margin: 2em;
+  color: #636261
+}
+
+body.manpage em {
+  color: #660000
+}
+
+body.manpage div.verseblock > pre.content {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage h1 {
+  padding-bottom: 0.5em;
+}
+body.manpage h2 {
+  border-style: none;
+}
+body.manpage div.sectionbody {
+  margin-left: 3em;
+}
+
+body.manpage code {
+  font-family: "Liberation Mono",monospace;
+}
+
+body.manpage #footer { display: none; }
+
+body.manpage div#toctitle { display: none; }
+
+body.manpage div#toc {
+  display: block;
+  position:fixed;
+  top:0;
+  left:60em;
+  height:100%;
+  width: 100%;
+  padding:3em 0 0 0;
+  border-left:1px solid #dbdbdb;
+  background: #eeeeee
+}
+
+body.manpage a {
+  font-weight: bold;
+  color: #225588;
+}
+
+body.manpage div#toc a, div#toc a:link, div#toc a:visited {
+  margin:0;
+  padding-left: 2em;
+  color:#999999;
+  text-decoration:none;
+  font-weight: normal;
+}
+
+body.manpage div.toclevel1 {
+  line-height: 1.5em;
+}
+
+body.manpage div.toclevel2 {
+  margin-left: 2em;
+}
+
+body.manpage div#toc a:hover {
+  color:#666666;
+}
+
+@media print {
+  body.manpage div#toc { display: none; }
+}
+
+
+
+</style>
+<script type="text/javascript">
+/*<![CDATA[*/
+var asciidoc = {  // Namespace.
+
+/////////////////////////////////////////////////////////////////////
+// Table Of Contents generator
+/////////////////////////////////////////////////////////////////////
+
+/* Author: Mihai Bazon, September 2002
+ * http://students.infoiasi.ro/~mishoo
+ *
+ * Table Of Content generator
+ * Version: 0.4
+ *
+ * Feel free to use this script under the terms of the GNU General Public
+ * License, as long as you do not remove or alter this notice.
+ */
+
+ /* modified by Troy D. Hanson, September 2006. License: GPL */
+ /* modified by Stuart Rackham, 2006, 2009. License: GPL */
+
+// toclevels = 1..4.
+toc: function (toclevels) {
+
+  function getText(el) {
+    var text = "";
+    for (var i = el.firstChild; i != null; i = i.nextSibling) {
+      if (i.nodeType == 3 /* Node.TEXT_NODE */) // IE doesn't speak constants.
+        text += i.data;
+      else if (i.firstChild != null)
+        text += getText(i);
+    }
+    return text;
+  }
+
+  function TocEntry(el, text, toclevel) {
+    this.element = el;
+    this.text = text;
+    this.toclevel = toclevel;
+  }
+
+  function tocEntries(el, toclevels) {
+    var result = new Array;
+    var re = new RegExp('[hH]([1-'+(toclevels+1)+'])');
+    // Function that scans the DOM tree for header elements (the DOM2
+    // nodeIterator API would be a better technique but not supported by all
+    // browsers).
+    var iterate = function (el) {
+      for (var i = el.firstChild; i != null; i = i.nextSibling) {
+        if (i.nodeType == 1 /* Node.ELEMENT_NODE */) {
+          var mo = re.exec(i.tagName);
+          if (mo && (i.getAttribute("class") || i.getAttribute("className")) != "float") {
+            result[result.length] = new TocEntry(i, getText(i), mo[1]-1);
+          }
+          iterate(i);
+        }
+      }
+    }
+    iterate(el);
+    return result;
+  }
+
+  var toc = document.getElementById("toc");
+  if (!toc) {
+    return;
+  }
+
+  // Delete existing TOC entries in case we're reloading the TOC.
+  var tocEntriesToRemove = [];
+  var i;
+  for (i = 0; i < toc.childNodes.length; i++) {
+    var entry = toc.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div'
+     && entry.getAttribute("class")
+     && entry.getAttribute("class").match(/^toclevel/))
+      tocEntriesToRemove.push(entry);
+  }
+  for (i = 0; i < tocEntriesToRemove.length; i++) {
+    toc.removeChild(tocEntriesToRemove[i]);
+  }
+
+  // Rebuild TOC entries.
+  var entries = tocEntries(document.getElementById("content"), toclevels);
+  for (var i = 0; i < entries.length; ++i) {
+    var entry = entries[i];
+    if (entry.element.id == "")
+      entry.element.id = "_toc_" + i;
+    var a = document.createElement("a");
+    a.href = "#" + entry.element.id;
+    a.appendChild(document.createTextNode(entry.text));
+    var div = document.createElement("div");
+    div.appendChild(a);
+    div.className = "toclevel" + entry.toclevel;
+    toc.appendChild(div);
+  }
+  if (entries.length == 0)
+    toc.parentNode.removeChild(toc);
+},
+
+
+/////////////////////////////////////////////////////////////////////
+// Footnotes generator
+/////////////////////////////////////////////////////////////////////
+
+/* Based on footnote generation code from:
+ * http://www.brandspankingnew.net/archive/2005/07/format_footnote.html
+ */
+
+footnotes: function () {
+  // Delete existing footnote entries in case we're reloading the footnodes.
+  var i;
+  var noteholder = document.getElementById("footnotes");
+  if (!noteholder) {
+    return;
+  }
+  var entriesToRemove = [];
+  for (i = 0; i < noteholder.childNodes.length; i++) {
+    var entry = noteholder.childNodes[i];
+    if (entry.nodeName.toLowerCase() == 'div' && entry.getAttribute("class") == "footnote")
+      entriesToRemove.push(entry);
+  }
+  for (i = 0; i < entriesToRemove.length; i++) {
+    noteholder.removeChild(entriesToRemove[i]);
+  }
+
+  // Rebuild footnote entries.
+  var cont = document.getElementById("content");
+  var spans = cont.getElementsByTagName("span");
+  var refs = {};
+  var n = 0;
+  for (i=0; i<spans.length; i++) {
+    if (spans[i].className == "footnote") {
+      n++;
+      var note = spans[i].getAttribute("data-note");
+      if (!note) {
+        // Use [\s\S] in place of . so multi-line matches work.
+        // Because JavaScript has no s (dotall) regex flag.
+        note = spans[i].innerHTML.match(/\s*\[([\s\S]*)]\s*/)[1];
+        spans[i].innerHTML =
+          "[<a id='_footnoteref_" + n + "' href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+        spans[i].setAttribute("data-note", note);
+      }
+      noteholder.innerHTML +=
+        "<div class='footnote' id='_footnote_" + n + "'>" +
+        "<a href='#_footnoteref_" + n + "' title='Return to text'>" +
+        n + "</a>. " + note + "</div>";
+      var id =spans[i].getAttribute("id");
+      if (id != null) refs["#"+id] = n;
+    }
+  }
+  if (n == 0)
+    noteholder.parentNode.removeChild(noteholder);
+  else {
+    // Process footnoterefs.
+    for (i=0; i<spans.length; i++) {
+      if (spans[i].className == "footnoteref") {
+        var href = spans[i].getElementsByTagName("a")[0].getAttribute("href");
+        href = href.match(/#.*/)[0];  // Because IE return full URL.
+        n = refs[href];
+        spans[i].innerHTML =
+          "[<a href='#_footnote_" + n +
+          "' title='View footnote' class='footnote'>" + n + "</a>]";
+      }
+    }
+  }
+},
+
+install: function(toclevels) {
+  var timerId;
+
+  function reinstall() {
+    asciidoc.footnotes();
+    if (toclevels) {
+      asciidoc.toc(toclevels);
+    }
+  }
+
+  function reinstallAndRemoveTimer() {
+    clearInterval(timerId);
+    reinstall();
+  }
+
+  timerId = setInterval(reinstall, 500);
+  if (document.addEventListener)
+    document.addEventListener("DOMContentLoaded", reinstallAndRemoveTimer, false);
+  else
+    window.onload = reinstallAndRemoveTimer;
+}
+
+}
+asciidoc.install(2);
+/*]]>*/
+</script>
+</head>
+<body class="manpage">
+<div id="header">
+<h1>
+solstice(1) Manual Page
+</h1>
+<div id="toc">
+  <div id="toctitle">Table of Contents</div>
+  <noscript><p><b>JavaScript must be enabled in your browser to display the table of contents.</b></p></noscript>
+</div>
+<h2>NAME</h2>
+<div class="sectionbody">
+<p>solstice -
+   compute the power collected by a concentrated solar plant
+</p>
+</div>
+</div>
+<div id="content">
+<div class="sect1">
+<h2 id="_synopsis">SYNOPSIS</h2>
+<div class="sectionbody">
+<div class="verseblock">
+<pre class="content"><strong>solstice</strong>
+<strong>solstice</strong> [<em>option</em>]&#8230; [<em>file</em>]
+<strong>solstice</strong> <strong>-g</strong> &lt;<em>sub-option</em>[:&#8230;]&gt; [<em>option</em>]&#8230; [<em>file</em>]
+<strong>solstice</strong> <strong>-p</strong> &lt;<em>sub-option</em>[:&#8230;]&gt; [<em>option</em>]&#8230; [<em>file</em>]
+<strong>solstice</strong> <strong>-r</strong> &lt;<em>sub-option</em>[:&#8230;]&gt; [<em>option</em>]&#8230; [<em>file</em>]</pre>
+<div class="attribution">
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_description">DESCRIPTION</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><strong>solstice</strong> computes the total power collected by a concentrated solar plant, as
+described in the <strong>solstice-input</strong>(5) <em>file</em>. If the <em>file</em> argument is not
+provided, the solar plant is read from standard input. To evaluate various
+efficiencies for each primary reflector, it computes losses due to cosine
+effect, shadowing and masking, orientation and surface irregularities,
+materials properties and atmospheric extinction. The efficiency for each
+one of these effects is subsequently computed for each reflector.</p></div>
+<div class="paragraph"><p>The entities on which computations must be performed are listed in the
+<strong>solstice-receiver</strong>(5) file submitted through the <strong>-R</strong> option. The estimated
+results follow the <strong>solstice-output</strong>(5) format and are written to the <em>output</em>
+file or to the standard output whether the <strong>-o</strong> <em>output</em> option is defined or
+not, respectively. Note that the <strong>solstice</strong> algorithm is based on the
+Monte-Carlo method, which means that every result is provided with its
+numerical accuracy.</p></div>
+<div class="paragraph"><p><strong>solstice</strong> is designed to efficiently handle complex solar facilities: several
+reflectors can be specified (planes, conics, cylindro-parabolic, etc.) and
+positioned in 3D space, with a possibility for 1-axis and 2-axis
+auto-orientation. Multiple materials can be used, as long as the relevant
+physical properties are provided. Spectral effects are also taken into account:
+it is possible to define the spectral distribution of any physical property,
+including the input solar spectrum and the transmissivity of the atmosphere, at
+any spectral resolution. Refer to <strong>solstice-input</strong>(5) for more informations.</p></div>
+<div class="paragraph"><p>In addition of the aforementioned computations, <strong>solstice</strong> provides three
+other functionalities. The <strong>-g</strong> option can be used to convert the
+<strong>solstice-input</strong>(5) geometries in CAO files. The <strong>-p</strong> option saves the sampled
+radiative paths used by the estimates, allowing to visualise them externally
+which may be a great help to identify a design issue. Finally, the <strong>-r</strong> option
+is used to render an image of the submitted solar facility. Note that these
+three options are mutually exclusives, and once defined, they replace the
+default <strong>solstice</strong> behaviour.</p></div>
+<div class="paragraph"><p>Please note that any coordinate-related question in Solstice must be
+considered with the right-handed convention in mind.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_options">OPTIONS</h2>
+<div class="sectionbody">
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>-D</strong> &lt;<em>alpha</em>,<em>beta</em>[:&#8230;]&gt;
+</dt>
+<dd>
+<p>
+  List of sun directions. A direction is defined by two angles in degrees. The
+  first one, here refered to as <em>alpha</em>, is an azimuthal angle in [0, 360[ and
+  the second one, here refered to as <em>beta</em>, is an elevation in [0, 90].
+  Each provided sun direction triggers a new computation whose results are
+  concatenated to the <em>output</em> file.
+</p>
+<div class="paragraph"><p>Following the right-handed convention, Solstice azimuthal rotation is
+counter-clockwise, with 0° on the X axis. Solstice elevation starts from 0° for
+directions in the XY plane, up to 90° at zenith. Thus -D0,0 -D90,0 -D180,0 and
+-D270,0 will produce solar vectors {-1,0,0} {0,-1,0} {+1,0,0} and {0,+1,0}
+respectively, while -D<em>alpha</em>,90 will produce {0,0,-1} regardless of <em>alpha</em>
+value.</p></div>
+</dd>
+<dt class="hdlist1">
+<strong>-f</strong>
+</dt>
+<dd>
+<p>
+  Force overwrite of the output files, i.e. the <em>output</em> file and the file
+  where the state of the random number generator is saved (see the <strong>-G</strong>
+  option).
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-G</strong> &lt;<em>sub-option</em>:&#8230;&gt;
+</dt>
+<dd>
+<p>
+  Save and restore the state of the random number generator. This option can be
+  used to ensure the statistical independence between successive simulations
+  on the same system. For instance, one can run a new simulation and
+  initialising its random number generator with the final state of the
+  generator as defined by the previous run. Available sub options are:
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>istate=</strong><em>input_rng_state</em>
+</dt>
+<dd>
+<p>
+    Define the file from which the initial state of the random number generator
+    is read. If not defined, the random number generator is initialised with
+    its default seed.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>ostate=</strong><em>output_rng_state</em>
+</dt>
+<dd>
+<p>
+    Define the file where the final state of the random number generator is
+    written. If not defined, this state is simply discarded.
+</p>
+</dd>
+</dl></div>
+</dd>
+<dt class="hdlist1">
+<strong>-g</strong> &lt;<em>sub-option</em>:&#8230;&gt;
+</dt>
+<dd>
+<p>
+  Generate the shape of the geometry defined in the submitted <em>file</em> and store
+  it in <em>output</em>. Available sub-options are:
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>format=obj</strong>
+</dt>
+<dd>
+<p>
+    Define the file format in which the meshes are stored. Currently, only the
+    Alias Wavefront OBJ file format is supported.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>split=</strong>&lt;<strong>geometry</strong>|<strong>object</strong>|<strong>none</strong>&gt;
+</dt>
+<dd>
+<p>
+    Define how the output mesh is split in sub meshes. A sub mesh can be
+    generated for each <strong>geometry</strong> or for each <strong>object</strong> as defined in the
+    <strong>solstice-input</strong>(5) file format. The <strong>none</strong> option means that only one
+    mesh is generated for the whole solar facility. By default, the <strong>split</strong>
+    option is set to <strong>none</strong>.
+</p>
+</dd>
+</dl></div>
+</dd>
+<dt class="hdlist1">
+<strong>-h</strong>
+</dt>
+<dd>
+<p>
+  List short help and exit.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-n</strong> <em>experiments-count</em>
+</dt>
+<dd>
+<p>
+  Number of Monte-Carlo experiments used to estimate the solar flux. By
+  default <em>experiments-count</em> is set to 10000.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-o</strong> <em>output</em>
+</dt>
+<dd>
+<p>
+  Write results to <em>output</em> with respect to the <strong>solstice-output</strong>(5) format. If
+  not defined, write results to standard output.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-p</strong> &lt;<em>sub-option</em>:&#8230;&gt;
+</dt>
+<dd>
+<p>
+  Register the sampled radiative paths for each sun direction and write them to
+  <em>output</em>. Available sub-options are:
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>default</strong>
+</dt>
+<dd>
+<p>
+    Use default sub-options.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>irlen=</strong><em>length</em>
+</dt>
+<dd>
+<p>
+    Length of the radiative path segments going to the infinity. By default, it
+    is computed relatively to the scene size.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>srlen=</strong><em>length</em>
+</dt>
+<dd>
+<p>
+    Length of the radiative path segments coming from the sun. By default, it
+    is computed relatively to the scene size.
+</p>
+</dd>
+</dl></div>
+</dd>
+<dt class="hdlist1">
+<strong>-q</strong>
+</dt>
+<dd>
+<p>
+  Do not print the helper message when no <em>file</em> is submitted.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-R</strong> <em>receivers</em>
+</dt>
+<dd>
+<p>
+  <strong>solstice-receiver</strong>(5) file defining the scene receivers, i.e. the solar
+  plant entities for which <strong>solstice</strong> computes Monte-Carlo estimates.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-r</strong> &lt;<em>sub-option</em>:&#8230;&gt;
+</dt>
+<dd>
+<p>
+  Render an image of the scene through a pinhole camera, for each submitted
+  sun direction. Write the resulting images to <em>output</em>. Available sub-options
+  are:
+</p>
+<div class="dlist"><dl>
+<dt class="hdlist1">
+<strong>fov=</strong><em>angle</em>
+</dt>
+<dd>
+<p>
+    Horizontal field of view of the camera in [30, 120] degrees. By default
+    <em>angle</em> is 70 degrees.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>img=</strong><em>width</em><strong>x</strong><em>height</em>
+</dt>
+<dd>
+<p>
+    Definition of the rendered image in pixels. By default the image definition
+    is 800x600.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>pos=</strong><em>x</em><strong>,</strong><em>y</em><strong>,</strong><em>z</em>
+</dt>
+<dd>
+<p>
+    Position of the camera. By default it is set to
+    {0,0,0} or it is automatically computed to
+    ensure that the whole scene is visible, whether <strong>tgt</strong> is set or not,
+    respectively.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>rmode=</strong>&lt;<strong>draft</strong>|<strong>pt</strong>&gt;
+</dt>
+<dd>
+<p>
+    Rendering mode. In <strong>draft</strong> mode, images are computed by ray-casting; all
+    materials are lambertian, the sun is ignored and the only light source is
+    positioned at the camera position. In <strong>pt</strong> mode, the scene is rendered with
+    the un-biased path-tracing Monte-Carlo algorithm; the materials described
+    in the committed <em>file</em> as well as the submitted sun directions are
+    correctly handled and an uniform skydome is added to simulate the diffuse
+    infinite lighting. By default <strong>rmode</strong> is set to <strong>draft</strong>.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>spp=</strong><em>samples-count</em>
+</dt>
+<dd>
+<p>
+    Number of samples per pixel. If <strong>rmode</strong> is <strong>draft</strong>, the samples position
+    into a pixel are the same for all pixels. With <strong>rmode=pt</strong> the pixel
+    samples are generated independently for each pixel. By default, use 1
+    sample per pixel.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>tgt=</strong><em>x</em><strong>,</strong><em>y</em><strong>,</strong><em>z</em>
+</dt>
+<dd>
+<p>
+    Position targeted by the camera. By default, it is set to
+    {0,0,-1} or it is automatically computed to
+    ensure that the whole scene is visible, whether <strong>pos</strong> is set or not,
+    respectively.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>up=</strong><em>x</em><strong>,</strong><em>y</em><strong>,</strong><em>z</em>
+</dt>
+<dd>
+<p>
+    Up vector of the camera. If <strong>rmode</strong> is <strong>pt</strong>, this vector also defines the
+    direction toward the top of the skydome. By default, <strong>up</strong> is set to
+    {0,1,0}.
+</p>
+</dd>
+</dl></div>
+</dd>
+<dt class="hdlist1">
+<strong>-t</strong> <em>threads-count</em>
+</dt>
+<dd>
+<p>
+  Hint on the number of threads to use. By default use as many threads as CPU
+  cores.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>-v</strong>
+</dt>
+<dd>
+<p>
+  Make solstice more verbose.
+</p>
+</dd>
+<dt class="hdlist1">
+<strong>--version</strong>
+</dt>
+<dd>
+<p>
+  Output version information and exit.
+</p>
+</dd>
+</dl></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_examples">EXAMPLES</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Launch two simulations for sun directions whose azimuthal and elevation angles
+are {<strong>45</strong>,<strong>70</strong>} and {<strong>50</strong>,<strong>75</strong>}. The solar facility is described in
+<strong>input.yaml</strong> and the receivers on which the integrations must be performed are
+declared in the <strong>rcvs.yaml</strong> file. <strong>10000</strong> experiments are used by the
+Monte-Carlo estimates and the results are written to <strong>output</strong> even though this
+file already exists:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ solstice -D45,70:50,75 -R rcvs.yaml -n 10000 -f -o output input.yaml</code></pre>
+</div></div>
+<div class="paragraph"><p>Generate a mesh for each geometry described in <strong>input.yaml</strong>, and save them in
+the <strong>output</strong> file with respect to the Alias Wavefront OBJ format. The meshes
+are positioned according to their orientation constraints, with respect to the
+sun direction whose azimuthal and elevation angles are {<strong>30</strong>,<strong>60</strong>}. Use the
+<strong>csplit</strong>(1) Unix command to generate an Alias Wavefront OBJ file per geometry
+stored in <strong>output</strong>. The name of the generated Alias Wavefront OBJ files are
+<strong>geom</strong>&lt;<em>NUM</em>&gt;<strong>.obj</strong> with <em>NUM</em> in [0, N-1] where N is the number of
+geometries described in <strong>input.yaml</strong>. Refer to <strong>solstice-output</strong>(5) for
+informations on the regular expression <strong>^---$</strong> used to split the output file:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ solstice -D30,60 -g format=obj:split=geometry -f -o output input.yaml
+$ csplit -f geom -b %02d.obj -z --suppress-matched output /^---$/ {*}</code></pre>
+</div></div>
+<div class="paragraph"><p>Trace 100 radiative paths into the solar plant described in <strong>input.yaml</strong>, with
+respect to the sun direction whose azimuthal and elevations angles are <strong>0</strong> and
+<strong>90</strong> degrees, respectively. Write the <strong>solstice-output</strong>(5) result to the
+standard output and postprocess it with the <strong>sed</strong>(1) Unix command to remove the
+first line that stores the sun direction from which the radiative paths come
+from. The remaining data that list the radiative paths geometry are redirected
+into the <strong>paths.vtk</strong> file:</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ solstice -n 100 -D0,90 -R rcvs.yaml -p default input.yaml | sed '1d'&gt;paths.vtk</code></pre>
+</div></div>
+<div class="paragraph"><p>Use the path-tracing rendering algorithm to draw the solar plant
+<strong>solplant.yaml</strong> with respect to the sun direction whose azimuthal and elevation
+angles are <strong>180</strong> and <strong>45</strong> degrees, respectively. Use <strong>64</strong> samples per pixel to
+estimate the per-pixel radiance and fix the up camera vector to {<strong>0</strong>,<strong>0</strong>,<strong>1</strong>}.
+Write the <strong>solstice-output</strong>(5) result to standard output and use the <strong>sed</strong>(1)
+Unix command to remove the first line which stores the sun direction used to
+draw the image. Finally, visualise the rendered picture by redirecting the
+remaining data to the <strong>feh</strong>(1) image viewer.</p></div>
+<div class="literalblock">
+<div class="content">
+<pre><code>$ solstice -D180,45 -r up=0,0,1:rmode=pt:spp=64 solplant.yaml | sed '1d' | feh -</code></pre>
+</div></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_copyright">COPYRIGHT</h2>
+<div class="sectionbody">
+<div class="paragraph"><p>Copyright &copy; 2016-2018 CNRS, 2018-2019 |Meso|Star&gt;. License GPLv3+: GNU GPL
+version 3 or later <a href="http://gnu.org/licenses/gpl.html">http://gnu.org/licenses/gpl.html</a>. This is free software.
+You are free to change and redistribute it. There is NO WARRANTY, to the extent
+permitted by law.</p></div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_see_also">SEE ALSO</h2>
+<div class="sectionbody">
+<div class="paragraph"><p><strong>csplit</strong>(1),
+<strong>feh</strong>(1),
+<strong>sed</strong>(1),
+<strong>solstice-input</strong>(5),
+<strong>solstice-output</strong>(5),
+<strong>solstice-receiver</strong>(5)</p></div>
+</div>
+</div>
+</div>
+<div id="footnotes"><hr /></div>
+<div id="footer">
+<div id="footer-text">
+Last updated
+ 2019-06-04 14:20:02 UTC
+</div>
+</div>
+</body>
+</html>

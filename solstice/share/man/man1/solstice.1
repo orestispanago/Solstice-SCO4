@@ -1,0 +1,309 @@
+'\" t
+.\"     Title: solstice
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.78.1 <http://docbook.sf.net/>
+.\"      Date: 06/04/2019
+.\"    Manual: \ \&
+.\"    Source: \ \&
+.\"  Language: English
+.\"
+.TH "SOLSTICE" "1" "06/04/2019" "\ \&" "\ \&"
+.\" -----------------------------------------------------------------
+.\" * Define some portability stuff
+.\" -----------------------------------------------------------------
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.\" http://bugs.debian.org/507673
+.\" http://lists.gnu.org/archive/html/groff/2009-02/msg00013.html
+.\" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.ie \n(.g .ds Aq \(aq
+.el       .ds Aq '
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+solstice \- compute the power collected by a concentrated solar plant
+.SH "SYNOPSIS"
+.sp
+.nf
+\fBsolstice\fR
+\fBsolstice\fR [\fIoption\fR]\&... [\fIfile\fR]
+\fBsolstice\fR \fB\-g\fR <\fIsub\-option\fR[:\&...]> [\fIoption\fR]\&... [\fIfile\fR]
+\fBsolstice\fR \fB\-p\fR <\fIsub\-option\fR[:\&...]> [\fIoption\fR]\&... [\fIfile\fR]
+\fBsolstice\fR \fB\-r\fR <\fIsub\-option\fR[:\&...]> [\fIoption\fR]\&... [\fIfile\fR]
+.fi
+.SH "DESCRIPTION"
+.sp
+\fBsolstice\fR computes the total power collected by a concentrated solar plant, as described in the \fBsolstice\-input\fR(5) \fIfile\fR\&. If the \fIfile\fR argument is not provided, the solar plant is read from standard input\&. To evaluate various efficiencies for each primary reflector, it computes losses due to cosine effect, shadowing and masking, orientation and surface irregularities, materials properties and atmospheric extinction\&. The efficiency for each one of these effects is subsequently computed for each reflector\&.
+.sp
+The entities on which computations must be performed are listed in the \fBsolstice\-receiver\fR(5) file submitted through the \fB\-R\fR option\&. The estimated results follow the \fBsolstice\-output\fR(5) format and are written to the \fIoutput\fR file or to the standard output whether the \fB\-o\fR \fIoutput\fR option is defined or not, respectively\&. Note that the \fBsolstice\fR algorithm is based on the Monte\-Carlo method, which means that every result is provided with its numerical accuracy\&.
+.sp
+\fBsolstice\fR is designed to efficiently handle complex solar facilities: several reflectors can be specified (planes, conics, cylindro\-parabolic, etc\&.) and positioned in 3D space, with a possibility for 1\-axis and 2\-axis auto\-orientation\&. Multiple materials can be used, as long as the relevant physical properties are provided\&. Spectral effects are also taken into account: it is possible to define the spectral distribution of any physical property, including the input solar spectrum and the transmissivity of the atmosphere, at any spectral resolution\&. Refer to \fBsolstice\-input\fR(5) for more informations\&.
+.sp
+In addition of the aforementioned computations, \fBsolstice\fR provides three other functionalities\&. The \fB\-g\fR option can be used to convert the \fBsolstice\-input\fR(5) geometries in CAO files\&. The \fB\-p\fR option saves the sampled radiative paths used by the estimates, allowing to visualise them externally which may be a great help to identify a design issue\&. Finally, the \fB\-r\fR option is used to render an image of the submitted solar facility\&. Note that these three options are mutually exclusives, and once defined, they replace the default \fBsolstice\fR behaviour\&.
+.sp
+Please note that any coordinate\-related question in Solstice must be considered with the right\-handed convention in mind\&.
+.SH "OPTIONS"
+.PP
+\fB\-D\fR <\fIalpha\fR,\fIbeta\fR[:\&...]>
+.RS 4
+List of sun directions\&. A direction is defined by two angles in degrees\&. The first one, here refered to as
+\fIalpha\fR, is an azimuthal angle in [0, 360[ and the second one, here refered to as
+\fIbeta\fR, is an elevation in [0, 90]\&. Each provided sun direction triggers a new computation whose results are concatenated to the
+\fIoutput\fR
+file\&.
+.sp
+Following the right\-handed convention, Solstice azimuthal rotation is counter\-clockwise, with 0\(de on the X axis\&. Solstice elevation starts from 0\(de for directions in the XY plane, up to 90\(de at zenith\&. Thus \-D0,0 \-D90,0 \-D180,0 and \-D270,0 will produce solar vectors {\-1,0,0} {0,\-1,0} {+1,0,0} and {0,+1,0} respectively, while \-D\fIalpha\fR,90 will produce {0,0,\-1} regardless of
+\fIalpha\fR
+value\&.
+.RE
+.PP
+\fB\-f\fR
+.RS 4
+Force overwrite of the output files, i\&.e\&. the
+\fIoutput\fR
+file and the file where the state of the random number generator is saved (see the
+\fB\-G\fR
+option)\&.
+.RE
+.PP
+\fB\-G\fR <\fIsub\-option\fR:\&...>
+.RS 4
+Save and restore the state of the random number generator\&. This option can be used to ensure the statistical independence between successive simulations on the same system\&. For instance, one can run a new simulation and initialising its random number generator with the final state of the generator as defined by the previous run\&. Available sub options are:
+.PP
+\fBistate=\fR\fIinput_rng_state\fR
+.RS 4
+Define the file from which the initial state of the random number generator is read\&. If not defined, the random number generator is initialised with its default seed\&.
+.RE
+.PP
+\fBostate=\fR\fIoutput_rng_state\fR
+.RS 4
+Define the file where the final state of the random number generator is written\&. If not defined, this state is simply discarded\&.
+.RE
+.RE
+.PP
+\fB\-g\fR <\fIsub\-option\fR:\&...>
+.RS 4
+Generate the shape of the geometry defined in the submitted
+\fIfile\fR
+and store it in
+\fIoutput\fR\&. Available sub\-options are:
+.PP
+\fBformat=obj\fR
+.RS 4
+Define the file format in which the meshes are stored\&. Currently, only the Alias Wavefront OBJ file format is supported\&.
+.RE
+.PP
+\fBsplit=\fR<\fBgeometry\fR|\fBobject\fR|\fBnone\fR>
+.RS 4
+Define how the output mesh is split in sub meshes\&. A sub mesh can be generated for each
+\fBgeometry\fR
+or for each
+\fBobject\fR
+as defined in the
+\fBsolstice\-input\fR(5) file format\&. The
+\fBnone\fR
+option means that only one mesh is generated for the whole solar facility\&. By default, the
+\fBsplit\fR
+option is set to
+\fBnone\fR\&.
+.RE
+.RE
+.PP
+\fB\-h\fR
+.RS 4
+List short help and exit\&.
+.RE
+.PP
+\fB\-n\fR \fIexperiments\-count\fR
+.RS 4
+Number of Monte\-Carlo experiments used to estimate the solar flux\&. By default
+\fIexperiments\-count\fR
+is set to 10000\&.
+.RE
+.PP
+\fB\-o\fR \fIoutput\fR
+.RS 4
+Write results to
+\fIoutput\fR
+with respect to the
+\fBsolstice\-output\fR(5) format\&. If not defined, write results to standard output\&.
+.RE
+.PP
+\fB\-p\fR <\fIsub\-option\fR:\&...>
+.RS 4
+Register the sampled radiative paths for each sun direction and write them to
+\fIoutput\fR\&. Available sub\-options are:
+.PP
+\fBdefault\fR
+.RS 4
+Use default sub\-options\&.
+.RE
+.PP
+\fBirlen=\fR\fIlength\fR
+.RS 4
+Length of the radiative path segments going to the infinity\&. By default, it is computed relatively to the scene size\&.
+.RE
+.PP
+\fBsrlen=\fR\fIlength\fR
+.RS 4
+Length of the radiative path segments coming from the sun\&. By default, it is computed relatively to the scene size\&.
+.RE
+.RE
+.PP
+\fB\-q\fR
+.RS 4
+Do not print the helper message when no
+\fIfile\fR
+is submitted\&.
+.RE
+.PP
+\fB\-R\fR \fIreceivers\fR
+.RS 4
+\fBsolstice\-receiver\fR(5) file defining the scene receivers, i\&.e\&. the solar plant entities for which
+\fBsolstice\fR
+computes Monte\-Carlo estimates\&.
+.RE
+.PP
+\fB\-r\fR <\fIsub\-option\fR:\&...>
+.RS 4
+Render an image of the scene through a pinhole camera, for each submitted sun direction\&. Write the resulting images to
+\fIoutput\fR\&. Available sub\-options are:
+.PP
+\fBfov=\fR\fIangle\fR
+.RS 4
+Horizontal field of view of the camera in [30, 120] degrees\&. By default
+\fIangle\fR
+is 70 degrees\&.
+.RE
+.PP
+\fBimg=\fR\fIwidth\fR\fBx\fR\fIheight\fR
+.RS 4
+Definition of the rendered image in pixels\&. By default the image definition is 800x600\&.
+.RE
+.PP
+\fBpos=\fR\fIx\fR\fB,\fR\fIy\fR\fB,\fR\fIz\fR
+.RS 4
+Position of the camera\&. By default it is set to {0,0,0} or it is automatically computed to ensure that the whole scene is visible, whether
+\fBtgt\fR
+is set or not, respectively\&.
+.RE
+.PP
+\fBrmode=\fR<\fBdraft\fR|\fBpt\fR>
+.RS 4
+Rendering mode\&. In
+\fBdraft\fR
+mode, images are computed by ray\-casting; all materials are lambertian, the sun is ignored and the only light source is positioned at the camera position\&. In
+\fBpt\fR
+mode, the scene is rendered with the un\-biased path\-tracing Monte\-Carlo algorithm; the materials described in the committed
+\fIfile\fR
+as well as the submitted sun directions are correctly handled and an uniform skydome is added to simulate the diffuse infinite lighting\&. By default
+\fBrmode\fR
+is set to
+\fBdraft\fR\&.
+.RE
+.PP
+\fBspp=\fR\fIsamples\-count\fR
+.RS 4
+Number of samples per pixel\&. If
+\fBrmode\fR
+is
+\fBdraft\fR, the samples position into a pixel are the same for all pixels\&. With
+\fBrmode=pt\fR
+the pixel samples are generated independently for each pixel\&. By default, use 1 sample per pixel\&.
+.RE
+.PP
+\fBtgt=\fR\fIx\fR\fB,\fR\fIy\fR\fB,\fR\fIz\fR
+.RS 4
+Position targeted by the camera\&. By default, it is set to {0,0,\-1} or it is automatically computed to ensure that the whole scene is visible, whether
+\fBpos\fR
+is set or not, respectively\&.
+.RE
+.PP
+\fBup=\fR\fIx\fR\fB,\fR\fIy\fR\fB,\fR\fIz\fR
+.RS 4
+Up vector of the camera\&. If
+\fBrmode\fR
+is
+\fBpt\fR, this vector also defines the direction toward the top of the skydome\&. By default,
+\fBup\fR
+is set to {0,1,0}\&.
+.RE
+.RE
+.PP
+\fB\-t\fR \fIthreads\-count\fR
+.RS 4
+Hint on the number of threads to use\&. By default use as many threads as CPU cores\&.
+.RE
+.PP
+\fB\-v\fR
+.RS 4
+Make solstice more verbose\&.
+.RE
+.PP
+\fB\-\-version\fR
+.RS 4
+Output version information and exit\&.
+.RE
+.SH "EXAMPLES"
+.sp
+Launch two simulations for sun directions whose azimuthal and elevation angles are {\fB45\fR,\fB70\fR} and {\fB50\fR,\fB75\fR}\&. The solar facility is described in \fBinput\&.yaml\fR and the receivers on which the integrations must be performed are declared in the \fBrcvs\&.yaml\fR file\&. \fB10000\fR experiments are used by the Monte\-Carlo estimates and the results are written to \fBoutput\fR even though this file already exists:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ solstice \-D45,70:50,75 \-R rcvs\&.yaml \-n 10000 \-f \-o output input\&.yaml
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Generate a mesh for each geometry described in \fBinput\&.yaml\fR, and save them in the \fBoutput\fR file with respect to the Alias Wavefront OBJ format\&. The meshes are positioned according to their orientation constraints, with respect to the sun direction whose azimuthal and elevation angles are {\fB30\fR,\fB60\fR}\&. Use the \fBcsplit\fR(1) Unix command to generate an Alias Wavefront OBJ file per geometry stored in \fBoutput\fR\&. The name of the generated Alias Wavefront OBJ files are \fBgeom\fR<\fINUM\fR>\fB\&.obj\fR with \fINUM\fR in [0, N\-1] where N is the number of geometries described in \fBinput\&.yaml\fR\&. Refer to \fBsolstice\-output\fR(5) for informations on the regular expression \fB^\-\-\-$\fR used to split the output file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ solstice \-D30,60 \-g format=obj:split=geometry \-f \-o output input\&.yaml
+$ csplit \-f geom \-b %02d\&.obj \-z \-\-suppress\-matched output /^\-\-\-$/ {*}
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Trace 100 radiative paths into the solar plant described in \fBinput\&.yaml\fR, with respect to the sun direction whose azimuthal and elevations angles are \fB0\fR and \fB90\fR degrees, respectively\&. Write the \fBsolstice\-output\fR(5) result to the standard output and postprocess it with the \fBsed\fR(1) Unix command to remove the first line that stores the sun direction from which the radiative paths come from\&. The remaining data that list the radiative paths geometry are redirected into the \fBpaths\&.vtk\fR file:
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ solstice \-n 100 \-D0,90 \-R rcvs\&.yaml \-p default input\&.yaml | sed \*(Aq1d\*(Aq>paths\&.vtk
+.fi
+.if n \{\
+.RE
+.\}
+.sp
+Use the path\-tracing rendering algorithm to draw the solar plant \fBsolplant\&.yaml\fR with respect to the sun direction whose azimuthal and elevation angles are \fB180\fR and \fB45\fR degrees, respectively\&. Use \fB64\fR samples per pixel to estimate the per\-pixel radiance and fix the up camera vector to {\fB0\fR,\fB0\fR,\fB1\fR}\&. Write the \fBsolstice\-output\fR(5) result to standard output and use the \fBsed\fR(1) Unix command to remove the first line which stores the sun direction used to draw the image\&. Finally, visualise the rendered picture by redirecting the remaining data to the \fBfeh\fR(1) image viewer\&.
+.sp
+.if n \{\
+.RS 4
+.\}
+.nf
+$ solstice \-D180,45 \-r up=0,0,1:rmode=pt:spp=64 solplant\&.yaml | sed \*(Aq1d\*(Aq | feh \-
+.fi
+.if n \{\
+.RE
+.\}
+.SH "COPYRIGHT"
+.sp
+Copyright \(co 2016\-2018 CNRS, 2018\-2019 |Meso|Star>\&. License GPLv3+: GNU GPL version 3 or later http://gnu\&.org/licenses/gpl\&.html\&. This is free software\&. You are free to change and redistribute it\&. There is NO WARRANTY, to the extent permitted by law\&.
+.SH "SEE ALSO"
+.sp
+\fBcsplit\fR(1), \fBfeh\fR(1), \fBsed\fR(1), \fBsolstice\-input\fR(5), \fBsolstice\-output\fR(5), \fBsolstice\-receiver\fR(5)
