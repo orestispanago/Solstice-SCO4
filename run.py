@@ -1,5 +1,7 @@
 from groups import ideal, errors, virtual
+from setup import init_platform
 
+init_platform().set_paths()
 
 def run_vtk_obj_heat(trace):
     trace.run()
