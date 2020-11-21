@@ -231,7 +231,7 @@ reflector55.so_facet.facet 94 0.0196 1238   0.974626 2.1386e-09   0 0
 reflector28.so_facet.facet 126 0.0196 1305   0.999083 0   8.92627 0.36578
 reflector44.so_facet.facet 70 0.0196 1285   0.97566 0   0 0
 reflector1.so_facet.facet 136 0.0196 1254   0.96892 0   0 0
-reflector57.so_facet.facet 122 0.0196 1337   0.979621 1.77636e-09   0 0
+reflector57.so_facet.facet 122 0.0196 1337   0.979621 1.79958e-09   0 0
 reflector14.so_facet.facet 142 0.0196 1338   0.986893 2.32238e-09   0 0
 reflector8.so_facet.facet 74 0.0196 1258   0.987092 0   0 0
 reflector65.so_facet.facet 148 0.0196 1259   0.979621 1.25988e-09   0 0
@@ -1196,7 +1196,7 @@ reflector70.so_facet.facet 102 0.0196 1304   0.98189 1.13009e-09   0 0
 reflector4.so_facet.facet 108 0.0196 1274   0.99021 0   0 0
 reflector21.so_facet.facet 96 0.0196 1274   0.982293 9.79077e-10   0 0
 reflector11.so_facet.facet 110 0.0196 1273   0.97186 0   0 0
-reflector3.so_facet.facet 10 0.0196 1341   0.985472 1.7969e-09   0 0
+reflector3.so_facet.facet 10 0.0196 1341   0.985472 1.8868e-09   0 0
 reflector16.so_facet.facet 12 0.0196 1332   0.996946 1.68342e-09   0.150459 0.047577
 reflector67.so_facet.facet 24 0.0196 1295   0.964019 2.00733e-09   0 0
 reflector77.so_facet.facet 66 0.0196 1308   0.964019 2.03939e-09   0 0
@@ -1988,7 +1988,7 @@ reflector40.so_facet.facet 132 0.0196 1284   0.997521 0   1.91193 0.169549
 reflector52.so_facet.facet 154 0.0196 1331   0.990778 0   0 0
 reflector15.so_facet.facet 42 0.0196 1318   0.994937 1.19666e-09   0 0
 reflector5.so_facet.facet 44 0.0196 1307   0.995285 2.20042e-09   0 0
-reflector10.so_facet.facet 46 0.0196 1255   0.98126 2.9444e-09   0 0
+reflector10.so_facet.facet 46 0.0196 1255   0.98126 0   0 0
 reflector27.so_facet.facet 32 0.0196 1302   0.998883 5.05778e-10   7.14562 0.32743
 reflector61.so_facet.facet 52 0.0196 1311   0.989373 2.03705e-09   0 0
 reflector64.so_facet.facet 54 0.0196 1343   0.980427 1.37889e-09   0 0
@@ -4653,7 +4653,7 @@ reflector6.so_facet.facet 138 0.0196 1308   0.999869 2.47211e-09   19.7377 0.542
 reflector13.so_facet.facet 140 0.0196 1279   0.983793 1.69249e-09   0.222711 0.0574995
 reflector62.so_facet.facet 146 0.0196 1237   0.97582 0   0 0
 reflector7.so_facet.facet 80 0.0196 1294   0.998839 2.66856e-09   7.58246 0.337234
-reflector12.so_facet.facet 82 0.0196 1334   0.976026 1.63193e-09   0.265143 0.0624892
+reflector12.so_facet.facet 82 0.0196 1334   0.976026 1.68216e-09   0.265143 0.0624892
 reflector63.so_facet.facet 88 0.0196 1358   0.972891 2.17756e-09   0 0
 reflector55.so_facet.facet 94 0.0196 1304   0.962599 1.48783e-09   0 0
 reflector28.so_facet.facet 126 0.0196 1300   0.99719 1.93847e-09   0.255843 0.0620458
@@ -6476,7 +6476,7 @@ reflector54.so_facet.facet 28 0.0196 1273   0.961427 1.4163e-09   0.290197 0.064
 reflector48.so_facet.facet 106 0.0196 1262   0.972443 2.49922e-09   0.366903 0.0733714
 reflector59.so_facet.facet 56 0.0196 1344   0.961643 1.43706e-09   0.0870787 0.0355487
 reflector49.so_facet.facet 40 0.0196 1359   0.975445 1.51243e-09   0.235543 0.0588809
-reflector74.so_facet.facet 34 0.0196 1302   0.949312 2.18521e-09   0 0
+reflector74.so_facet.facet 34 0.0196 1302   0.949312 2.26191e-09   0 0
 reflector22.so_facet.facet 30 0.0196 1287   0.973682 6.56751e-10   0.76413 0.105938
 reflector41.so_facet.facet 72 0.0196 1266   0.981373 1.98653e-09   0.459138 0.0824507
 reflector30.so_facet.facet 144 0.0196 1313   0.988211 0   0.521993 0.0882174
@@ -7401,7 +7401,7 @@ reflector52.so_facet.facet 154 0.0196 1304   0.966543 2.00039e-09   0.466786 0.0
 reflector15.so_facet.facet 42 0.0196 1279   0.990563 2.2438e-09   1.03152 0.124138
 reflector5.so_facet.facet 44 0.0196 1333   0.997293 4.08136e-10   1.18904 0.133725
 reflector10.so_facet.facet 46 0.0196 1266   0.983181 0   0.919967 0.1168
-reflector27.so_facet.facet 32 0.0196 1324   0.98783 1.327e-09   1.04358 0.124688
+reflector27.so_facet.facet 32 0.0196 1324   0.98783 1.26223e-09   1.04358 0.124688
 reflector61.so_facet.facet 52 0.0196 1322   0.95827 0   0.332631 0.0693503
 reflector64.so_facet.facet 54 0.0196 1312   0.950205 1.86265e-09   0.30115 0.0657095
 reflector29.so_facet.facet 64 0.0196 1329   0.98783 1.35567e-09   0.745417 0.105391
@@ -7898,7 +7898,7 @@ reflector61.so_facet.facet 52 0.0196 1342   0.954446 1.34909e-09   0.547371 0.08
 reflector64.so_facet.facet 54 0.0196 1324   0.946491 5.7915e-10   0.414249 0.0769129
 reflector29.so_facet.facet 64 0.0196 1313   0.985807 0   0.981935 0.120828
 reflector20.so_facet.facet 156 0.0196 1283   0.984238 0   1.2626 0.13689
-reflector18.so_facet.facet 76 0.0196 1364   0.99224 2.30014e-09   1.21297 0.134719
+reflector18.so_facet.facet 76 0.0196 1364   0.99224 2.33526e-09   1.21297 0.134719
 reflector39.so_facet.facet 22 0.0196 1305   0.978148 0   0.915257 0.116202
 reflector69.so_facet.facet 92 0.0196 1311   0.932881 9.65162e-10   0 0
 reflector47.so_facet.facet 130 0.0196 1335   0.958719 0   0.882608 0.112972

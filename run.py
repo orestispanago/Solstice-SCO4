@@ -1,9 +1,4 @@
 from groups import ideal, errors, virtual
-import os
-
-print(os.environ["LD_LIBRARY_PATH"])
-print(os.environ["MANPATH"])
-print(os.environ["PATH"])
 
 
 def run_vtk_obj_heat(trace):
