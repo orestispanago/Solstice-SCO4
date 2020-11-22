@@ -38,8 +38,7 @@ def move_abs_run_agg(direction, aggregate):
                  "shadow_losses": getattr(tr_df["shadow_losses"], aggregate)()
                  }, ignore_index=True)
     move_absorber(direction.geometry_path, 0, 0)
-    csvpath = os.path.join(os.getcwd(), 'export', direction.geometry_name, 'raw',
-                           f"{direction.__class__.__name__}-{aggregate}.csv")
+    csvpath = direction.raw_file.split(".")[0] + f"-{aggregate}.csv"
     df.to_csv(csvpath, index=False)
 
 

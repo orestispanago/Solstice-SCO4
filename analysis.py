@@ -35,7 +35,7 @@ calc_shadow_losses(ideal_plain_tr, virtual_abs_tr)
 
 # plot_geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
 # plot_geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
-ideal_plain_mean = reader.read_mean(ideal.transversal[0])
+ideal_plain_mean = reader.read_aggregate(ideal.transversal[0], "mean")
 plots.heatmap(ideal_plain_mean)
 
 # for ln in ideal_longitudinal_traces:

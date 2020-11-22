@@ -49,11 +49,7 @@ def read_list(directions):
     return [read(tr) for tr in directions]
 
 
-def read_mean(direction):
-    mean_file = os.path.join(os.getcwd(),
-                             'export',
-                             direction.geometry_name,
-                             'raw',
-                             direction.__class__.__name__ + "-mean.csv")
+def read_aggregate(direction, aggregate):
+    mean_file = direction.raw_file.split(".")[0] + f"-{aggregate}.csv"
     direction_df = pd.read_csv(mean_file)
     return get_direction_attrs(direction_df, direction)
