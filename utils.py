@@ -6,18 +6,22 @@ def mkdir_if_not_exists(dirname):
         os.makedirs(dirname)
 
 
+def read_lines(fpath):
+    with open(fpath, 'r') as fin:
+        lines = fin.readlines()
+    return lines
+
+
 def del_first_line(fpath):
     """ Deletes first line from vtk file to be opened by Paraview """
-    with open(fpath, 'r') as fin:
-        data = fin.read().splitlines(True)
+    lines = read_lines(fpath)
     with open(fpath, 'w') as fout:
-        fout.writelines(data[1:])
+        fout.writelines(lines[1:])
 
 
 def del_until(fpath, occurrence="# vtk DataFile Version 2.0\n"):
     """ Deletes lines from file until occurence of line """
-    with open(fpath, "r") as fin:
-        lines_in = fin.readlines()
+    lines_in = read_lines(fpath)
     with open(fpath, "w") as fout:
         for count, line in enumerate(lines_in):
             if line == occurrence:
@@ -27,8 +31,7 @@ def del_until(fpath, occurrence="# vtk DataFile Version 2.0\n"):
 
 def keep_until(fpath, occurrence='reflector', lines_before=0):
     """ Keeps lines until occurrence of string """
-    with open(fpath, "r") as fin:
-        lines_in = fin.readlines()
+    lines_in = read_lines(fpath)
     with open(fpath, "w") as fout:
         for count, line in enumerate(lines_in):
             if occurrence in line:
@@ -38,8 +41,7 @@ def keep_until(fpath, occurrence='reflector', lines_before=0):
 
 def replace_line(fpath, occurrence="&abs_x", newline=""):
     """ Replaces line that contains occurrence with new line """
-    with open(fpath, "r") as fin:
-        lines_in = fin.readlines()
+    lines_in = read_lines(fpath)
     with open(fpath, "w") as fout:
         for count, line in enumerate(lines_in):
             if occurrence in line:
@@ -50,8 +52,7 @@ def replace_line(fpath, occurrence="&abs_x", newline=""):
 
 def replace_occurence_and_four_next(fpath, occurrence="", newlines=""):
     """ Replaces line containing occurence and next four with newlines """
-    with open(fpath, "r") as fin:
-        lines_in = fin.readlines()
+    lines_in = read_lines(fpath)
     with open(fpath, "w") as fout:
         for count, line in enumerate(lines_in):
             if occurrence in line:

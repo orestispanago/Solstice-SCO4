@@ -10,16 +10,28 @@ base_url = "https://www.meso-star.com/projects/solstice/downloads/"
 folder = "solstice"
 
 
-class Platform():
-    def __init__(self):
-        pass
+class Platform:
 
     def set_paths(self):
-        print("setting up paths...")
+        print("Setting up paths...", end='')
         os.environ["LD_LIBRARY_PATH"] = os.path.join(self.solstice_path, "lib")
         os.environ["MANPATH"] = os.path.join(self.solstice_path, 'share', 'man')
-        if "solstice" not in os.environ["PATH"]:
-            os.environ["PATH"] += os.path.join(self.solstice_path, "bin")
+        os.environ["PATH"] += os.path.join(self.solstice_path, "bin")
+        print("OK")
+
+    def found_solstice(self):
+        install_dir = os.path.join(os.getcwd(), folder, self.dirname)
+        if os.path.exists(install_dir) and len(os.listdir(install_dir)) != 0:
+            print("Found solstice in", install_dir)
+            return True
+        print("Solstice not found")
+        return False
+
+    def solstice_path_ok(self):
+        if self.solstice_path in os.environ["PATH"]:
+            print("Path ok, using ", self.solstice_path)
+            return True
+        return False
 
 
 class Windows(Platform):
@@ -50,8 +62,9 @@ class Linux(Platform):
         print("Downloading " + self.dirname + "...")
         req = urllib.request.urlretrieve(self.url, filename=None)[0]
         tar = tarfile.open(req)
-        print("Extracting...")
+        print("Extracting...", end="")
         tar.extractall(folder)
+        print("OK")
         return self
 
 
@@ -61,7 +74,6 @@ def init_platform():
     else:
         return Linux()
 
-
 def solstice_works():
     cmd = "solstice -h".split()
     process = check_output(cmd)
@@ -70,19 +82,20 @@ def solstice_works():
     return False
 
 
-def install():
-    init_platform().download_extract().set_paths()
-    if solstice_works():
-        print("installation successful!")
-
-
-if __name__ == "main":
-    init_platform().set_paths()
-
-    if not os.path.exists(folder) or len(os.listdir(folder)) == 0:
-        print("solstice not found in project, installing...")
-        install()
-    if not solstice_works():
-        install()
+def check_installation():
+    platform = init_platform()
+    if platform.found_solstice():
+        if platform.solstice_path_ok():
+            try:
+                solstice_works()
+            except FileNotFoundError:
+                print("tried solstice -h, no luck")
+                platform.set_paths()
+        else:
+            platform.set_paths()
     else:
-        print("solstice is installed and works!")
+        platform.download_extract()
+        platform.set_paths()
+
+
+check_installation()
