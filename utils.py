@@ -20,7 +20,7 @@ def del_first_line(fpath):
 
 
 def del_until(fpath, occurrence="# vtk DataFile Version 2.0\n"):
-    """ Deletes lines from file until occurence of line """
+    """ Deletes lines from file until occurrence of line """
     lines_in = read_lines(fpath)
     with open(fpath, "w") as fout:
         for count, line in enumerate(lines_in):

@@ -1,5 +1,5 @@
+import os
 import pandas as pd
-
 
 columns = {"potential_flux": 2,
            "absorbed_flux": 3,
@@ -11,38 +11,49 @@ columns = {"potential_flux": 2,
            }
 
 
-def get_trace_attrs(df, trace):
-    df.trace_geometry = trace.title.split(" ")[1]
-    df.trace_direction = trace.title.split(" ")[0]
+def get_direction_attrs(df, direction):
+    df.direction_geometry = direction.geometry_name
+    df.direction_name = direction.__class__.__name__
     return df
+
 
 # TODO check calculation with partners
 def calc_intercept_factor(df):
-    df["intercept_factor"] = df["absorbed_flux"]/ (df["potential_flux"] * df["cos_factor"])
-    
+    df["intercept_factor"] = df["absorbed_flux"] / \
+                             (df["potential_flux"] * df["cos_factor"])
+
+
 def calc_iam(df):
     df["IAM"] = df["intercept_factor"] / df["intercept_factor"][0]
 
-def read(trace):
-    if trace.df is not None:
-        df = trace.df
+
+def read(direction):
+    if not os.path.isfile(direction.raw_file):
+        df = direction.df
     else:
-        df = pd.read_csv(trace.rawfile, sep='\s+', names=range(47))
-    trace_df = df.loc[df[1] == 'Sun', [trace.sun_col]]  # set 4 for longitudinal
-    trace_df.columns = ["angle"]
-    trace_df["efficiency"] = df.loc[df[0] == 'absorber', [23]].values  # Overall effficiency, add [23,24] for error
+        df = pd.read_csv(direction.raw_file, sep='\s+', names=range(47))
+    direction_df = df.loc[df[1] == 'Sun', [direction.sun_col]]  # set 4 for longitudinal
+    direction_df.columns = ["angle"]
+    direction_df["efficiency"] = df.loc[df[0] == 'absorber', [23]].values  # Overall effficiency, add [23,24] for error
     for key in columns.keys():
-        trace_df[key] = df[0].iloc[trace_df.index + columns.get(key)].astype('float').values
-    trace_df = trace_df.set_index("angle")
-    if trace.name == "Transversal":
-        trace_df.index = trace_df.index-90
-    calc_intercept_factor(trace_df)
-    calc_iam(trace_df)
-    return get_trace_attrs(trace_df, trace)
+        direction_df[key] = df[0].iloc[direction_df.index + columns.get(key)].astype('float').values
+    direction_df = direction_df.set_index("angle")
+    if direction.__class__.__name__ == "Transversal":
+        direction_df.index = direction_df.index - 90
+    calc_intercept_factor(direction_df)
+    calc_iam(direction_df)
+    return get_direction_attrs(direction_df, direction)
 
-def read_list(traces):
-    return [read(tr) for tr in traces]
 
-def read_mean(trace):
-    trace_df = pd.read_csv(trace.meanfile)
-    return get_trace_attrs(trace_df, trace)
+def read_list(directions):
+    return [read(tr) for tr in directions]
+
+
+def read_mean(direction):
+    mean_file = os.path.join(os.getcwd(),
+                             'export',
+                             direction.geometry_name,
+                             'raw',
+                             direction.__class__.__name__ + "-mean.csv")
+    direction_df = pd.read_csv(mean_file)
+    return get_direction_attrs(direction_df, direction)

@@ -74,6 +74,7 @@ def init_platform():
     else:
         return Linux()
 
+
 def solstice_works():
     cmd = "solstice -h".split()
     process = check_output(cmd)
@@ -96,6 +97,3 @@ def check_installation():
     else:
         platform.download_extract()
         platform.set_paths()
-
-
-check_installation()
