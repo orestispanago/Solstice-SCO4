@@ -3,14 +3,15 @@ from setup import check_installation
 import export
 
 
-def raw_vtk_obj_heat(trace):
-    export.raw(trace)
-    # export.vtk(trace)
-    # export.obj(trace)
-    # export.heat(trace)
+def raw_vtk_obj_heat(direction):
+    # export.raw(direction)
+    # export.vtk(direction)
+    # export.obj(direction)
+    export.heatmap(direction)
 
 
-for i in errors.transversal:
-    raw_vtk_obj_heat(i)
-for i in errors.longitudinal:
-    raw_vtk_obj_heat(i)
+# for i in ideal.transversal:
+#     raw_vtk_obj_heat(i)
+# for i in ideal.longitudinal:
+#     raw_vtk_obj_heat(i)
+export.heatmap(errors.transversal[-1])

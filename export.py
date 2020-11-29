@@ -58,17 +58,18 @@ def obj(direction):
             subprocess.run(cmd, stdout=f)
 
 
-def heatmap(direction, nrays=1000000):
-    receiver_heat = os.path.join(CWD, "geometries", "heatmap", "direction.receiver.yaml")
-    geometry_path_heat = os.path.join(CWD, "geometries", "heatmap", "geometry_path.yaml")
+def heatmap(direction, nrays=10000000):
+    receiver_heat = os.path.join(CWD, "geometries", "heatmap", "receiver.yaml")
+    geometry_path_heat = os.path.join(CWD, "geometries", "heatmap", "geometry.yaml")
+    # geometry_path_heat = os.path.join(CWD, "geometries", "heatmap", "geometry_errors.yaml")
     print("WARNING: create a heatmap geometry_path first")
     print("Now using example geometry_path:", geometry_path_heat)
     utils.mkdir_if_not_exists(direction.shape_dir)
     for pair in [direction.angle_pairs[0], direction.angle_pairs[-1]]:
         pair_str = pair.replace(',', '_')
-        fname = f"{direction.name}_{pair_str}_heatmap.vtk"
-        heat_path = os.path.join(direction.exp_dir, "shapes", fname)
-        cmd = f'solstice  -n {nrays} -v -t16 -D {pair} -R {receiver_heat} {geometry_path_heat}'.split()
+        fname = f"{direction.__class__.__name__}_{pair_str}_heatmap.vtk"
+        heat_path = os.path.join(direction.shape_dir, fname)
+        cmd = f'solstice  -n {nrays} -v -t8 -D {pair} -R {receiver_heat} {geometry_path_heat}'.split()
         with open(heat_path, 'w') as f:
             subprocess.run(cmd, stdout=f)
         utils.del_until(heat_path)

@@ -1,11 +1,11 @@
-- sun:
-    dni: 1000
+- sun: {dni: 1000, pillbox: {half_angle: 0.2664}} # half angle 0-90 deg, 4.65mrad = 0.2664deg
 
 - material: &specular
     back:
-      mirror: { reflectivity: 1, slope_error: 0 }
+      mirror: { reflectivity: 1, slope_error: 0.007 } # slope_error in radians
     front:
-      mirror: { reflectivity: 1, slope_error: 0 }
+      mirror: { reflectivity: 1, slope_error: 0.007 }
+
 
 - material: &black
     back:
