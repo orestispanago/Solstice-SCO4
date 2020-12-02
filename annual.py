@@ -4,7 +4,8 @@ import export
 import subprocess
 from io import StringIO
 from tqdm import tqdm
-
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 columns = {
            "potential_flux": 2,
@@ -55,15 +56,30 @@ df["zen"] = 90 - df["alt"]
 
 receiver = os.path.join(os.getcwd(), "geometries", "receiver.yaml")
 geometry = os.path.join(os.getcwd(), "geometries", "ideal-plain.yaml")
-
-
-pairs = []
-for az,zen in zip(df["az"], df["zen"]):
-    pair = f"{az:.1f},{zen:.1f}"
-    pairs.append(pair)
+pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
 a = Annual(pairs, geometry, receiver, 10000)
 
-annual_df = run_to_df(a)
-annual_df["time"] = df.index
-annual_df = annual_df.set_index("time")
+# annual_df = run_to_df(a)
+# annual_df["time"] = df.index
+# annual_df = annual_df.set_index("time")
+
+annual = pd.read_csv("annual.csv", index_col="time", parse_dates=True)
+
+def plot_heatmap(dfin):
+    df = dfin.resample("D").mean()
+    df["hour"] = df.index.time
+    df["date"] = df.index.date
+    df.reset_index(inplace=True)
+    df = df.fillna(0)
+    df = df.pivot("hour","date", "absorbed_flux")
+    fig, ax = plt.subplots(figsize=(25,6))         # Sample figsize in inches
+    ax = sns.heatmap(df)
+    plt.savefig("heatmap.png")
+
+
+# plot_heatmap(annual)
+
+
+annual1 = annual.resample("D").mean()
+annual1["absorbed_flux"].plot()
