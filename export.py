@@ -4,6 +4,7 @@ from io import StringIO
 import pandas as pd
 import utils
 from setup import check_installation
+from tqdm import tqdm
 
 check_installation()
 CWD = os.getcwd()
@@ -24,8 +25,8 @@ def df(direction):
     """ Runs Direction and pipes output to dataframe """
     df_list = []
     # Solstice cannot take too long string of angle arguments, so split into chunks
-    for i in range(0, len(direction.angle_pairs), 50):
-        chunk = direction.angle_pairs[i:i + 50]
+    for i in tqdm(range(0, len(direction.angle_pairs), 50)):
+        chunk = direction.angle_pairs[i:i + 20]
         chunk = ":".join(chunk)
         cmd = f'solstice -D {chunk} -n {direction.rays} -v -R {direction.receiver} {direction.geometry_path}'.split()
         a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
@@ -35,12 +36,12 @@ def df(direction):
     return pd.concat(df_list)
 
 
-def vtk(direction, nrays=100000):
+def vtk(direction, nrays=100):
     for pair in [direction.angle_pairs[0], direction.angle_pairs[-1]]:
         pair_str = pair.replace(',', '_')
-        fname = f"{direction.name}_{pair_str}.vtk"
+        fname = f"{direction.__class__.__name__}_{pair_str}.vtk"
         utils.mkdir_if_not_exists(direction.shape_dir)
-        vtkpath = os.path.join(direction.exp_dir, "shapes", fname)
+        vtkpath = os.path.join(direction.shape_dir, fname)
         cmd = f'solstice  -n {nrays} -p default -t1 -D {pair} -R {direction.receiver} {direction.geometry_path}'.split()
         with open(vtkpath, 'w') as f:
             subprocess.run(cmd, stdout=f)
@@ -50,7 +51,7 @@ def vtk(direction, nrays=100000):
 def obj(direction):
     for pair in [direction.angle_pairs[0], direction.angle_pairs[-1]]:
         pair_str = pair.replace(',', '_')
-        fname = f"{direction.name}_{pair_str}.obj"
+        fname = f"{direction.__class__.__name__}_{pair_str}.obj"
         utils.mkdir_if_not_exists(direction.shape_dir)
         objpath = os.path.join(direction.shape_dir, fname)
         cmd = f'solstice  -n 100 -g format=obj -t1 -D {pair} -R {direction.receiver} {direction.geometry_path}'.split()
