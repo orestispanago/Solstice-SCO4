@@ -10,9 +10,9 @@ check_installation()
 CWD = os.getcwd()
 
 
-def raw(direction):
-    utils.mkdir_if_not_exists(os.path.dirname(direction.raw_file))
-    with open(direction.raw_file, 'w') as f:
+def csv(direction):
+    utils.mkdir_if_not_exists(os.path.dirname(direction.csv_path))
+    with open(direction.csv_path, 'w') as f:
         # Solstice cannot take too long string of angle arguments, so split into chunks
         for i in range(0, len(direction.angle_pairs), 50):
             chunk = direction.angle_pairs[i:i + 50]

@@ -29,17 +29,16 @@ calc_shadow_losses(ideal_plain_tr, virtual_abs_tr)
 # plots.geometries_comparison([ideal_tr_dfs[0], errors_tr_dfs[2]], "absorbed_flux")
 # plots.geometries_comparison([ideal_ln_dfs[0], errors_ln_dfs[2]], "absorbed_flux")
 
-# plots.all_quantities(ideal_plain_tr)
-# plot_geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
-# plot_geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
+plots.all_quantities(ideal_plain_tr)
+# plots.geometries_comparison([ideal_plain, virtual_abs], quantity="shadow_losses")
+# plots.geometries_comparison(ideal_tr_dfs[:2], quantity="IAM")
 
-# plot_geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
-# plot_geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
-ideal_plain_mean = reader.read_aggregate(ideal.transversal[0], "mean")
-plots.heatmap(ideal_plain_mean)
+# plots.geometries_comparison([errors_tr_dfs[0],ideal_tr_dfs[0]], quantity="IAM")
+# plots.geometries_comparison([errors_ln_dfs[1],ideal_ln_dfs[0]], quantity="IAM")
+# ideal_plain_mean = reader.read_aggregate(ideal.transversal[0], "mean")
+# plots.heatmap(ideal_plain_mean)
 
 # for ln in ideal_longitudinal_traces:
 #     plot_heatmap(ln)
 
 
-# plot_geometries_comparison(ideal_tr_df_list[-2])

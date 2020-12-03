@@ -28,10 +28,7 @@ def calc_iam(df):
 
 
 def read(direction):
-    if not os.path.isfile(direction.raw_file):
-        df = direction.df
-    else:
-        df = pd.read_csv(direction.raw_file, sep='\s+', names=range(47))
+    df = pd.read_csv(direction.csv_path, sep='\s+', names=range(47))
     direction_df = df.loc[df[1] == 'Sun', [direction.sun_col]]  # set 4 for longitudinal
     direction_df.columns = ["angle"]
     direction_df["efficiency"] = df.loc[df[0] == 'absorber', [23]].values  # Overall effficiency, add [23,24] for error
@@ -50,6 +47,6 @@ def read_list(directions):
 
 
 def read_aggregate(direction, aggregate):
-    mean_file = direction.raw_file.split(".")[0] + f"-{aggregate}.csv"
+    mean_file = direction.csv_path.split(".")[0] + f"-{aggregate}.csv"
     direction_df = pd.read_csv(mean_file)
     return get_direction_attrs(direction_df, direction)
