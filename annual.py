@@ -7,7 +7,9 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-columns = {
+
+def read(fname):
+    columns = {
            "potential_flux": 2,
            "absorbed_flux": 3,
            "cos_factor": 4,
@@ -15,9 +17,7 @@ columns = {
            "missing_losses": 6,
            # "reflectivity_losses": 7,
            # "absorptivity_losses": 8
-           }
-
-def read(fname):
+    }
     df = pd.read_csv(fname, sep='\s+', names=range(47))
     df_out = df.loc[df[1] == 'Sun', [3]]  # azimuth
     df_out.columns = ["azimuth"]
@@ -50,14 +50,12 @@ def run_to_df(direction):
 
 df = pd.read_csv("radiation/sol.csv", index_col="t", parse_dates=True)
 
-
 df["az"] = df["az"] - 90
 df["zen"] = 90 - df["alt"]
 
 receiver = os.path.join(os.getcwd(), "geometries", "receiver.yaml")
 geometry = os.path.join(os.getcwd(), "geometries", "ideal-plain.yaml")
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
-
 a = Annual(pairs, geometry, receiver, 10000)
 
 # annual_df = run_to_df(a)
@@ -66,19 +64,22 @@ a = Annual(pairs, geometry, receiver, 10000)
 
 annual = pd.read_csv("annual.csv", index_col="time", parse_dates=True)
 
-def plot_heatmap(dfin):
-    df = dfin.resample("D").mean()
-    df["hour"] = df.index.time
-    df["date"] = df.index.date
+
+def plot_calendar_heatmap(dfin, col, freq="1min", units=""):
+    df = dfin.resample(freq).mean().dropna()
+    df["Time, UTC"] = df.index.time
+    df["Date"] = df.index.date
     df.reset_index(inplace=True)
-    df = df.fillna(0)
-    df = df.pivot("hour","date", "absorbed_flux")
+    df = df.pivot("Time, UTC","Date", col)
     fig, ax = plt.subplots(figsize=(25,6))         # Sample figsize in inches
-    ax = sns.heatmap(df)
+    cbar_label = col.replace("_"," ").title()
+    cbar_label += units
+    ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label})
+    plt.tight_layout()
     plt.savefig("heatmap.png")
+    plt.show()
 
-
-# plot_heatmap(annual)
+plot_calendar_heatmap(annual, "absorbed_flux", units=" (W)")
 
 
 annual1 = annual.resample("D").mean()
