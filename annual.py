@@ -26,7 +26,7 @@ def read(fname):
         df_out[key] = df[0].iloc[df_out.index + columns.get(key)].astype('float').values
     return df_out
 
-def plot_calendar_heatmap(dfin, col, freq="1min", units=""):
+def plot_calendar_heatmap(dfin, col, freq="1min", units="", folder="calendar-heatmaps"):
     df = dfin.resample(freq).mean().dropna()
     df["Time, UTC"] = df.index.time
     df["Date"] = df.index.date
@@ -36,7 +36,7 @@ def plot_calendar_heatmap(dfin, col, freq="1min", units=""):
     cbar_label = col.replace("_"," ").title() + units
     ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label})
     plt.tight_layout()
-    plt.savefig("heatmap.png")
+    plt.savefig(f"{folder}/{col}.png")
     plt.show()
 
 def run_to_df(direction):
@@ -56,18 +56,20 @@ def run_to_df(direction):
 df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
 
 df["solstice_az"] = df["az"] - 90
-pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["solstice_az"], df["zen"])]
+tilt = 10
+df["solstice_zen"] = df["zen"] - tilt
+pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["solstice_az"], df["solstice_zen"])]
 
-a = Annual(100000, pairs, "ideal", "ideal-plain.yaml")
+a = Annual(10000, pairs, "ideal", "ideal-plain.yaml")
 
-# annual_df = run_to_df(a)
-# annual_df["time"] = df.index
-# annual_df = annual_df.set_index("time")
-# annual_df.to_csv("annual.csv")
+annual_df = run_to_df(a)
+annual_df["time"] = df.index
+annual_df = annual_df.set_index("time")
+annual_df.to_csv(a.csv_path)
 
 annual = pd.read_csv("annual.csv", index_col="time", parse_dates=True)
 
-plot_calendar_heatmap(annual, "missing_losses", units=" (W)")
+plot_calendar_heatmap(annual, "efficiency", folder=a.plots_dir)
 
 
 # annual1 = annual.resample("D").mean()
