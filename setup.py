@@ -4,7 +4,7 @@ import io
 import tarfile
 import urllib.request
 import os
-from subprocess import check_output
+import subprocess
 
 base_url = "https://www.meso-star.com/projects/solstice/downloads/"
 folder = "solstice"
@@ -77,7 +77,7 @@ def init_platform():
 
 def solstice_works():
     cmd = "solstice -h".split()
-    process = check_output(cmd)
+    process = subprocess.check_output(cmd)
     if "Usage" in process.decode("utf-8"):
         return True
     return False

@@ -1,11 +1,10 @@
-import os
 import pandas as pd
-import export
 import subprocess
 from io import StringIO
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
+from directions import Annual
 
 
 def read(fname):
@@ -27,12 +26,18 @@ def read(fname):
         df_out[key] = df[0].iloc[df_out.index + columns.get(key)].astype('float').values
     return df_out
 
-class Annual:
-    def __init__(self, angle_pairs, geometry_path, receiver, rays):
-        self.rays=rays
-        self.angle_pairs=angle_pairs
-        self.geometry_path=geometry_path
-        self.receiver=receiver
+def plot_calendar_heatmap(dfin, col, freq="1min", units=""):
+    df = dfin.resample(freq).mean().dropna()
+    df["Time, UTC"] = df.index.time
+    df["Date"] = df.index.date
+    df.reset_index(inplace=True)
+    df = df.pivot("Time, UTC","Date", col)
+    fig, ax = plt.subplots(figsize=(25,10))
+    cbar_label = col.replace("_"," ").title() + units
+    ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label})
+    plt.tight_layout()
+    plt.savefig("heatmap.png")
+    plt.show()
 
 def run_to_df(direction):
     """ Runs Direction and pipes output to dataframe """
@@ -48,39 +53,22 @@ def run_to_df(direction):
         df_list.append(df)
     return pd.concat(df_list)
 
-df = pd.read_csv("radiation/sol.csv", index_col="t", parse_dates=True)
+df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
 
-df["az"] = df["az"] - 90
-df["zen"] = 90 - df["alt"]
+df["solstice_az"] = df["az"] - 90
+pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["solstice_az"], df["zen"])]
 
-receiver = os.path.join(os.getcwd(), "geometries", "receiver.yaml")
-geometry = os.path.join(os.getcwd(), "geometries", "ideal-plain.yaml")
-pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
-a = Annual(pairs, geometry, receiver, 10000)
+a = Annual(100000, pairs, "ideal", "ideal-plain.yaml")
 
 # annual_df = run_to_df(a)
 # annual_df["time"] = df.index
 # annual_df = annual_df.set_index("time")
+# annual_df.to_csv("annual.csv")
 
 annual = pd.read_csv("annual.csv", index_col="time", parse_dates=True)
 
-
-def plot_calendar_heatmap(dfin, col, freq="1min", units=""):
-    df = dfin.resample(freq).mean().dropna()
-    df["Time, UTC"] = df.index.time
-    df["Date"] = df.index.date
-    df.reset_index(inplace=True)
-    df = df.pivot("Time, UTC","Date", col)
-    fig, ax = plt.subplots(figsize=(25,6))         # Sample figsize in inches
-    cbar_label = col.replace("_"," ").title()
-    cbar_label += units
-    ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label})
-    plt.tight_layout()
-    plt.savefig("heatmap.png")
-    plt.show()
-
-plot_calendar_heatmap(annual, "absorbed_flux", units=" (W)")
+plot_calendar_heatmap(annual, "missing_losses", units=" (W)")
 
 
-annual1 = annual.resample("D").mean()
-annual1["absorbed_flux"].plot()
+# annual1 = annual.resample("D").mean()
+# annual1["absorbed_flux"].plot()
