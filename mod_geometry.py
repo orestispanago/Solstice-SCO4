@@ -97,6 +97,9 @@ def setup_base_geometry(geometry):
     append_reflectors_to_yaml(geometry)
     move_absorber(geometry, abs_pos_x, abs_pos_y)
 
+def set_dni(geometry, dni):
+    utils.replace_line(geometry, occurrence="sun", 
+                       newline=f"- sun: {{ dni : {dni} }}\n")
 
 # setup_base_geometry(geometry)
 # move_absorber(geometry, 0.5, 0.5)

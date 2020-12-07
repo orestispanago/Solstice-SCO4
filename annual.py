@@ -5,7 +5,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import seaborn as sns
 from directions import Annual
-
+import mod_geometry
 
 def read(fname):
     columns = {
@@ -39,7 +39,7 @@ def plot_calendar_heatmap(dfin, col, freq="1min", units="", folder="calendar-hea
     plt.savefig(f"{folder}/{col}.png")
     plt.show()
 
-def run_to_df(direction):
+def run_chunks_to_df(direction):
     """ Runs Direction and pipes output to dataframe """
     df_list = []
     # Solstice cannot take too long string of angle arguments, so split into chunks
@@ -53,23 +53,31 @@ def run_to_df(direction):
         df_list.append(df)
     return pd.concat(df_list)
 
+def run_annual(direction, df):
+    df_list = []
+    for pair, dni in tqdm(zip(direction.angle_pairs, df["DNI"]), total=len(df)):
+        mod_geometry.set_dni(direction.geometry_path, dni)
+        cmd = f'solstice -D {pair} -n {direction.rays} -v -R {direction.receiver} {direction.geometry_path}'.split()
+        a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        b = StringIO(a.communicate()[0].decode('utf-8'))
+        df = read(b)
+        df_list.append(df)
+    return pd.concat(df_list)
+
 df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
+df = df.loc[(df[['DNI']] != 0).all(axis=1)] # drop zeros
+pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
-df["solstice_az"] = df["az"] - 90
-tilt = 10
-df["solstice_zen"] = df["zen"] - tilt
-pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["solstice_az"], df["solstice_zen"])]
+annual_45 = Annual(10000, pairs, "ideal", "annual-tilt45.yaml")
+annual_df = run_annual(annual_45, df)
 
-a = Annual(10000, pairs, "ideal", "ideal-plain.yaml")
-
-annual_df = run_to_df(a)
 annual_df["time"] = df.index
 annual_df = annual_df.set_index("time")
-annual_df.to_csv(a.csv_path)
+annual_df.to_csv(annual_45.csv_path)
 
-annual = pd.read_csv("annual.csv", index_col="time", parse_dates=True)
+annual = pd.read_csv(annual_45.csv_path, index_col="time", parse_dates=True)
 
-plot_calendar_heatmap(annual, "efficiency", folder=a.plots_dir)
+plot_calendar_heatmap(annual, "efficiency", folder=annual_45.plots_dir)
 
 
 # annual1 = annual.resample("D").mean()
