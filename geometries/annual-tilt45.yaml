@@ -1,4 +1,4 @@
-- sun: { dni : 69.3808949610042 }
+- sun: { dni : 430.42500020252805 }
 
 - material:
     back: &id002
@@ -34,45 +34,51 @@
         - [0.125, 0.125]
         - [0.125, -0.125]
 
-- entity:
-    name: absorber
-    primary: 0
+- geometry: &receiver
+    - material: 
+        virtual: 
+      plane:
+        clip:
+          - operation: AND
+            vertices:
+            - [-0.125, -0.125]
+            - [-0.125, 0.125]
+            - [ 0.125, 0.125]
+            - [ 0.125,-0.125]
+
+- entity: 
+    name: entity_all
     transform:
-      rotation: [0, -225, 0]
-      translation: [-1.0606601717798212, 0, 1.0606601717798214]
-    anchors:
-    - name: anchor0
-      position: [0, 0, 0]
-    geometry: *id003
+      rotation: &abs_rotation [0, 45, 0]
+      translation: [0, 0, 0]
+    children:
+    - name: absorber
+      primary: 0
+      transform:
+        rotation: [0, 90, 0]
+        translation: [-1.5, 0, 0]
+      anchors:
+      - name: anchor0
+        position: [0, 0, 0]
+      geometry: *id003
 
 - template: &id005
     name: so_facet
-    transform:
-      rotation: [0, 0, 0]
-      translation: [0, 0, 0]
     zx_pivot:
       ref_point: [0, 0, 0]
-      target: {anchor: absorber.anchor0}
+      target: {anchor: entity_all.absorber.anchor0}
     children:
     - name: facet
       transform:
         rotation: [90, 0, 0]
-        translation: [0, 0, 0]
       primary: 1
       geometry: *id004
 
-- template:
-    name: template_reflector1
-    transform:
-      rotation: [0, 0, 0]
-      translation: [0, 0, 0]
-    children:
-    - *id005
 
 - entity:
     name: all_reflectors
     transform:
-      rotation: [0, 45, 0]
+      rotation: *abs_rotation
       translation: [0, 0, 0]
     children:
     - name: reflector1

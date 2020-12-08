@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import subprocess
 from io import StringIO
@@ -21,7 +22,7 @@ def read(fname):
     df_out = df.loc[df[1] == 'Sun', [3]]  # azimuth
     df_out.columns = ["azimuth"]
     df_out["zenith"] = df.loc[df[1] == 'Sun', [4]] # zenith
-    df_out["efficiency"] = df.loc[df[0] == 'absorber', [23]].values  # Overall effficiency, add [23,24] for error
+    df_out["efficiency"] = df.loc[df[0] == 'entity_all.absorber', [23]].values  # Overall effficiency, add [23,24] for error
     for key in columns.keys():
         df_out[key] = df[0].iloc[df_out.index + columns.get(key)].astype('float').values
     return df_out
@@ -54,10 +55,11 @@ def run_chunks_to_df(direction):
     return pd.concat(df_list)
 
 def run_annual(direction, df):
+    receiver = "geometries/receiver_annual.yaml"
     df_list = []
     for pair, dni in tqdm(zip(direction.angle_pairs, df["DNI"]), total=len(df)):
         mod_geometry.set_dni(direction.geometry_path, dni)
-        cmd = f'solstice -D {pair} -n {direction.rays} -v -R {direction.receiver} {direction.geometry_path}'.split()
+        cmd = f'solstice -D {pair} -n {direction.rays} -v -R {receiver} {direction.geometry_path}'.split()
         a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
         b = StringIO(a.communicate()[0].decode('utf-8'))
         df = read(b)
@@ -68,17 +70,25 @@ df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
 df = df.loc[(df[['DNI']] != 0).all(axis=1)] # drop zeros
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
-annual_45 = Annual(10000, pairs, "ideal", "annual-tilt45.yaml")
-annual_df = run_annual(annual_45, df)
+annual = Annual(10000, pairs, "ideal", "annual-tilt20.yaml")
+annual_df = run_annual(annual, df)
 
 annual_df["time"] = df.index
 annual_df = annual_df.set_index("time")
-annual_df.to_csv(annual_45.csv_path)
+annual_df.to_csv(annual.csv_path)
 
-annual = pd.read_csv(annual_45.csv_path, index_col="time", parse_dates=True)
+annual_df = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 
-plot_calendar_heatmap(annual, "efficiency", folder=annual_45.plots_dir)
+os.makedirs(annual.plots_dir)
+plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
 
 
 # annual1 = annual.resample("D").mean()
 # annual1["absorbed_flux"].plot()
+
+plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df, "cos_factor", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df, "absorbed_flux", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df, "shadow_losses", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
