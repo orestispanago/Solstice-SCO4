@@ -1,13 +1,13 @@
-import os
 import pandas as pd
-import subprocess
+from subprocess import Popen, PIPE
 from io import StringIO
 from tqdm import tqdm
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import seaborn as sns
-from directions import Annual
 import mod_geometry
+from base_geometry import BaseGeometry
+from directions import Annual
 
 sns.set_theme()
 
@@ -72,11 +72,35 @@ def run_chunks_to_df(direction):
         chunk = direction.angle_pairs[i:i + 20]
         chunk = ":".join(chunk)
         cmd = f'solstice -D {chunk} -n {direction.rays} -v -R {direction.receiver} {direction.geometry_path}'.split()
-        a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        a = Popen(cmd, stdout=PIPE)
         b = StringIO(a.communicate()[0].decode('utf-8'))
         df = read(b)
         df_list.append(df)
     return pd.concat(df_list)
+
+def run_to_df(geometry, cmd):
+    p = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+    out, err = p.communicate(input=geometry.encode())
+    b = StringIO(out.decode())
+    return read(b)
+
+def run_annual_test(geometry, df, rays=10000):
+    print("running from memory!")
+    receiver = "geometries/receiver_annual.yaml"
+    pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
+    df_list = []
+    with open(geometry, 'r') as f:
+        lines = f.readlines()
+        for pair, dni in tqdm(zip(pairs, df["DNI"]), total=len(df)):
+            newline = f"- sun: {{ dni : {dni} }}\n"
+            lines[0] = newline
+            cmd = f'solstice -D {pair} -n {rays} -v -R {receiver} {geometry}'.split()
+            p = Popen(cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
+            out, err = p.communicate(input="".join(lines).encode())
+            b = StringIO(out.decode())
+            df = read(b)
+            df_list.append(df)
+    return pd.concat(df_list)   
 
 def run_annual(direction, df):
     receiver = "geometries/receiver_annual.yaml"
@@ -84,24 +108,29 @@ def run_annual(direction, df):
     for pair, dni in tqdm(zip(direction.angle_pairs, df["DNI"]), total=len(df)):
         mod_geometry.set_dni(direction.geometry_path, dni)
         cmd = f'solstice -D {pair} -n {direction.rays} -v -R {receiver} {direction.geometry_path}'.split()
-        a = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+        a = Popen(cmd, stdout=PIPE)
         b = StringIO(a.communicate()[0].decode('utf-8'))
         df = read(b)
         df_list.append(df)
     return pd.concat(df_list)
 
 df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
+pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 # drop zeros, comment out if white pixels on heatmap or spikes on line plots
 # df = df.loc[(df[['DNI']] != 0).all(axis=1)] 
-pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
+# pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
 annual = Annual(10000, pairs, "ideal", "annual-tilt38.yaml")
 # annual_df = run_annual(annual, df)
-# annual_df["time"] = df.index
-# annual_df = annual_df.set_index("time")
+
+bg = BaseGeometry()
+# annual_df = run_annual_test("geometries/annual-tilt38.yaml", df)
+annual_df = run_annual(annual, df)
+annual_df["time"] = df.index
+annual_df = annual_df.set_index("time")
 # annual_df.to_csv(annual.csv_path)
 
-annual_df = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
+# annual_df = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 
 # os.makedirs(annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
@@ -121,4 +150,4 @@ annual_df = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 # plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
-plot_calendar_heatmap(df, "zen", folder=annual.plots_dir, cbar_label=r"$\theta_{z}$ $( \degree)$")
+# plot_calendar_heatmap(df, "zen", folder=annual.plots_dir, cbar_label=r"$\theta_{z}$ $( \degree)$")
