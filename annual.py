@@ -4,9 +4,29 @@ import subprocess
 from io import StringIO
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 import seaborn as sns
 from directions import Annual
 import mod_geometry
+
+sns.set_theme()
+
+params = {'figure.figsize': (14, 4),
+          'axes.titlesize': 20,
+          'axes.titleweight': 'bold',
+          'axes.labelsize': 20,
+          'axes.labelweight': 'bold',
+          'xtick.labelsize': 20,
+          'ytick.labelsize': 20,
+          'font.weight': 'bold',
+          'font.size': 25,
+          'legend.fontsize': 16,
+          'savefig.format': 'png',
+          # 'savefig.dpi': 300.0,
+           'figure.constrained_layout.use': True,
+          }
+plt.rcParams.update(params)
+
 
 def read(fname):
     columns = {
@@ -27,16 +47,20 @@ def read(fname):
         df_out[key] = df[0].iloc[df_out.index + columns.get(key)].astype('float').values
     return df_out
 
-def plot_calendar_heatmap(dfin, col, freq="1min", units="", folder="calendar-heatmaps"):
+def plot_calendar_heatmap(dfin, col, freq="1min",cbar_label=None, units="", 
+                          folder="calendar-heatmaps"):
     df = dfin.resample(freq).mean().dropna()
     df["Time, UTC"] = df.index.time
     df["Date"] = df.index.date
     df.reset_index(inplace=True)
     df = df.pivot("Time, UTC","Date", col)
-    fig, ax = plt.subplots(figsize=(25,6))
-    cbar_label = col.replace("_"," ").title() + units
-    ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label})
-    plt.tight_layout()
+    fig, ax = plt.subplots(figsize=(30,8))
+    if not cbar_label:
+        cbar_label = col.replace("_"," ").title() + units
+    ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label}, 
+                     xticklabels=31, yticklabels=30)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    # plt.tight_layout()
     plt.savefig(f"{folder}/{col}.png")
     plt.show()
 
@@ -98,3 +122,10 @@ annual_df1 = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 
 # df1 = df.resample("D").mean()
 # df1["az"].plot()
+
+
+# plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"DNI $\frac{W}{m^2}$")
+# plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
+# plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
+# plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
+plot_calendar_heatmap(df, "zen", folder=annual.plots_dir, cbar_label=r"$\theta_{z}$ $( \degree)$")
