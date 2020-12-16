@@ -66,29 +66,35 @@ def run_annual(direction, df):
         df_list.append(df)
     return pd.concat(df_list)
 
-df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
-df = df.loc[(df[['DNI']] != 0).all(axis=1)] # drop zeros
+
+df = pd.read_csv("radiation/solar_all.csv", index_col="t", parse_dates=True)
+df = df.loc[df["zen"]<=90]
+df = df.loc[(df[['DNI']] > 0).all(axis=1)] # drop zeros
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
-annual = Annual(10000, pairs, "ideal", "annual-tilt20.yaml")
+annual = Annual(10000, pairs, "ideal", "annual-tilt38.yaml")
 annual_df = run_annual(annual, df)
 
 annual_df["time"] = df.index
 annual_df = annual_df.set_index("time")
-annual_df.to_csv(annual.csv_path)
+annual_df.to_csv(annual.csv_path.split(".")[0]+"all.csv")
 
-annual_df = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
+annual_df1 = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 
-os.makedirs(annual.plots_dir)
-plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
+# os.makedirs(annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "cos_factor", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "absorbed_flux", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "shadow_losses", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
 
 
-# annual1 = annual.resample("D").mean()
+# annual1 = annual_df1.resample("D").mean()
+# annual1["absorbed_flux"].plot()
+# annual1["azimuth"].plot()
+# annual1["zenith"].plot()
 # annual1["absorbed_flux"].plot()
 
-plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
-plot_calendar_heatmap(annual_df, "cos_factor", folder=annual.plots_dir)
-plot_calendar_heatmap(annual_df, "absorbed_flux", folder=annual.plots_dir)
-plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
-plot_calendar_heatmap(annual_df, "shadow_losses", folder=annual.plots_dir)
-plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
+# df1 = df.resample("D").mean()
+# df1["az"].plot()
