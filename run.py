@@ -10,7 +10,7 @@ def csv_vtk_obj_heat(direction):
     # export.heatmap(direction)
 
 
-for i in virtual.transversal:
+for i in ideal.transversal:
     csv_vtk_obj_heat(i)
-for i in virtual.longitudinal:
+for i in ideal.longitudinal:
     csv_vtk_obj_heat(i)

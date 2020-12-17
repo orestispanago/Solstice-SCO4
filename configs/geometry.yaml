@@ -5,7 +5,7 @@ mirror_array:
     number_of_mirrors:
         x: 11
         y: 7
-    space: 0.01
+    space: 0.002
 
 absorber:
     dimensions: &abs_dims

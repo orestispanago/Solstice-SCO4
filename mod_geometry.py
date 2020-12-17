@@ -2,7 +2,7 @@ import utils
 from mirror_coordinates import centered_x, centered_y
 from config import geom
 
-# geometry = "geometries/ideal-frame-mirrorbox-support.yaml"
+geometry = "geometries/ideal-plain.yaml"
 
 mir_len_x = geom.mirror_array.mirror_dimensions.x  # mirror x dimension
 mir_len_y = geom.mirror_array.mirror_dimensions.y
@@ -92,8 +92,8 @@ def set_horizontal_support_vertices(geometry, len_x, len_y, abs_x, abs_y):
 def setup_base_geometry(geometry):
     set_vertices(geometry, "&mirror_vertices", mir_len_x, mir_len_y)
     set_vertices(geometry, "&receiver_vertices", abs_len_x, abs_len_y)
-    set_vertices(geometry, "&absorber_top_cover_vertices", top_len_x, top_len_y)
-    add_mirrorbox(geometry)
+    # set_vertices(geometry, "&absorber_top_cover_vertices", top_len_x, top_len_y)
+    # add_mirrorbox(geometry)
     append_reflectors_to_yaml(geometry)
     move_absorber(geometry, abs_pos_x, abs_pos_y)
 

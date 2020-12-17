@@ -20,7 +20,8 @@ def get_direction_attrs(df, direction):
 # TODO check calculation with partners
 def calc_intercept_factor(df):
     df["intercept_factor"] = df["absorbed_flux"] / \
-                             (df["potential_flux"] * df["cos_factor"])
+                             (df["potential_flux"] * df["cos_factor"] - \
+                              df["shadow_losses"])
 
 
 def calc_iam(df):

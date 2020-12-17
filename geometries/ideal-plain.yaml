@@ -59,192 +59,192 @@
 
 - entity:
     name: reflector1
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector2
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector3
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector4
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector5
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector6
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector7
-    transform: { rotation: [0 ,0, 0], translation: [ -0.750, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.710, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector8
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector9
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector10
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector11
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector12
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector13
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector14
-    transform: { rotation: [0 ,0, 0], translation: [ -0.600, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.568, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector15
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector16
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector17
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector18
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector19
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector20
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector21
-    transform: { rotation: [0 ,0, 0], translation: [ -0.450, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.426, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector22
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector23
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector24
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector25
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector26
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector27
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector28
-    transform: { rotation: [0 ,0, 0], translation: [ -0.300, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.284, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector29
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector30
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector31
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector32
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector33
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector34
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector35
-    transform: { rotation: [0 ,0, 0], translation: [ -0.150, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ -0.142, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector36
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector37
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector38
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
@@ -254,191 +254,191 @@
 
 - entity:
     name: reflector40
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector41
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector42
-    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.000, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector43
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector44
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector45
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector46
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector47
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector48
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector49
-    transform: { rotation: [0 ,0, 0], translation: [ 0.150, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.142, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector50
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector51
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector52
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector53
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector54
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector55
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector56
-    transform: { rotation: [0 ,0, 0], translation: [ 0.300, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.284, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector57
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector58
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector59
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector60
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector61
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector62
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector63
-    transform: { rotation: [0 ,0, 0], translation: [ 0.450, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.426, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector64
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector65
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector66
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector67
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector68
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector69
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector70
-    transform: { rotation: [0 ,0, 0], translation: [ 0.600, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.568, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector71
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, -0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, -0.426 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector72
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, -0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, -0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector73
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, -0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, -0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector74
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, 0.000 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, 0.000 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector75
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, 0.150 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, 0.142 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector76
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, 0.300 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, 0.284 ] }
     children: [ *self_oriented_facet ]
 
 - entity:
     name: reflector77
-    transform: { rotation: [0 ,0, 0], translation: [ 0.750, 0, 0.450 ] }
+    transform: { rotation: [0 ,0, 0], translation: [ 0.710, 0, 0.426 ] }
     children: [ *self_oriented_facet ]
 
