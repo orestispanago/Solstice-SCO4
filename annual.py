@@ -64,6 +64,14 @@ def plot_calendar_heatmap(dfin, col, freq="1min",cbar_label=None, units="",
     plt.savefig(f"{folder}/{col}.png")
     plt.show()
 
+def plot_kwh_timeseries(dfin, col, interval="D", ylabel="", folder=None):
+    df = dfin.resample(interval).sum()/60000
+    fig, ax = plt.subplots(figsize=(29, 7))
+    ax.bar(df.index, df[col])
+    ax.set_ylabel(ylabel)
+    plt.savefig(f"{folder}/{col}_kwh")
+    plt.show()
+
 def run_chunks_to_df(direction):
     """ Runs Direction and pipes output to dataframe """
     df_list = []
@@ -92,18 +100,18 @@ def run_annual(direction, df):
 
 
 df = pd.read_csv("radiation/solar_all.csv", index_col="t", parse_dates=True)
-df = df.loc[df["zen"]<=90]
-df = df.loc[(df[['DNI']] > 0).all(axis=1)] # drop zeros
+# df = df.loc[df["zen"]<=90]
+# df = df.loc[(df[['DNI']] > 0).all(axis=1)] # drop zeros
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
 annual = Annual(10000, pairs, "ideal", "annual-tilt38.yaml")
-annual_df = run_annual(annual, df)
+# annual_df = run_annual(annual, df)
 
-annual_df["time"] = df.index
-annual_df = annual_df.set_index("time")
-annual_df.to_csv(annual.csv_path.split(".")[0]+"all.csv")
+# annual_df["time"] = df.index
+# annual_df = annual_df.set_index("time")
+# annual_df.to_csv(annual.csv_path.split(".")[0]+"all.csv")
 
-annual_df1 = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
+annual_df1 = pd.read_csv(annual.csv_path.split(".")[0]+"all.csv", index_col="time", parse_dates=True)
 
 # os.makedirs(annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
@@ -114,8 +122,8 @@ annual_df1 = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 # plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
 
 
-# annual1 = annual_df1.resample("D").mean()
-# annual1["absorbed_flux"].plot()
+
+plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="kWh", folder=annual.plots_dir)
 # annual1["azimuth"].plot()
 # annual1["zenith"].plot()
 # annual1["absorbed_flux"].plot()
@@ -128,4 +136,4 @@ annual_df1 = pd.read_csv(annual.csv_path, index_col="time", parse_dates=True)
 # plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
-plot_calendar_heatmap(df, "zen", folder=annual.plots_dir, cbar_label=r"$\theta_{z}$ $( \degree)$")
+# plot_calendar_heatmap(annual_df1, "zenith", folder=annual.plots_dir, cbar_label=r"$\theta_{z}$ $( \degree)$")
