@@ -12,14 +12,14 @@ import mod_geometry
 sns.set_theme()
 
 params = {'figure.figsize': (14, 4),
-          'axes.titlesize': 20,
+          'axes.titlesize': 29,
           'axes.titleweight': 'bold',
-          'axes.labelsize': 20,
+          'axes.labelsize': 29,
           'axes.labelweight': 'bold',
-          'xtick.labelsize': 20,
-          'ytick.labelsize': 20,
+          'xtick.labelsize': 29,
+          'ytick.labelsize': 29,
           'font.weight': 'bold',
-          'font.size': 25,
+          'font.size': 37,
           'legend.fontsize': 16,
           'savefig.format': 'png',
           # 'savefig.dpi': 300.0,
@@ -58,8 +58,10 @@ def plot_calendar_heatmap(dfin, col, freq="1min",cbar_label=None, units="",
     if not cbar_label:
         cbar_label = col.replace("_"," ").title() + units
     ax = sns.heatmap(df, cmap="jet",cbar_kws={'label': cbar_label}, 
-                     xticklabels=31, yticklabels=30)
+                     xticklabels=31, yticklabels=60)
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    ax.set_xlabel("2016")
+    ax.invert_yaxis()
     # plt.tight_layout()
     plt.savefig(f"{folder}/{col}.png")
     plt.show()
@@ -68,6 +70,8 @@ def plot_kwh_timeseries(dfin, col, interval="D", ylabel="", folder=None):
     df = dfin.resample(interval).sum()/60000
     fig, ax = plt.subplots(figsize=(29, 7))
     ax.bar(df.index, df[col])
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    ax.set_xlabel("2016")
     ax.set_ylabel(ylabel)
     plt.savefig(f"{folder}/{col}_kwh")
     plt.show()
@@ -99,7 +103,7 @@ def run_annual(direction, df):
     return pd.concat(df_list)
 
 
-df = pd.read_csv("radiation/solar_all.csv", index_col="t", parse_dates=True)
+df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
 # df = df.loc[df["zen"]<=90]
 # df = df.loc[(df[['DNI']] > 0).all(axis=1)] # drop zeros
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
@@ -111,19 +115,19 @@ annual = Annual(10000, pairs, "ideal", "annual-tilt38.yaml")
 # annual_df = annual_df.set_index("time")
 # annual_df.to_csv(annual.csv_path.split(".")[0]+"all.csv")
 
-annual_df1 = pd.read_csv(annual.csv_path.split(".")[0]+"all.csv", index_col="time", parse_dates=True)
+annual_df1 = pd.read_csv(annual.csv_path.split(".")[0]+".csv", index_col="time", parse_dates=True)
 
 # os.makedirs(annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "cos_factor", folder=annual.plots_dir)
-# plot_calendar_heatmap(annual_df, "absorbed_flux", folder=annual.plots_dir)
+# plot_calendar_heatmap(annual_df1, "absorbed_flux",cbar_label=r"$F_a \quad (\frac{W}{m^2}$)", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "shadow_losses", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
 
 
 
-plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="kWh", folder=annual.plots_dir)
+# plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="Energy yield (kWh)", folder=annual.plots_dir)
 # annual1["azimuth"].plot()
 # annual1["zenith"].plot()
 # annual1["absorbed_flux"].plot()
@@ -132,7 +136,7 @@ plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="kWh", folder=annual.plo
 # df1["az"].plot()
 
 
-# plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"DNI $\frac{W}{m^2}$")
+plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"$DNI \quad (\frac{W}{m^2})$")
 # plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
