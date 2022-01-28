@@ -2,7 +2,7 @@ import utils
 from mirror_coordinates import centered_x, centered_y
 from config import geom
 
-geometry = "geometries/ideal-plain.yaml"
+geometry = "geometries/virtual-absorber-plain-10x6.yaml"
 
 mir_len_x = geom.mirror_array.mirror_dimensions.x  # mirror x dimension
 mir_len_y = geom.mirror_array.mirror_dimensions.y
@@ -22,27 +22,32 @@ top_len_y = geom.top_cover.dimensions.y
 
 
 def append_reflectors_to_yaml(fpath):
-    """ Appends reflectors to yaml as entities """
-    utils.keep_until(fpath, occurrence='reflector', lines_before=1)
+    """Appends reflectors to yaml as entities"""
+    utils.keep_until(fpath, occurrence="reflector", lines_before=1)
     count = 1
-    with open(fpath, 'a') as f:
+    with open(fpath, "a") as f:
         for x in centered_x:
             for y in centered_y:
-                reflector = f"- entity:\n    name: reflector{count}\n" \
-                            f"    transform: {{ rotation: [0 ,0, 0], " \
-                            f"translation: [ {x:.3f}, 0, {y:.3f} ] }}\n" \
-                            "    children: [ *self_oriented_facet ]\n\n"
+                reflector = (
+                    f"- entity:\n    name: reflector{count}\n"
+                    f"    transform: {{ rotation: [0 ,0, 0], "
+                    f"translation: [ {x:.3f}, 0, {y:.3f} ] }}\n"
+                    "    children: [ *self_oriented_facet ]\n\n"
+                )
                 f.writelines(reflector)
                 count += 1
 
 
 def move_absorber(geometry, abs_pos_x, abs_pos_y):
-    abs_transform = f"    transform: {{ rotation: [90, 0, 0], " \
-                    f"translation: [&abs_x {abs_pos_x}, 1.5, &abs_y {abs_pos_y}] }}\n"
+    abs_transform = (
+        f"    transform: {{ rotation: [90, 0, 0], "
+        f"translation: [&abs_x {abs_pos_x}, 1.5, &abs_y {abs_pos_y}] }}\n"
+    )
     utils.replace_line(geometry, newline=abs_transform)
     if "support" in geometry:
-        set_horizontal_support_vertices(geometry, abs_len_x, abs_len_y,
-                                        abs_pos_x, abs_pos_y)
+        set_horizontal_support_vertices(
+            geometry, abs_len_x, abs_len_y, abs_pos_x, abs_pos_y
+        )
 
 
 def add_mirrorbox(geometry):
@@ -65,28 +70,28 @@ def add_mirrorbox(geometry):
 def set_vertices(geometry, name, len_x, len_y):
     x = len_x / 2
     y = len_y / 2
-    vertices = f"          vertices: {name}\n" \
-               f"           - [{-x}, {-y}]\n" \
-               f"           - [{-x},  {y}]\n" \
-               f"           - [ {x},  {y}]\n" \
-               f"           - [ {x}, {-y}]\n"
-    utils.replace_occurence_and_four_next(geometry,
-                                          occurrence=name,
-                                          newlines=vertices)
+    vertices = (
+        f"          vertices: {name}\n"
+        f"           - [{-x}, {-y}]\n"
+        f"           - [{-x},  {y}]\n"
+        f"           - [ {x},  {y}]\n"
+        f"           - [ {x}, {-y}]\n"
+    )
+    utils.replace_occurence_and_four_next(geometry, occurrence=name, newlines=vertices)
 
 
 def set_horizontal_support_vertices(geometry, len_x, len_y, abs_x, abs_y):
     x = len_x / 2
     y = len_y / 2
     name = "&absorber_support_horizontal_vertices"
-    vertices = f"            vertices: &absorber_support_horizontal_vertices\n" \
-               f"             - [{-x}, -0.506]\n" \
-               f"             - [ {-x + abs_x},  {-y + abs_y}]\n" \
-               f"             - [ {x + abs_x},  {-y + abs_y}]\n" \
-               f"             - [ {x}, -0.506]\n"
-    utils.replace_occurence_and_four_next(geometry,
-                                          occurrence=name,
-                                          newlines=vertices)
+    vertices = (
+        f"            vertices: &absorber_support_horizontal_vertices\n"
+        f"             - [{-x}, -0.506]\n"
+        f"             - [ {-x + abs_x},  {-y + abs_y}]\n"
+        f"             - [ {x + abs_x},  {-y + abs_y}]\n"
+        f"             - [ {x}, -0.506]\n"
+    )
+    utils.replace_occurence_and_four_next(geometry, occurrence=name, newlines=vertices)
 
 
 def setup_base_geometry(geometry):
@@ -97,9 +102,12 @@ def setup_base_geometry(geometry):
     append_reflectors_to_yaml(geometry)
     move_absorber(geometry, abs_pos_x, abs_pos_y)
 
-def set_dni(geometry, dni):
-    utils.replace_line(geometry, occurrence="sun", 
-                       newline=f"- sun: {{ dni : {dni} }}\n")
 
-# setup_base_geometry(geometry)
+def set_dni(geometry, dni):
+    utils.replace_line(
+        geometry, occurrence="sun", newline=f"- sun: {{ dni : {dni} }}\n"
+    )
+
+
+setup_base_geometry(geometry)
 # move_absorber(geometry, 0.5, 0.5)
