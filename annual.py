@@ -120,7 +120,7 @@ annual_df1 = pd.read_csv(annual.csv_path.split(".")[0]+".csv", index_col="time",
 # os.makedirs(annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "efficiency", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "cos_factor", folder=annual.plots_dir)
-# plot_calendar_heatmap(annual_df1, "absorbed_flux",cbar_label=r"$F_a \quad (\frac{W}{m^2}$)", folder=annual.plots_dir)
+plot_calendar_heatmap(annual_df1, "absorbed_flux",cbar_label=r"$F_a \quad (W)$", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "shadow_losses", folder=annual.plots_dir)
 # plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
@@ -136,7 +136,7 @@ annual_df1 = pd.read_csv(annual.csv_path.split(".")[0]+".csv", index_col="time",
 # df1["az"].plot()
 
 
-plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"$DNI \quad (\frac{W}{m^2})$")
+# plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"$DNI \quad (\frac{W}{m^2})$")
 # plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
