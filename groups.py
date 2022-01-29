@@ -17,11 +17,11 @@ class GeometryGroup():
 
     def init_transversal(self):
         tr_args = config.trace.transversal.values()
-        return [Transversal(*tr_args, self.group_name, g) for g in self.geometries]
+        return [Transversal(*tr_args, g) for g in self.geometries]
 
     def init_longitudinal(self):
         ln_args = config.trace.longitudinal.values()
-        return [Longitudinal(*ln_args, self.group_name, g) for g in self.geometries]
+        return [Longitudinal(*ln_args, g) for g in self.geometries]
 
 
 ideal = GeometryGroup("ideal")

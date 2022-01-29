@@ -30,20 +30,29 @@ ideal_plain_10x6_ln = ideal_ln_dfs[1]
 calc_shadow_losses(ideal_plain_tr, virtual_abs_tr)
 calc_shadow_losses(ideal_plain_10x6_tr, virtual_abs_10x6_tr)
 
+virtual_mirr_plane_tr = reader.read(virtual.transversal[0])
+# plots.geometry_quantities(virtual_mirr_plane_tr, ["absorbed_flux", "shadow_losses"])
+
+
+ideal_plain_tr["gamma"] = ideal_plain_tr["absorbed_flux"]/\
+    (virtual_mirr_plane_tr['potential_flux'] - \
+      virtual_mirr_plane_tr["shadow_losses"])
+     
+ideal_plain_tr["IAM"] = ideal_plain_tr["gamma"] / ideal_plain_tr["gamma"][0]
 plots.geometry_quantities(
     ideal_plain_tr,
-    ["shadow_losses", "mirrors_shadow_losses", "receiver_shadow_losses"],
+    ["gamma","IAM", "efficiency"],
 )
-plots.geometry_quantities(
-    ideal_plain_10x6_tr,
-    ["shadow_losses", "mirrors_shadow_losses", "receiver_shadow_losses"],
-)
+# plots.geometry_quantities(
+#     ideal_plain_10x6_tr,
+#     ["shadow_losses", "mirrors_shadow_losses", "receiver_shadow_losses"],
+# )
 # plots.geometry_quantities(ideal_plain_tr, ["intercept_factor"])
 # plots.geometry_quantities(ideal_plain_ln, ["intercept_factor"])
 
-plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "efficiency")
-plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "potential_flux")
-plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "absorbed_flux")
+# plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "efficiency")
+# plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "potential_flux")
+# plots.geometries_comparison([ideal_tr_dfs[0], ideal_tr_dfs[1]], "absorbed_flux")
 
 # plots.all_quantities(ideal_plain_ln)
 # plots.all_quantities(ideal_plain_tr)

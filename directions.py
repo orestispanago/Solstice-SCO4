@@ -6,9 +6,8 @@ CWD = os.getcwd()
 
 class Direction:
 
-    def __init__(self, rays, geometry_group, geometry):
+    def __init__(self, rays, geometry):
         self.rays = rays
-        self.geometry_group = geometry_group
         self.geometry = geometry
         self.geometry_name = geometry.split(".")[0]
         self.receiver = os.path.join(CWD, "geometries", "receiver.yaml")
@@ -22,8 +21,8 @@ class Direction:
 
 
 class Transversal(Direction):
-    def __init__(self, min_angle, max_angle, step, rays, geometry_group, geometry):
-        super().__init__(rays, geometry_group, geometry)
+    def __init__(self, min_angle, max_angle, step, rays, geometry):
+        super().__init__(rays, geometry)
         self.min_angle = min_angle
         self.max_angle = max_angle
         self.step = step
@@ -33,8 +32,8 @@ class Transversal(Direction):
 
 
 class Longitudinal(Direction):
-    def __init__(self, min_angle, max_angle, step, rays, geometry_group, geometry):
-        super().__init__(rays, geometry_group, geometry)
+    def __init__(self, min_angle, max_angle, step, rays, geometry):
+        super().__init__(rays, geometry)
         self.min_angle = min_angle
         self.max_angle = max_angle
         self.step = step
@@ -44,7 +43,7 @@ class Longitudinal(Direction):
 
 
 class Annual(Direction):
-    def __init__(self, rays, angle_pairs, geometry_group, geometry):
-        super().__init__(rays, geometry_group, geometry)
+    def __init__(self, rays, angle_pairs, geometry):
+        super().__init__(rays, geometry)
         self.angle_pairs = angle_pairs
         self.geometry = geometry

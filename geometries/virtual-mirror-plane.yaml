@@ -13,7 +13,7 @@
     front:
       matte: { reflectivity: 0 }
 
-    
+
 - geometry: &mirror_plane_geometry
     - material: *specular
       plane:
@@ -25,13 +25,18 @@
             - [ 0.78, 0.496]
             - [ 0.78,-0.496]
 
+
 - geometry: &receiver
     - material: *black
       plane:
         clip:
           - operation: AND
-            vertices: *mirror_plane_vertices
-            
+            vertices: &receiver_vertices
+            - [-0.125, -0.125]
+            - [-0.125, 0.125]
+            - [ 0.125, 0.125]
+            - [ 0.125,-0.125]
+
 - entity:
     name: mirror_plane
     primary: 1
