@@ -41,10 +41,10 @@ ideal_plain_tr["gamma"] = ideal_plain_tr["absorbed_flux"]/\
 ideal_plain_tr["IAM"] = ideal_plain_tr["gamma"] / ideal_plain_tr["gamma"][0]
 plots.geometry_quantities(
     ideal_plain_tr,
-    ["gamma","IAM", "efficiency"],
+    ["efficiency", "gamma", "intercept_factor", "IAM"],
 )
 # plots.geometry_quantities(
-#     ideal_plain_10x6_tr,
+#     ideal_plain_tr,
 #     ["shadow_losses", "mirrors_shadow_losses", "receiver_shadow_losses"],
 # )
 # plots.geometry_quantities(ideal_plain_tr, ["intercept_factor"])

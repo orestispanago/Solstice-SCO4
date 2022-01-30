@@ -1,5 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 from config import geom
 
 mir_len_x = geom.mirror_array.mirror_dimensions.x
@@ -17,8 +18,8 @@ def create_coords(dim, space, num_elements):
 
 def plot_coords():
     xx, yy = np.meshgrid(centered_x, centered_y)
-    plt.plot(xx, yy, marker=',', color='k', linestyle='none')
-    plt.plot(0, 0, 'ro')
+    plt.plot(xx, yy, marker=",", color="k", linestyle="none")
+    plt.plot(0, 0, "ro")
 
 
 centered_x = create_coords(mir_len_x, space, num_x)

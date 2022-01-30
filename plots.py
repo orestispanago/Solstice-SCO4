@@ -1,23 +1,27 @@
 import os
+
 import matplotlib.pyplot as plt
 import seaborn as sns
+
 import utils
 
 sns.set_theme()
 
-params = {'figure.figsize': (14, 4),
-          'axes.titlesize': 20,
-          'axes.titleweight': 'bold',
-          'axes.labelsize': 20,
-          'axes.labelweight': 'bold',
-          'xtick.labelsize': 20,
-          'ytick.labelsize': 20,
-          'font.weight': 'bold',
-          'font.size': 20,
-          'legend.fontsize': 16,
-          'savefig.format': 'png',
-          # 'savefig.dpi': 300.0,
-          'figure.constrained_layout.use': True}
+params = {
+    "figure.figsize": (14, 4),
+    "axes.titlesize": 20,
+    "axes.titleweight": "bold",
+    "axes.labelsize": 20,
+    "axes.labelweight": "bold",
+    "xtick.labelsize": 20,
+    "ytick.labelsize": 20,
+    "font.weight": "bold",
+    "font.size": 20,
+    "legend.fontsize": 16,
+    "savefig.format": "png",
+    # 'savefig.dpi': 300.0,
+    "figure.constrained_layout.use": True,
+}
 plt.rcParams.update(params)
 
 
@@ -36,7 +40,7 @@ def contains_flux_or_losses(main_str_list, substr_list=["flux", "losses"]):
 
 
 def geometries_comparison(df_list, quantity="efficiency"):
-    """ Plots a column of each dataframe """
+    """Plots a column of each dataframe"""
     ylabel = get_label(quantity)
     fig, ax = plt.subplots(figsize=(9, 6))
     for df in df_list:
@@ -52,22 +56,33 @@ def geometries_comparison(df_list, quantity="efficiency"):
 
 
 # TODO replace direction with df to remove reader
-def heatmap(df, col='efficiency'):
-    pic_path = os.path.join(os.getcwd(), "export", df.direction_geometry, "heatmaps", df.direction_name + col)
+def heatmap(df, col="efficiency"):
+    pic_path = os.path.join(
+        os.getcwd(),
+        "export",
+        df.direction_geometry,
+        "heatmaps",
+        df.direction_name + col,
+    )
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
-    df1 = df.pivot(index='abs_y', columns='abs_x', values=col)
+    df1 = df.pivot(index="abs_y", columns="abs_x", values=col)
     fig, ax = plt.subplots(figsize=(10, 7))
-    sns.heatmap(df1, cbar_kws={'label': col},
-                xticklabels=10, yticklabels=10)
+    sns.heatmap(df1, cbar_kws={"label": col}, xticklabels=10, yticklabels=10)
     plt.title(df.direction_geometry)
     plt.savefig(pic_path)
     plt.show()
 
 
 def geometry_quantities(df, quantities_list):
-    """ Plots list of df columns in same plot """
-    pic_path = os.path.join(os.getcwd(), "export", df.direction_geometry, "plots",
-                            df.direction_name, '-'.join(quantities_list))
+    """Plots list of df columns in same plot"""
+    pic_path = os.path.join(
+        os.getcwd(),
+        "export",
+        df.direction_geometry,
+        "plots",
+        df.direction_name,
+        "-".join(quantities_list),
+    )
     utils.mkdir_if_not_exists(os.path.dirname(pic_path))
     fig, ax = plt.subplots(figsize=(9, 6))
     for col in quantities_list:

@@ -1,21 +1,21 @@
-import requests
-import zipfile
 import io
-import tarfile
-import urllib.request
 import os
 import subprocess
+import tarfile
+import urllib.request
+import zipfile
+
+import requests
 
 base_url = "https://www.meso-star.com/projects/solstice/downloads/"
 folder = "solstice"
 
 
 class Platform:
-
     def set_paths(self):
-        print("Setting up paths...", end='')
+        print("Setting up paths...", end="")
         os.environ["LD_LIBRARY_PATH"] = os.path.join(self.solstice_path, "lib")
-        os.environ["MANPATH"] = os.path.join(self.solstice_path, 'share', 'man')
+        os.environ["MANPATH"] = os.path.join(self.solstice_path, "share", "man")
         os.environ["PATH"] += os.path.join(self.solstice_path, "bin")
         print("OK")
 
@@ -39,10 +39,12 @@ class Windows(Platform):
         super().__init__()
         self.dirname = "Solstice-0.9.0-Win64"
         self.url = base_url + self.dirname + ".zip"
-        self.solstice_path = ";" + os.path.join(os.getcwd(), folder, self.dirname)
+        self.solstice_path = ";" + os.path.join(
+            os.getcwd(), folder, self.dirname
+        )
 
     def download_extract(self):
-        """ Downloads and extracts zip file to specified folder"""
+        """Downloads and extracts zip file to specified folder"""
         print("Downloading " + self.dirname + "...")
         r = requests.get(self.url)
         z = zipfile.ZipFile(io.BytesIO(r.content))
@@ -56,7 +58,9 @@ class Linux(Platform):
         super().__init__()
         self.dirname = "Solstice-0.9.0-GNU-Linux64"
         self.url = base_url + self.dirname + ".tar.gz"
-        self.solstice_path = ":" + os.path.join(os.getcwd(), folder, self.dirname)
+        self.solstice_path = ":" + os.path.join(
+            os.getcwd(), folder, self.dirname
+        )
 
     def download_extract(self):
         print("Downloading " + self.dirname + "...")

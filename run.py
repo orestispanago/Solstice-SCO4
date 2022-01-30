@@ -5,8 +5,8 @@ import export
 
 def csv_vtk_obj_heat(direction):
     export.csv(direction)
-    export.vtk(direction)
-    export.obj(direction)
+    # export.vtk(direction)
+    # export.obj(direction)
     # export.heatmap(direction)
 
 

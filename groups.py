@@ -1,9 +1,10 @@
 import os
-from directions import Transversal, Longitudinal
+
 import config
+from directions import Longitudinal, Transversal
 
 
-class GeometryGroup():
+class GeometryGroup:
     def __init__(self, group_name):
         self.group_name = group_name
         self.geometries = self.list_geometries()
@@ -11,7 +12,9 @@ class GeometryGroup():
         self.longitudinal = self.init_longitudinal()
 
     def list_geometries(self):
-        geometries = [g for g in os.listdir("geometries") if g.startswith(self.group_name)]
+        geometries = [
+            g for g in os.listdir("geometries") if g.startswith(self.group_name)
+        ]
         geometries.sort(reverse=True)
         return geometries
 

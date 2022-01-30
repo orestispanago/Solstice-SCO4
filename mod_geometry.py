@@ -1,6 +1,6 @@
 import utils
-from mirror_coordinates import centered_x, centered_y
 from config import geom
+from mirror_coordinates import centered_x, centered_y
 
 geometry = "geometries/virtual-absorber-plain-10x6.yaml"
 
@@ -77,7 +77,9 @@ def set_vertices(geometry, name, len_x, len_y):
         f"           - [ {x},  {y}]\n"
         f"           - [ {x}, {-y}]\n"
     )
-    utils.replace_occurence_and_four_next(geometry, occurrence=name, newlines=vertices)
+    utils.replace_occurence_and_four_next(
+        geometry, occurrence=name, newlines=vertices
+    )
 
 
 def set_horizontal_support_vertices(geometry, len_x, len_y, abs_x, abs_y):
@@ -91,7 +93,9 @@ def set_horizontal_support_vertices(geometry, len_x, len_y, abs_x, abs_y):
         f"             - [ {x + abs_x},  {-y + abs_y}]\n"
         f"             - [ {x}, -0.506]\n"
     )
-    utils.replace_occurence_and_four_next(geometry, occurrence=name, newlines=vertices)
+    utils.replace_occurence_and_four_next(
+        geometry, occurrence=name, newlines=vertices
+    )
 
 
 def setup_base_geometry(geometry):
