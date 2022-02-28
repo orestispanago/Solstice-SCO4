@@ -5,19 +5,21 @@ import seaborn as sns
 
 import utils
 
-sns.set_theme()
+# sns.set_theme()
 
 params = {
     "figure.figsize": (14, 4),
-    "axes.titlesize": 20,
+    "axes.titlesize": 28,
     "axes.titleweight": "bold",
-    "axes.labelsize": 20,
+    "axes.labelsize": 28,
     "axes.labelweight": "bold",
-    "xtick.labelsize": 20,
-    "ytick.labelsize": 20,
+    "axes.grid" : True,
+    'lines.linewidth':6.0,
+    "xtick.labelsize": 28,
+    "ytick.labelsize": 28,
     "font.weight": "bold",
-    "font.size": 20,
-    "legend.fontsize": 16,
+    "font.size": 28,
+    "legend.fontsize": 20,
     "savefig.format": "png",
     # 'savefig.dpi': 300.0,
     "figure.constrained_layout.use": True,
@@ -87,10 +89,12 @@ def geometry_quantities(df, quantities_list):
     fig, ax = plt.subplots(figsize=(9, 6))
     for col in quantities_list:
         ax.plot(df[col], label=get_label(col))
-    ax.set_xlabel("$\\theta_z \quad  (\degree)$")
+        ax.set_title(get_label(col))
+    ax.set_xlabel("Incidence angle $\\theta \ (\degree)$")
     if contains_flux_or_losses(quantities_list):
         ax.set_ylabel("Watts")
-    ax.legend()
+    # ax.legend()
+    
     plt.savefig(pic_path)
     plt.show()
 

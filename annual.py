@@ -11,24 +11,26 @@ from tqdm import tqdm
 import mod_geometry
 from directions import Annual
 
-sns.set_theme()
+# sns.set_theme()
 
 params = {
     "figure.figsize": (14, 4),
-    "axes.titlesize": 29,
+    "axes.titlesize": 49,
     "axes.titleweight": "bold",
-    "axes.labelsize": 29,
+    "axes.labelsize": 40,
     "axes.labelweight": "bold",
-    "xtick.labelsize": 29,
-    "ytick.labelsize": 29,
+    "xtick.labelsize": 40,
+    "ytick.labelsize": 30,
     "font.weight": "bold",
-    "font.size": 37,
+    "font.size": 47,
     "legend.fontsize": 16,
     "savefig.format": "png",
-    # 'savefig.dpi': 300.0,
+    'savefig.dpi': 300.0,
     "figure.constrained_layout.use": True,
 }
 plt.rcParams.update(params)
+
+
 
 
 def read(fname):
@@ -60,11 +62,13 @@ def plot_calendar_heatmap(
     col,
     freq="1min",
     cbar_label=None,
+    title=None,
     units="",
     folder="calendar-heatmaps",
 ):
     df = dfin.resample(freq).mean().dropna()
     df["Time, UTC"] = df.index.time
+    # ticks = df.index[df.index.minute == 0]
     df["Date"] = df.index.date
     df.reset_index(inplace=True)
     df = df.pivot("Time, UTC", "Date", col)
@@ -75,24 +79,29 @@ def plot_calendar_heatmap(
         df,
         cmap="jet",
         cbar_kws={"label": cbar_label},
-        xticklabels=31,
-        yticklabels=60,
+        xticklabels=60,
+        yticklabels=120,
     )
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
     ax.set_xlabel("2016")
     ax.invert_yaxis()
+    ax.set_title(title)
     # plt.tight_layout()
     plt.savefig(f"{folder}/{col}.png")
     plt.show()
 
 
-def plot_kwh_timeseries(dfin, col, interval="D", ylabel="", folder=None):
+def plot_kwh_timeseries(dfin, col, interval="D", ylabel="", title=None, folder=None):
     df = dfin.resample(interval).sum() / 60000
-    fig, ax = plt.subplots(figsize=(29, 7))
+    fig, ax = plt.subplots(figsize=(30, 8))
     ax.bar(df.index, df[col])
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
+    ax.xaxis.set_major_locator(mdates.MonthLocator(interval=1))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+    ax.set_xlim(df.index[0], df.index[-1])
+    ax.tick_params(axis='y', labelsize=42)
     ax.set_xlabel("2016")
     ax.set_ylabel(ylabel)
+    ax.set_title(title)
     plt.savefig(f"{folder}/{col}_kwh")
     plt.show()
 
@@ -130,7 +139,7 @@ df = pd.read_csv("radiation/solar.csv", index_col="t", parse_dates=True)
 # df = df.loc[(df[['DNI']] > 0).all(axis=1)] # drop zeros
 pairs = [f"{az:.1f},{zen:.1f}" for az, zen in zip(df["az"], df["zen"])]
 
-annual = Annual(10000, pairs, "ideal", "annual-tilt38.yaml")
+annual = Annual(pairs, "ideal", "annual-tilt38.yaml")
 # annual_df = run_annual(annual, df)
 
 # annual_df["time"] = df.index
@@ -147,7 +156,8 @@ annual_df1 = pd.read_csv(
 plot_calendar_heatmap(
     annual_df1,
     "absorbed_flux",
-    cbar_label=r"$F_a \quad (W)$",
+    title="Absorbed flux $F_a$",
+    cbar_label="Watts",
     folder=annual.plots_dir,
 )
 # plot_calendar_heatmap(annual_df, "missing_losses", folder=annual.plots_dir)
@@ -155,7 +165,10 @@ plot_calendar_heatmap(
 # plot_calendar_heatmap(annual_df, "potential_flux", folder=annual.plots_dir)
 
 
-# plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="Energy yield (kWh)", folder=annual.plots_dir)
+
+plot_kwh_timeseries(annual_df1, "absorbed_flux", ylabel="kWh", 
+                    title="Energy yield",
+                    folder=annual.plots_dir)
 # annual1["azimuth"].plot()
 # annual1["zenith"].plot()
 # annual1["absorbed_flux"].plot()
@@ -164,7 +177,7 @@ plot_calendar_heatmap(
 # df1["az"].plot()
 
 
-# plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir, cbar_label=r"$DNI \quad (\frac{W}{m^2})$")
+plot_calendar_heatmap(df, "DNI", folder=annual.plots_dir,title="DNI", cbar_label=r"$W \cdot m^{-2}$")
 # plot_calendar_heatmap(df, "GHI", folder=annual.plots_dir, cbar_label=r"GHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "DHI", folder=annual.plots_dir, cbar_label=r"DHI $\frac{W}{m^2}$")
 # plot_calendar_heatmap(df, "az", folder=annual.plots_dir, cbar_label=r"$\theta_{az}$ $( \degree)$")
